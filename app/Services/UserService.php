@@ -159,7 +159,18 @@ class UserService
      */
     public function crear(array $datos): User
     {
-        $persona = Persona::findOrFail($datos["persona_id"]);
+        $persona = Persona::create([
+            "nombre" => mb_strtoupper($datos["nombre"]),
+            "paterno" => mb_strtoupper($datos["paterno"]),
+            "materno" => mb_strtoupper($datos["materno"]),
+            "dir" => mb_strtoupper($datos["dir"]),
+            "ci" => $datos["ci"],
+            "ci_exp" => $datos["ci_exp"],
+            "fono" => $datos["fono"],
+            "correo" => $datos["correo"],
+            "fecha_registro" => date("Y-m-d")
+        ]);
+
         $user = User::create([
             "persona_id" => $persona->id,
             "usuario" => $this->getNombreUsuario($persona->nombre, $persona->paterno),
@@ -175,7 +186,7 @@ class UserService
         }
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN USUARIO", $user);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN USUARIO", $user, null, ["persona"]);
 
         return $user;
     }
@@ -190,24 +201,31 @@ class UserService
     public function actualizar(array $datos, User $user): User
     {
         $old_user = clone $user;
-        $persona = Persona::findOrFail($datos["persona_id"]);
+        $persona = $user->persona;
+        $persona->update([
+            "nombre" => mb_strtoupper($datos["nombre"]),
+            "paterno" => mb_strtoupper($datos["paterno"]),
+            "materno" => mb_strtoupper($datos["materno"]),
+            "dir" => mb_strtoupper($datos["dir"]),
+            "ci" => $datos["ci"],
+            "ci_exp" => $datos["ci_exp"],
+            "fono" => $datos["fono"],
+            "correo" => $datos["correo"],
+            "fecha_registro" => date("Y-m-d")
+        ]);
         $user->update([
-            "persona_id" => $persona->id,
             "usuario" => $this->getNombreUsuario($persona->nombre, $persona->paterno, $user->id),
             "password" => $persona->ci,
             "tipo" => $datos["tipo"],
             "acceso" => $datos["acceso"],
             "fecha_registro" => date("Y-m-d")
         ]);
-
         // cargar foto
         if ($datos["foto"] && !is_string($datos["foto"])) {
             $this->cargarFoto($user, $datos["foto"]);
         }
-
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN USUARIO", $old_user, $user->withoutRelations());
-
         return $user;
     }
 
@@ -252,12 +270,13 @@ class UserService
     public function eliminar(User $user): bool
     {
         // no eliminar users predeterminados para el funcionamiento del sistema
-        $old_user = User::find($user->id);
+        $old_user = clone $user;
+        $old_user->loadMissing(["persona"]);
         $user->status = 0;
         $user->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ AL USUARIO " . $old_user->usuario, $old_user, $user);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ AL USUARIO " . $old_user->usuario, $old_user, $user, ["persona"]);
         return true;
     }
 

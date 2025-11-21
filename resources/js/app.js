@@ -28,10 +28,6 @@ window.Swal = Swal;
 import { createPinia } from "pinia";
 const pinia = createPinia();
 
-// Element-UI plus
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
-
 // Default Layout
 import App from "@/Layouts/App.vue";
 
@@ -55,10 +51,9 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(pinia)
-            .use(ElementPlus)
             .mount(el);
     },
     progress: {
-        color: "#ffffff",
+        color: "#0054d3ff",
     },
 });

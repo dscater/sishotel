@@ -1,10 +1,12 @@
 <script setup>
-import { onMounted, onUnmounted, ref, nextTick } from "vue";
+import { onMounted, onUnmounted, ref, nextTick, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import ItemMenu from "@/Components/ItemMenu.vue";
 import { useSideBar } from "@/composables/useSidebar.js";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useConfiguracionStore } from "@/stores/configuracion/configuracionStore";
+import { verificaImagen } from "@/composables/useLoadings/verificaImagen";
+
 const { closeSidebar, toggleSubMenuELem } = useSideBar();
 const configuracionStore = useConfiguracionStore();
 const appStore = useAppStore();
@@ -41,19 +43,48 @@ onMounted(() => {
     sidebarSearchElement.data("notFoundText", "Sin resultados");
 });
 
+const loadingLogo = ref(true);
+
+watch(
+    () => configuracionStore.oConfiguracion.url_logo,
+    async (newUrl) => {
+        if (!newUrl) return;
+        try {
+            const resp = await verificaImagen(newUrl);
+            loadingLogo.value = !resp;
+        } catch (e) {
+            loadingLogo.value = true;
+        }
+    },
+    { immediate: true } // también dispara la primera vez si ya tiene valor
+);
+
 onUnmounted(() => {});
 </script>
 <template>
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar sidebar-dark-primary bg2 elevation-4">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link">
-            <img
-                :src="configuracionStore.oConfiguracion.url_logo"
-                alt="Logo"
-                class="brand-image img-circle elevation-3"
-                style="opacity: 0.8"
-            />
+        <a :href="route('inicio')" class="brand-link bg1">
+            <el-skeleton class="brand-image" animated :loading="loadingLogo">
+                <template #template>
+                    <el-skeleton-item
+                        variant="circle"
+                        class="brand-image img-circle elevation-3"
+                        style="width: 40px"
+                    />
+                </template>
+                <template #default>
+                    <img
+                        :src="configuracionStore.oConfiguracion.url_logo"
+                        alt="Logo"
+                        class="brand-image img-circle elevation-3"
+                        loading="lazy"
+                        v-if="!loadingLogo"
+                    />
+                </template>
+            </el-skeleton>
+
             <span
                 class="brand-text font-weight-light title_Chau_Philomene_One"
                 >{{ configuracionStore.oConfiguracion.nombre_sistema }}</span
@@ -69,6 +100,7 @@ onUnmounted(() => {});
                         :src="usuario?.url_foto"
                         class="img-circle elevation-2"
                         alt="User Image"
+                        v-if="!loadingLogo"
                     />
                 </div>
                 <div class="info">
@@ -89,17 +121,10 @@ onUnmounted(() => {});
                         :ruta="'inicio'"
                         :icon="'fa fa-home'"
                     ></ItemMenu>
-                    <li class="nav-header font-weight-bold bg-navy">
-                        OPERACIONES
-                    </li>
-                    <li class="nav-header font-weight-bold bg-navy">
+                    <li class="nav-header font-weight-bold bg3">OPERACIONES</li>
+                    <li class="nav-header font-weight-bold bg3">
                         ADMINISTRACIÓN
                     </li>
-                    <ItemMenu
-                        :label="'Personas'"
-                        :ruta="'personas.index'"
-                        :icon="'fa fa-clipboard-list'"
-                    ></ItemMenu>
                     <ItemMenu
                         :label="'Clientes'"
                         :ruta="'clientes.index'"
@@ -110,9 +135,7 @@ onUnmounted(() => {});
                         :ruta="'usuarios.index'"
                         :icon="'fa fa-users'"
                     ></ItemMenu>
-                    <li class="nav-header font-weight-bold bg-navy">
-                        REPORTES
-                    </li>
+                    <li class="nav-header font-weight-bold bg3">REPORTES</li>
                     <li class="nav-item">
                         <a
                             href="#"
@@ -139,7 +162,7 @@ onUnmounted(() => {});
                             ></ItemMenu>
                         </ul>
                     </li>
-                    <li class="nav-header font-weight-bold bg-navy">OTROS</li>
+                    <li class="nav-header font-weight-bold bg3">OTROS</li>
                     <ItemMenu
                         :label="'Configuración Sistema'"
                         :ruta="'configuracions.index'"

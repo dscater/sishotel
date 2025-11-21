@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 export const useConfiguracionStore = defineStore("configuracion", {
     state: () => ({
         oConfiguracion: {
-            sistema: "IMPARABLE",
-            alias: "I",
+            sistema: "SISTEMA HOTEL",
+            alias: "SH",
             url_logo: "",
         },
     }),

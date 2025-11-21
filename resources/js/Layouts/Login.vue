@@ -20,5 +20,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .content-login {
     min-height: 100vh;
+    min-width: 100vw;
+    background-color: var(--bgDark1);
 }
 </style>

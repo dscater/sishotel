@@ -11,12 +11,11 @@ const { toggleSidebar } = useSideBar();
 
 onMounted(() => {});
 
-onUnmounted(() => {
-});
+onUnmounted(() => {});
 </script>
 <template>
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light bg1">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -25,7 +24,7 @@ onUnmounted(() => {
                     href="#"
                     role="button"
                     @click="toggleSidebar"
-                    ><i class="fas fa-bars"></i
+                    ><i class="fas fa-bars text-white"></i
                 ></a>
             </li>
             <!-- <li class="nav-item d-none d-sm-inline-block">
@@ -45,7 +44,7 @@ onUnmounted(() => {
                     href="#"
                     role="button"
                 >
-                    <i class="fas fa-expand-arrows-alt"></i>
+                    <i class="fas fa-expand-arrows-alt text-white"></i>
                 </a>
             </li>
         </ul>

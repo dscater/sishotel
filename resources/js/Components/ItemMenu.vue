@@ -57,11 +57,10 @@ const classActive = computed(() => {
 
 const emits = defineEmits(["onClick"]);
 onMounted(() => {
-    route_current.value = route().current();
     link.value.addEventListener("click", function () {
-        appStore.startLoading();
         emits("onClick");
     });
+    route_current.value = route().current();
 });
 </script>
 <template>
@@ -76,6 +75,7 @@ onMounted(() => {
             :href="ruta ? route(ruta) : '/'"
             class="nav-link"
             :class="[classActive ?? '']"
+            @click="appStore.startLoading()"
         >
             <i class="nav-icon" :class="icon ? icon : 'fa-th'"></i>
             <p>
@@ -90,7 +90,13 @@ onMounted(() => {
         </div>
     </li>
     <li class="nav-item" v-else>
-        <a href="#" class="nav-link" @click.prevent="ejecutaPost()" ref="link">
+        <a
+            href="#"
+            class="nav-link"
+            @click.prevent="ejecutaPost()"
+            ref="link"
+            :disabled="classActive"
+        >
             <i class="nav-icon" :class="icon ? icon : 'fa-th'"></i>
             <p>
                 {{ label }}
