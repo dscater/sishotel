@@ -2,7 +2,7 @@
 import Content from "@/Components/Content.vue";
 import MiTable from "@/Components/MiTable.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import { usePersonas } from "@/composables/personas/usePersonas";
+import { useClientes } from "@/composables/clientes/useClientes";
 import { ref, onMounted, onBeforeMount } from "vue";
 import Formulario from "./Formulario.vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
@@ -13,7 +13,7 @@ const { axiosDelete } = useAxios();
 
 onBeforeMount(() => {});
 
-const { setPersona, limpiarPersona } = usePersonas();
+const { setCliente, limpiarCliente } = useClientes();
 
 const miTable = ref(null);
 
@@ -74,7 +74,7 @@ const accion_formulario = ref(0);
 const muestra_formulario = ref(false);
 
 const agregarRegistro = () => {
-    limpiarPersona();
+    limpiarCliente();
     accion_formulario.value = 0;
     muestra_formulario.value = true;
 };
@@ -86,7 +86,7 @@ const updateDatatable = async () => {
     }
 };
 
-const eliminarPersona = (item) => {
+const eliminarCliente = (item) => {
     Swal.fire({
         title: "¿Quierés eliminar este registro?",
         html: `<strong>${item.full_name}</strong>`,
@@ -101,7 +101,7 @@ const eliminarPersona = (item) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             let respuesta = await axiosDelete(
-                route("personas.destroy", item.id)
+                route("clientes.destroy", item.id)
             );
             if (respuesta && respuesta.sw) {
                 updateDatatable();
@@ -115,13 +115,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <Head title="Personas"></Head>
+    <Head title="Clientes"></Head>
 
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Personas</h1>
+                    <h1 class="m-0">Clientes</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -129,7 +129,7 @@ onMounted(async () => {
                         <li class="breadcrumb-item">
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
-                        <li class="breadcrumb-item active">Personas</li>
+                        <li class="breadcrumb-item active">Clientes</li>
                     </ol>
                 </div>
                 <!-- /.col -->
@@ -145,24 +145,24 @@ onMounted(async () => {
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'personas.create'
+                                    'clientes.create'
                                 )
                             "
                             type="button"
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nueva Persona
+                            <i class="fa fa-plus"></i> Nuevo Cliente
                         </button>
                         <Link
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'personas.eliminados'
+                                    'clientes.eliminados'
                                 )
                             "
                             class="btn btn-outline-danger mx-1"
-                            :href="route('personas.eliminados')"
+                            :href="route('clientes.eliminados')"
                         >
                             <i class="fa fa-trash"></i> Eliminados
                         </Link>
@@ -199,7 +199,7 @@ onMounted(async () => {
                             ref="miTable"
                             :cols="headers"
                             :api="true"
-                            :url="route('personas.paginado')"
+                            :url="route('clientes.paginado')"
                             :numPages="5"
                             :multiSearch="multiSearch"
                             :syncOrderBy="'id'"
@@ -218,7 +218,7 @@ onMounted(async () => {
                                     <button
                                         class="btn btn-warning"
                                         @click="
-                                            setPersona(item);
+                                            setCliente(item);
                                             accion_formulario = 1;
                                             muestra_formulario = true;
                                         "
@@ -226,7 +226,7 @@ onMounted(async () => {
                                             props_page.auth?.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'personas.edit'
+                                                'clientes.edit'
                                             )
                                         "
                                     >
@@ -240,12 +240,12 @@ onMounted(async () => {
                                 >
                                     <button
                                         class="btn btn-danger"
-                                        @click="eliminarPersona(item)"
+                                        @click="eliminarCliente(item)"
                                         v-if="
                                             props_page.auth?.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'personas.destroy'
+                                                'clientes.destroy'
                                             )
                                         "
                                     >

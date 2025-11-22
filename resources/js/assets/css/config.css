@@ -197,7 +197,7 @@ body .btn-primary:hover {
 
 /* Botón si el icono es error */
 .swal2-confirm.btn-error {
-    background-color: var(--bg__danger) !important;
+    background-color: var(--danger) !important;
 }
 
 /* Botón si el icono es warning */

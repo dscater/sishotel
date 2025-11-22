@@ -7,7 +7,9 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\TipoUsuarioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -77,7 +79,6 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // USUARIOS
-
     Route::get("usuarios/eliminados", [UsuarioController::class, 'eliminados'])->name("usuarios.eliminados");
     Route::get("usuarios/paginado_eliminados", [UsuarioController::class, 'paginado_eliminados'])->name("usuarios.paginado_eliminados");
     Route::patch("usuarios/reestablecer/{user}", [UsuarioController::class, 'reestablecer'])->name("usuarios.reestablecer");
@@ -94,7 +95,14 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
         ["index", "store"]
     );
 
+    // TIPO USUARIOS
+    Route::get("tipo_usuarios/getTipos", [TipoUsuarioController::class, 'getTipos'])->name("tipo_usuarios.getTipos");
+
     // CLIENTES
+    Route::get("clientes/eliminados", [ClienteController::class, 'eliminados'])->name("clientes.eliminados");
+    Route::get("clientes/paginado_eliminados", [ClienteController::class, 'paginado_eliminados'])->name("clientes.paginado_eliminados");
+    Route::patch("clientes/reestablecer/{cliente}", [ClienteController::class, 'reestablecer'])->name("clientes.reestablecer");
+    Route::delete("clientes/eliminacion_permanente/{user}", [ClienteController::class, 'eliminacion_permanente'])->name("clientes.eliminacion_permanente");
     Route::get("clientes/api", [ClienteController::class, 'api'])->name("clientes.api");
     Route::get("clientes/paginado", [ClienteController::class, 'paginado'])->name("clientes.paginado");
     Route::get("clientes/listado", [ClienteController::class, 'listado'])->name("clientes.listado");
@@ -102,6 +110,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
         ["index", "store", "edit", "show", "update", "destroy"]
     );
 
+    // REGISTROS
+    Route::get("registros/checkin", [RegistroController::class, 'checkin'])->name("registros.checkin");
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

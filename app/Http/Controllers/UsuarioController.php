@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserPasswordRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Models\HistorialAccion;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -73,7 +71,7 @@ class UsuarioController extends Controller
         $orderByCol = $request->orderByCol;
         $desc = $request->desc;
 
-        $columnsSerachLike = ["personas.nombre", "personas.paterno", "personas.materno", "personas.ci", "personas.fono", "personas.dir"];
+        $columnsSerachLike = ["nombre", "paterno", "materno", "ci", "fono", "dir"];
         $columnsFilter = [];
         $columnsBetweenFilter = [];
         $arrayOrderBy = [];

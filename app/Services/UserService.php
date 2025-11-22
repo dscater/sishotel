@@ -29,8 +29,7 @@ class UserService
      */
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $users = User::select("users.*")
-            ->join("personas", "personas.id", "=", "users.persona_id")->where("users.id", "!=", 1);
+        $users = User::select("users.*")->where("users.id", "!=", 1);
 
         $users->where("users.status", 1);
 
@@ -159,7 +158,7 @@ class UserService
      */
     public function crear(array $datos): User
     {
-        $persona = Persona::create([
+        $user = User::create([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "paterno" => mb_strtoupper($datos["paterno"]),
             "materno" => mb_strtoupper($datos["materno"]),
@@ -168,13 +167,8 @@ class UserService
             "ci_exp" => $datos["ci_exp"],
             "fono" => $datos["fono"],
             "correo" => $datos["correo"],
-            "fecha_registro" => date("Y-m-d")
-        ]);
-
-        $user = User::create([
-            "persona_id" => $persona->id,
-            "usuario" => $this->getNombreUsuario($persona->nombre, $persona->paterno),
-            "password" => $persona->ci,
+            "usuario" => $this->getNombreUsuario($datos["nombre"], $datos["paterno"]),
+            "password" => $datos["ci"],
             "tipo" => $datos["tipo"],
             "acceso" => $datos["acceso"],
             "fecha_registro" => date("Y-m-d")
@@ -186,7 +180,7 @@ class UserService
         }
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN USUARIO", $user, null, ["persona"]);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN USUARIO", $user, null);
 
         return $user;
     }
@@ -225,7 +219,7 @@ class UserService
             $this->cargarFoto($user, $datos["foto"]);
         }
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN USUARIO", $old_user, $user->withoutRelations());
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN USUARIO", $old_user, $user);
         return $user;
     }
 
@@ -271,12 +265,11 @@ class UserService
     {
         // no eliminar users predeterminados para el funcionamiento del sistema
         $old_user = clone $user;
-        $old_user->loadMissing(["persona"]);
         $user->status = 0;
         $user->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ AL USUARIO " . $old_user->usuario, $old_user, $user, ["persona"]);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ AL USUARIO " . $old_user->usuario, $old_user, $user);
         return true;
     }
 

@@ -13,16 +13,22 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("user_id")->nullable();
-            $table->unsignedBigInteger("persona_id")->nullable();
-            $table->date("fecha_nac");
+            $table->string("nombre", 255);
+            $table->string("paterno", 255);
+            $table->string("materno", 255)->nullable();
+            $table->string("ci", 255)->nullable();
+            $table->string("ci_exp", 255)->nullable();
+            $table->string("dir", 800)->nullable();
+            $table->string("fono", 255)->nullable();
+            $table->date("fecha_nac")->nullable();
+            $table->string("correo", 255)->nullable();
             $table->integer("edad");
             $table->string("nacionalidad");
             $table->string("pais", 255);
+            $table->unsignedBigInteger("user_id");
             $table->integer("status")->default(1);
             $table->timestamps();
 
-            $table->foreign("persona_id")->on("personas")->references("id");
             $table->foreign("user_id")->on("users")->references("id");
         });
     }

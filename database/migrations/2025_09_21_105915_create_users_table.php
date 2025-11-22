@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("persona_id")->nullable();
+            $table->string("nombre", 255);
+            $table->string("paterno", 255);
+            $table->string("materno", 255)->nullable();
+            $table->string("ci", 255)->nullable();
+            $table->string("ci_exp", 255)->nullable();
+            $table->string("dir", 800)->nullable();
+            $table->string("fono", 255)->nullable();
+            $table->date("fecha_nac")->nullable();
+            $table->string("correo", 255)->nullable();
             $table->string("usuario", 255);
             $table->string('password');
             $table->integer("acceso");
@@ -22,8 +30,6 @@ return new class extends Migration
             $table->date("fecha_registro");
             $table->integer("status")->default(1);
             $table->timestamps();
-
-            $table->foreign("persona_id")->on("personas")->references("id");
         });
     }
 

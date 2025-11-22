@@ -24,6 +24,7 @@ watch(
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
+            cargarListas();
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
@@ -52,11 +53,7 @@ watch(
 
 const { flash } = usePage().props;
 
-const listTipos = ref([
-    { value: "ADMINISTRADOR", label: "ADMINISTRADOR" },
-    { value: "GERENTE", label: "GERENTE" },
-    { value: "EMPLEADO", label: "EMPLEADO" },
-]);
+const listTipos = ref([]);
 const foto = ref(null);
 
 function cargaArchivo(e, key) {
@@ -167,7 +164,17 @@ const cerrarFormulario = () => {
     document.getElementsByTagName("body")[0].classList.remove("modal-open");
 };
 
-const cargarListas = () => {};
+const cargarTiposUsuario = async () => {
+    try {
+        const response = await axios.get(route("tipo_usuarios.getTipos"));
+        listTipos.value = response.data;
+    } catch (error) {
+        listTipos.value = [];
+    }
+};
+const cargarListas = () => {
+    cargarTiposUsuario();
+};
 
 const options = ref([]);
 const loading = ref(false);
@@ -193,9 +200,7 @@ const remoteMethod = async (query) => {
         options.value = [];
     }
 };
-onMounted(() => {
-    cargarListas();
-});
+onMounted(() => {});
 </script>
 
 <template>
@@ -399,11 +404,8 @@ onMounted(() => {
                             v-model="form.tipo"
                         >
                             <option value="">- Seleccione -</option>
-                            <option
-                                v-for="item in listTipos"
-                                :value="item.value"
-                            >
-                                {{ item.label }}
+                            <option v-for="item in listTipos" :value="item">
+                                {{ item }}
                             </option>
                         </select>
 

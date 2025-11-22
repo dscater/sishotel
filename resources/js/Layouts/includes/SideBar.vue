@@ -121,10 +121,77 @@ onUnmounted(() => {});
                         :ruta="'inicio'"
                         :icon="'fa fa-home'"
                     ></ItemMenu>
-                    <li class="nav-header font-weight-bold bg3">OPERACIONES</li>
+                    <li class="nav-header font-weight-bold bg3">RECEPCIÓN</li>
+                    <ItemMenu
+                        :label="'Check-In'"
+                        :ruta="'registros.checkin'"
+                        :icon="'fa fa-sign-in-alt'"
+                    ></ItemMenu>
+                    <ItemMenu
+                        :label="'Check-Out'"
+                        :ruta="'clientes.index'"
+                        :icon="'fa fa-sign-out-alt'"
+                    ></ItemMenu>
+                    <ItemMenu
+                        :label="'Cierre de caja'"
+                        :ruta="'clientes.index'"
+                        :icon="'fa fa-cash-register'"
+                    ></ItemMenu>
+                    <li class="nav-header font-weight-bold bg3">RESERVAS</li>
+                    <ItemMenu
+                        :label="'Crear reserva'"
+                        :ruta="'clientes.index'"
+                        :icon="'fa fa-calendar-plus'"
+                    ></ItemMenu>
+                    <ItemMenu
+                        :label="'Listado reservas'"
+                        :ruta="'clientes.index'"
+                        :icon="'fa fa-list'"
+                    ></ItemMenu>
                     <li class="nav-header font-weight-bold bg3">
                         ADMINISTRACIÓN
                     </li>
+                    <li class="nav-item">
+                        <a
+                            href="#"
+                            class="nav-link sub-menu"
+                            :class="[
+                                route_current == 'reportes.usuarios' ||
+                                route_current == 'reportes.pagos'
+                                    ? 'active menu-is-opening menu-open'
+                                    : '',
+                            ]"
+                            @click.stop="toggleSubMenu($event)"
+                        >
+                            <i class="nav-icon fas fa-box"></i>
+                            <p>
+                                Productos
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <ItemMenu
+                                :label="'Listado Productos'"
+                                :ruta="'reportes.usuarios'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                :label="'Ingreso de Productos'"
+                                :ruta="'reportes.usuarios'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                :label="'Salida de Productos'"
+                                :ruta="'reportes.usuarios'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                        </ul>
+                    </li>
+                    <ItemMenu
+                        :label="'Caja'"
+                        :ruta="'clientes.index'"
+                        :icon="'fa fa-cash-register'"
+                    ></ItemMenu>
                     <ItemMenu
                         :label="'Clientes'"
                         :ruta="'clientes.index'"

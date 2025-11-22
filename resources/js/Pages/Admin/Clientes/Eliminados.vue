@@ -2,7 +2,7 @@
 import Content from "@/Components/Content.vue";
 import MiTable from "@/Components/MiTable.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import { usePersonas } from "@/composables/personas/usePersonas";
+import { useClientes } from "@/composables/clientes/useClientes";
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useAxios } from "@/composables/axios/useAxios";
@@ -14,7 +14,7 @@ onBeforeMount(() => {
     appStore.startLoading();
 });
 
-const { setPersona, limpiaPersona } = usePersonas();
+const { setCliente, limpiaCliente } = useClientes();
 
 const miTable = ref(null);
 
@@ -92,7 +92,7 @@ const restaurar = (item) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             let respuesta = await axiosPost(
-                route("personas.reestablecer", item.id),
+                route("clientes.reestablecer", item.id),
                 {
                     _method: "patch",
                 }
@@ -104,7 +104,7 @@ const restaurar = (item) => {
     });
 };
 
-const eliminarPersona = (item) => {
+const eliminarCliente = (item) => {
     Swal.fire({
         title: "¿Quierés eliminar definitivamente este registro?",
         html: `<strong>${item.full_name}</strong><br/>Esta acción no se puede deshacer.`,
@@ -119,7 +119,7 @@ const eliminarPersona = (item) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             let respuesta = await axiosDelete(
-                route("personas.eliminacion_permanente", item.id)
+                route("clientes.eliminacion_permanente", item.id)
             );
             if (respuesta && respuesta.sw) {
                 updateDatatable();
@@ -133,14 +133,14 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <Head title="Personas"></Head>
+    <Head title="Clientes"></Head>
 
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-lg">
-                        Personas <small>> Eliminados</small>
+                        Clientes <small>> Eliminados</small>
                     </h1>
                 </div>
                 <!-- /.col -->
@@ -150,8 +150,8 @@ onMounted(async () => {
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
                         <li class="breadcrumb-item">
-                            <Link :href="route('personas.index')"
-                                >Personas</Link
+                            <Link :href="route('clientes.index')"
+                                >Clientes</Link
                             >
                         </li>
                         <li class="breadcrumb-item active">Eliminados</li>
@@ -170,24 +170,24 @@ onMounted(async () => {
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'personas.create'
+                                    'clientes.create'
                                 )
                             "
                             type="button"
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nueva Persona
+                            <i class="fa fa-plus"></i> Nueva Cliente
                         </button>
                         <Link
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'personas.index'
+                                    'clientes.index'
                                 )
                             "
                             class="btn btn-outline-dark mx-1"
-                            :href="route('personas.index')"
+                            :href="route('clientes.index')"
                         >
                             <i class="fa fa-arrow-left"></i> Volver
                         </Link>
@@ -224,7 +224,7 @@ onMounted(async () => {
                             ref="miTable"
                             :cols="headers"
                             :api="true"
-                            :url="route('personas.paginado_eliminados')"
+                            :url="route('clientes.paginado_eliminados')"
                             :numPages="5"
                             :multiSearch="multiSearch"
                             :syncOrderBy="'id'"
@@ -247,7 +247,7 @@ onMounted(async () => {
                                             props_page.auth.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'personas.reestablecer'
+                                                'clientes.reestablecer'
                                             )
                                         "
                                     >
@@ -261,12 +261,12 @@ onMounted(async () => {
                                 >
                                     <button
                                         class="btn btn-danger"
-                                        @click="eliminarPersona(item)"
+                                        @click="eliminarCliente(item)"
                                         v-if="
                                             props_page.auth.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'personas.eliminacion_permanente'
+                                                'clientes.eliminacion_permanente'
                                             )
                                         "
                                     >

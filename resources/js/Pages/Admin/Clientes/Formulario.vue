@@ -1,7 +1,7 @@
 <script setup>
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
-import { usePersonas } from "@/composables/personas/usePersonas";
+import { useClientes } from "@/composables/clientes/useClientes";
 import { watch, ref, computed, defineEmits, onMounted, nextTick } from "vue";
 const props = defineProps({
     muestra_formulario: {
@@ -14,11 +14,11 @@ const props = defineProps({
     },
 });
 
-const { oPersona, limpiarPersona } = usePersonas();
+const { oCliente, limpiarCliente } = useClientes();
 const accion_form = ref(props.accion_formulario);
 const muestra_form = ref(props.muestra_formulario);
 const enviando = ref(false);
-let form = useForm(oPersona.value);
+let form = useForm(oCliente.value);
 watch(
     () => props.muestra_formulario,
     (newValue) => {
@@ -27,7 +27,7 @@ watch(
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
-            form = useForm(oPersona.value);
+            form = useForm(oCliente.value);
         } else {
             document
                 .getElementsByTagName("body")[0]
@@ -56,8 +56,8 @@ const listExpedido = [
 
 const tituloDialog = computed(() => {
     return accion_form.value == 0
-        ? `<i class="fa fa-plus"></i> Nueva Persona`
-        : `<i class="fa fa-edit"></i> Editar Persona`;
+        ? `<i class="fa fa-plus"></i> Nuevo Cliente`
+        : `<i class="fa fa-edit"></i> Editar Cliente`;
 });
 
 const textBtn = computed(() => {
@@ -74,8 +74,8 @@ const enviarFormulario = () => {
     enviando.value = true;
     let url =
         form["_method"] == "POST"
-            ? route("personas.store")
-            : route("personas.update", form.id);
+            ? route("clientes.store")
+            : route("clientes.update", form.id);
 
     form.post(url, {
         preserveScroll: true,
@@ -93,7 +93,7 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
-            limpiarPersona();
+            limpiarCliente();
             emits("envio-formulario");
         },
         onError: (err, code) => {
@@ -108,7 +108,7 @@ const enviarFormulario = () => {
                     html: `<strong>${error}</strong>`,
                     confirmButtonText: `Aceptar`,
                     customClass: {
-                        confirmButton: "btn-error",
+                        confirmButton: "btn-success",
                     },
                 });
             } else {
@@ -140,14 +140,37 @@ watch(muestra_form, (newVal) => {
     }
 });
 
-const cerrarDialog = () => {
-    dialog.value = false;
-    document.getElementsByTagName("body")[0].classList.remove("modal-open");
-};
-
 const cerrarFormulario = () => {
     muestra_form.value = false;
     document.getElementsByTagName("body")[0].classList.remove("modal-open");
+};
+
+const calculaEdad = () => {
+    const fechaNacimiento = form.fecha_nac;
+
+    if (fechaNacimiento) {
+        const nacimiento = new Date(fechaNacimiento);
+        const hoy = new Date();
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+
+        // Ajuste si aún no cumplió años este año
+        const mesNacimiento = nacimiento.getMonth();
+        const diaNacimiento = nacimiento.getDate();
+
+        const mesHoy = hoy.getMonth();
+        const diaHoy = hoy.getDate();
+
+        if (
+            mesHoy < mesNacimiento ||
+            (mesHoy === mesNacimiento && diaHoy < diaNacimiento)
+        ) {
+            edad--;
+        }
+        form.edad = edad;
+    } else {
+        form.edad = null;
+    }
 };
 
 const cargarListas = () => {};
@@ -243,7 +266,7 @@ onMounted(() => {
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Número de C.I.</label>
+                        <label class="required">Nro. C.I./Pasaporte</label>
                         <input
                             type="number"
                             class="form-control"
@@ -263,7 +286,7 @@ onMounted(() => {
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Expedido</label>
+                        <label>Expedido</label>
                         <select
                             class="form-control"
                             :class="{
@@ -289,7 +312,7 @@ onMounted(() => {
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Dirección</label>
+                        <label>Dirección</label>
                         <input
                             type="text"
                             class="form-control"
@@ -345,6 +368,89 @@ onMounted(() => {
                         >
                             <li class="parsley-required">
                                 {{ form.errors?.fono }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Fecha de nacimiento</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.fecha_nac,
+                            }"
+                            v-model="form.fecha_nac"
+                            @change="calculaEdad"
+                        />
+
+                        <ul
+                            v-if="form.errors?.fecha_nac"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.fecha_nac }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Edad</label>
+                        <input
+                            type="number"
+                            step="1"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.edad,
+                            }"
+                            v-model="form.edad"
+                            readonly
+                        />
+
+                        <ul
+                            v-if="form.errors?.edad"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.edad }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Nacionalidad</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.nacionalidad,
+                            }"
+                            v-model="form.nacionalidad"
+                        />
+
+                        <ul
+                            v-if="form.errors?.nacionalidad"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.nacionalidad }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>País</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.pais,
+                            }"
+                            v-model="form.pais"
+                        />
+
+                        <ul
+                            v-if="form.errors?.pais"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.pais }}
                             </li>
                         </ul>
                     </div>

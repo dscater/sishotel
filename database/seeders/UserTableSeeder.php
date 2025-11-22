@@ -15,6 +15,8 @@ class UserTableSeeder extends Seeder
     {
         User::create([
             "usuario" => "admin",
+            "nombre" => "admin",
+            "paterno" => "admin",
             "password" => "$2y$12$65d4fgZsvBV5Lc/AxNKh4eoUdbGyaczQ4sSco20feSQANshNLuxSC",
             "acceso" => 1,
             "tipo" => "ADMINISTRADOR",

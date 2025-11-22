@@ -20,7 +20,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        "persona_id",
+        "nombre",
+        "paterno",
+        "materno",
+        "ci",
+        "ci_exp",
+        "dir",
+        "fono",
+        "fecha_nac",
+        "correo",
         "usuario",
         "password",
         "acceso",
@@ -78,10 +86,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        if ($this->persona) {
-            return $this->persona->nombre . ' ' . $this->persona->paterno . ($this->persona->materno ? ' ' . $this->persona->materno : '');
-        }
-        return $this->usuario;
+        return $this->nombre . ' ' . $this->paterno . ($this->materno ? ' ' . $this->materno : '');
     }
 
     public function getFullCiAttribute()
@@ -110,8 +115,4 @@ class User extends Authenticatable
     }
 
     // RELACIONES
-    public function  persona()
-    {
-        return $this->belongsTo(Persona::class);
-    }
 }

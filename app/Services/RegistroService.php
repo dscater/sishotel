@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
-use App\Models\Persona;
+use App\Models\Registro;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-class PersonaService
+class RegistroService
 {
-    private $modulo = "PERSONAS";
+    private $modulo = "REGISTROS";
     public function __construct(private  CargarArchivoService $cargarArchivoService, private HistorialAccionService $historialAccionService) {}
 
 
     public function listado(string $search): array
     {
-        return Persona::where("status", 1)
+        return Registro::where("status", 1)
             ->where(function ($query) use ($search) {
                 $query->where("ci", "LIKE", "%$search%")
                     ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
@@ -28,7 +28,7 @@ class PersonaService
     }
 
     /**
-     * Lista de personas paginado con filtros
+     * Lista de registros paginado con filtros
      *
      * @param integer $length
      * @param integer $page
@@ -39,29 +39,29 @@ class PersonaService
      */
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $personas = Persona::select("personas.*");
+        $registros = Registro::select("registros.*");
 
-        $personas->where("status", 1);
+        $registros->where("status", 1);
 
         // Filtros exactos
         foreach ($columnsFilter as $key => $value) {
             if (!is_null($value)) {
-                $personas->where("personas.$key", $value);
+                $registros->where("registros.$key", $value);
             }
         }
 
         // Filtros por rango
         foreach ($columnsBetweenFilter as $key => $value) {
             if (isset($value[0], $value[1])) {
-                $personas->whereBetween("personas.$key", $value);
+                $registros->whereBetween("registros.$key", $value);
             }
         }
 
         // Búsqueda en múltiples columnas con LIKE
         if (!empty($search) && !empty($columnsSerachLike)) {
-            $personas->where(function ($query) use ($search, $columnsSerachLike) {
+            $registros->where(function ($query) use ($search, $columnsSerachLike) {
                 foreach ($columnsSerachLike as $col) {
-                    $query->orWhere("personas.$col", "LIKE", "%$search%");
+                    $query->orWhere("registros.$col", "LIKE", "%$search%");
                 }
             });
         }
@@ -69,18 +69,18 @@ class PersonaService
         // Ordenamiento
         foreach ($orderBy as $value) {
             if (isset($value[0], $value[1])) {
-                $personas->orderBy($value[0], $value[1]);
+                $registros->orderBy($value[0], $value[1]);
             }
         }
 
 
-        $personas = $personas->paginate($length, ['*'], 'page', $page);
-        return $personas;
+        $registros = $registros->paginate($length, ['*'], 'page', $page);
+        return $registros;
     }
 
 
     /**
-     * Lista de personas paginado con filtros (eliminados)
+     * Lista de registros paginado con filtros (eliminados)
      *
      * @param integer $length
      * @param integer $page
@@ -91,29 +91,29 @@ class PersonaService
      */
     public function listadoPaginadoEliminados(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $personas = Persona::select("personas.*");
+        $registros = Registro::select("registros.*");
 
-        $personas->where("status", 0);
+        $registros->where("status", 0);
 
         // Filtros exactos
         foreach ($columnsFilter as $key => $value) {
             if (!is_null($value)) {
-                $personas->where("personas.$key", $value);
+                $registros->where("registros.$key", $value);
             }
         }
 
         // Filtros por rango
         foreach ($columnsBetweenFilter as $key => $value) {
             if (isset($value[0], $value[1])) {
-                $personas->whereBetween("personas.$key", $value);
+                $registros->whereBetween("registros.$key", $value);
             }
         }
 
         // Búsqueda en múltiples columnas con LIKE
         if (!empty($search) && !empty($columnsSerachLike)) {
-            $personas->where(function ($query) use ($search, $columnsSerachLike) {
+            $registros->where(function ($query) use ($search, $columnsSerachLike) {
                 foreach ($columnsSerachLike as $col) {
-                    $query->orWhere("personas.$col", "LIKE", "%$search%");
+                    $query->orWhere("registros.$col", "LIKE", "%$search%");
                 }
             });
         }
@@ -121,24 +121,24 @@ class PersonaService
         // Ordenamiento
         foreach ($orderBy as $value) {
             if (isset($value[0], $value[1])) {
-                $personas->orderBy($value[0], $value[1]);
+                $registros->orderBy($value[0], $value[1]);
             }
         }
 
 
-        $personas = $personas->paginate($length, ['*'], 'page', $page);
-        return $personas;
+        $registros = $registros->paginate($length, ['*'], 'page', $page);
+        return $registros;
     }
 
     /**
-     * Crear persona
+     * Crear registro
      *
      * @param array $datos
-     * @return Persona
+     * @return Registro
      */
-    public function crear(array $datos): Persona
+    public function crear(array $datos): Registro
     {
-        $persona = Persona::create([
+        $registro = Registro::create([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "paterno" => mb_strtoupper($datos["paterno"]),
             "materno" => mb_strtoupper($datos["materno"]),
@@ -147,27 +147,31 @@ class PersonaService
             "ci_exp" => $datos["ci_exp"],
             "fono" => $datos["fono"],
             "correo" => $datos["correo"],
-            "fecha_registro" => date("Y-m-d")
+            "edad" => $datos["edad"],
+            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
+            "pais" => mb_strtoupper($datos["pais"]),
+            "fecha_registro" => date("Y-m-d"),
+            "user_id" => Auth::user()->id,
         ]);
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UNA PERSONA", $persona);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UNA REGISTRO", $registro);
 
-        return $persona;
+        return $registro;
     }
 
     /**
-     * Actualizar persona
+     * Actualizar registro
      *
      * @param array $datos
-     * @param Persona $persona
-     * @return Persona
+     * @param Registro $registro
+     * @return Registro
      */
-    public function actualizar(array $datos, Persona $persona): Persona
+    public function actualizar(array $datos, Registro $registro): Registro
     {
-        $old_user = clone $persona;
+        $old_user = clone $registro;
 
-        $persona->update([
+        $registro->update([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "paterno" => mb_strtoupper($datos["paterno"]),
             "materno" => mb_strtoupper($datos["materno"]),
@@ -176,62 +180,65 @@ class PersonaService
             "ci_exp" => $datos["ci_exp"],
             "fono" => $datos["fono"],
             "correo" => $datos["correo"],
+            "edad" => $datos["edad"],
+            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
+            "pais" => mb_strtoupper($datos["pais"]),
         ]);
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UNA PERSONA", $old_user, $persona->withoutRelations());
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UN REGISTRO", $old_user, $registro->withoutRelations());
 
-        return $persona;
+        return $registro;
     }
 
     /**
-     * Eliminar persona
+     * Eliminar registro
      *
-     * @param Persona $persona
+     * @param Registro $registro
      * @return boolean
      */
-    public function eliminar(Persona $persona): bool
+    public function eliminar(Registro $registro): bool
     {
         // no eliminar users predeterminados para el funcionamiento del sistema
-        $old_user = clone $persona;
-        $persona->status = 0;
-        $persona->save();
+        $old_user = clone $registro;
+        $registro->status = 0;
+        $registro->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UNA PERSONA " . $old_user->usuario, $old_user, $persona);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO " . $old_user->usuario, $old_user, $registro);
         return true;
     }
 
     /**
-     * Reestablecer persona
+     * Reestablecer registro
      *
-     * @param Persona $persona
+     * @param Registro $registro
      * @return boolean
      */
-    public function reestablecer(Persona $persona): bool
+    public function reestablecer(Registro $registro): bool
     {
-        $old_persona = clone $persona;
-        $persona->status = 1;
-        $persona->save();
+        $old_registro = clone $registro;
+        $registro->status = 1;
+        $registro->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UNA PERSONA " . $old_persona->usuario, $old_persona, $persona);
+        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UN REGISTRO " . $old_registro->usuario, $old_registro, $registro);
         return true;
     }
 
     /**
-     * Eliminación permanente de persona
+     * Eliminación permanente de registro
      *
-     * @param Persona $persona
+     * @param Registro $registro
      * @return boolean
      */
-    public function eliminacion_permanente(Persona $persona): bool
+    public function eliminacion_permanente(Registro $registro): bool
     {
-        $old_persona = clone $persona;
-        $persona->delete();
+        $old_registro = clone $registro;
+        $registro->delete();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UNA PERSONA " . $old_persona->usuario, $old_persona);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN REGISTRO " . $old_registro->usuario, $old_registro);
         return true;
     }
 }
