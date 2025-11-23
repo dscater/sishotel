@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('numero_habitacion')->unique();
             $table->unsignedBigInteger('tipo_habitacion_id');
+            $table->integer('piso')->default(0);
             $table->decimal('precio_actual', 24, 2);
             $table->decimal('precio_temp', 24, 2)->nullable();
             $table->integer("estado")->default(0); // 0: disponible, 1: ocupado, 2: mantenimiento

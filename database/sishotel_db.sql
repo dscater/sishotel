@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 22-11-2025 a las 18:32:13
+-- Tiempo de generación: 23-11-2025 a las 15:36:08
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -92,7 +92,7 @@ CREATE TABLE `configuracions` (
 --
 
 INSERT INTO `configuracions` (`id`, `nombre_sistema`, `razon_social`, `alias`, `logo`, `created_at`, `updated_at`) VALUES
-(1, 'SISHOTEL', 'SISHOTEL S.A.', 'I', 'logo.png', '2025-11-22 18:32:05', '2025-11-22 18:32:05');
+(1, 'SISHOTEL', 'SISHOTEL S.A.', 'I', 'logo.png', '2025-11-23 15:10:27', '2025-11-23 15:10:27');
 
 -- --------------------------------------------------------
 
@@ -120,10 +120,25 @@ CREATE TABLE `habitacions` (
   `id` bigint UNSIGNED NOT NULL,
   `numero_habitacion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tipo_habitacion_id` bigint UNSIGNED NOT NULL,
+  `piso` int NOT NULL DEFAULT '0',
   `precio_actual` decimal(24,2) NOT NULL,
   `precio_temp` decimal(24,2) DEFAULT NULL,
   `estado` int NOT NULL DEFAULT '0',
   `status` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `habitacion_fotos`
+--
+
+CREATE TABLE `habitacion_fotos` (
+  `id` bigint UNSIGNED NOT NULL,
+  `habitacion_id` bigint UNSIGNED NOT NULL,
+  `foto` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -198,7 +213,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (14, '2025_11_21_115246_create_cajas_table', 1),
 (15, '2025_11_21_115252_create_movimiento_cajas_table', 1),
 (16, '2025_11_21_120947_create_registro_servicios_table', 1),
-(17, '2025_11_22_135016_create_servicio_detalles_table', 1);
+(17, '2025_11_22_135016_create_servicio_detalles_table', 1),
+(18, '2025_11_23_105258_create_habitacion_fotos_table', 1);
 
 -- --------------------------------------------------------
 
@@ -231,6 +247,7 @@ CREATE TABLE `movimiento_cajas` (
   `moneda_id` bigint UNSIGNED NOT NULL,
   `monto_tc` decimal(24,2) DEFAULT '0.00',
   `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
+  `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
   `tipo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `efectivo_banco` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -268,12 +285,12 @@ CREATE TABLE `registros` (
   `id` bigint UNSIGNED NOT NULL,
   `habitacion_id` bigint UNSIGNED NOT NULL,
   `cliente_id` bigint UNSIGNED NOT NULL,
-  `reserva_id` bigint UNSIGNED DEFAULT NULL,
   `fecha_entrada` date NOT NULL,
   `hora_entrada` time NOT NULL,
   `dias_estadia` int DEFAULT '0',
   `fecha_salida` date DEFAULT NULL,
   `hora_salida` time DEFAULT NULL,
+  `hora_salida_reg` time DEFAULT NULL,
   `total` decimal(24,2) NOT NULL,
   `adelanto` decimal(24,2) DEFAULT '0.00',
   `saldo` decimal(24,2) DEFAULT '0.00',
@@ -284,6 +301,7 @@ CREATE TABLE `registros` (
   `saldo_tc` decimal(24,2) DEFAULT '0.00',
   `garantia_tc` decimal(24,2) DEFAULT '0.00',
   `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
+  `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
   `motivo_salida` text COLLATE utf8mb4_unicode_ci,
   `tipo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NORMAL',
   `fecha_reserva` date DEFAULT NULL,
@@ -314,6 +332,7 @@ CREATE TABLE `registro_servicios` (
   `cancelado_tc` decimal(24,2) NOT NULL DEFAULT '0.00',
   `saldo_tc` decimal(24,2) NOT NULL,
   `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
+  `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -341,6 +360,7 @@ CREATE TABLE `servicio_detalles` (
   `cancelado_tc` decimal(24,2) NOT NULL DEFAULT '0.00',
   `saldo_tc` decimal(24,2) NOT NULL,
   `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
+  `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -425,7 +445,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nombre`, `paterno`, `materno`, `ci`, `ci_exp`, `dir`, `fono`, `fecha_nac`, `correo`, `usuario`, `password`, `acceso`, `tipo`, `foto`, `fecha_registro`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', '$2y$12$65d4fgZsvBV5Lc/AxNKh4eoUdbGyaczQ4sSco20feSQANshNLuxSC', 1, 'ADMINISTRADOR', NULL, '2025-11-22', 1, '2025-11-22 18:32:05', '2025-11-22 18:32:05');
+(1, 'admin', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', '$2y$12$65d4fgZsvBV5Lc/AxNKh4eoUdbGyaczQ4sSco20feSQANshNLuxSC', 1, 'ADMINISTRADOR', NULL, '2025-11-23', 1, '2025-11-23 15:10:27', '2025-11-23 15:10:27');
 
 --
 -- Índices para tablas volcadas
@@ -467,6 +487,13 @@ ALTER TABLE `habitacions`
   ADD KEY `habitacions_tipo_habitacion_id_foreign` (`tipo_habitacion_id`);
 
 --
+-- Indices de la tabla `habitacion_fotos`
+--
+ALTER TABLE `habitacion_fotos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `habitacion_fotos_habitacion_id_foreign` (`habitacion_id`);
+
+--
 -- Indices de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
@@ -500,7 +527,8 @@ ALTER TABLE `movimiento_cajas`
   ADD KEY `movimiento_cajas_caja_id_foreign` (`caja_id`),
   ADD KEY `movimiento_cajas_user_id_foreign` (`user_id`),
   ADD KEY `movimiento_cajas_moneda_id_foreign` (`moneda_id`),
-  ADD KEY `movimiento_cajas_moneda_id_tc_foreign` (`moneda_id_tc`);
+  ADD KEY `movimiento_cajas_moneda_id_tc_foreign` (`moneda_id_tc`),
+  ADD KEY `movimiento_cajas_tipo_cambio_id_foreign` (`tipo_cambio_id`);
 
 --
 -- Indices de la tabla `productos`
@@ -518,6 +546,7 @@ ALTER TABLE `registros`
   ADD KEY `registros_cliente_id_foreign` (`cliente_id`),
   ADD KEY `registros_moneda_id_foreign` (`moneda_id`),
   ADD KEY `registros_moneda_id_tc_foreign` (`moneda_id_tc`),
+  ADD KEY `registros_tipo_cambio_id_foreign` (`tipo_cambio_id`),
   ADD KEY `registros_user_id_foreign` (`user_id`);
 
 --
@@ -527,13 +556,20 @@ ALTER TABLE `registro_servicios`
   ADD PRIMARY KEY (`id`),
   ADD KEY `registro_servicios_registro_id_foreign` (`registro_id`),
   ADD KEY `registro_servicios_moneda_id_foreign` (`moneda_id`),
-  ADD KEY `registro_servicios_moneda_id_tc_foreign` (`moneda_id_tc`);
+  ADD KEY `registro_servicios_moneda_id_tc_foreign` (`moneda_id_tc`),
+  ADD KEY `registro_servicios_tipo_cambio_id_foreign` (`tipo_cambio_id`);
 
 --
 -- Indices de la tabla `servicio_detalles`
 --
 ALTER TABLE `servicio_detalles`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `servicio_detalles_registro_servicio_id_foreign` (`registro_servicio_id`),
+  ADD KEY `servicio_detalles_registro_id_foreign` (`registro_id`),
+  ADD KEY `servicio_detalles_producto_id_foreign` (`producto_id`),
+  ADD KEY `servicio_detalles_moneda_id_foreign` (`moneda_id`),
+  ADD KEY `servicio_detalles_moneda_id_tc_foreign` (`moneda_id_tc`),
+  ADD KEY `servicio_detalles_tipo_cambio_id_foreign` (`tipo_cambio_id`);
 
 --
 -- Indices de la tabla `tipo_cambios`
@@ -594,6 +630,12 @@ ALTER TABLE `habitacions`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `habitacion_fotos`
+--
+ALTER TABLE `habitacion_fotos`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
@@ -609,7 +651,7 @@ ALTER TABLE `ingreso_productos`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `monedas`
@@ -700,6 +742,12 @@ ALTER TABLE `habitacions`
   ADD CONSTRAINT `habitacions_tipo_habitacion_id_foreign` FOREIGN KEY (`tipo_habitacion_id`) REFERENCES `tipo_habitacions` (`id`);
 
 --
+-- Filtros para la tabla `habitacion_fotos`
+--
+ALTER TABLE `habitacion_fotos`
+  ADD CONSTRAINT `habitacion_fotos_habitacion_id_foreign` FOREIGN KEY (`habitacion_id`) REFERENCES `habitacions` (`id`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
@@ -718,6 +766,7 @@ ALTER TABLE `movimiento_cajas`
   ADD CONSTRAINT `movimiento_cajas_caja_id_foreign` FOREIGN KEY (`caja_id`) REFERENCES `cajas` (`id`),
   ADD CONSTRAINT `movimiento_cajas_moneda_id_foreign` FOREIGN KEY (`moneda_id`) REFERENCES `monedas` (`id`),
   ADD CONSTRAINT `movimiento_cajas_moneda_id_tc_foreign` FOREIGN KEY (`moneda_id_tc`) REFERENCES `monedas` (`id`),
+  ADD CONSTRAINT `movimiento_cajas_tipo_cambio_id_foreign` FOREIGN KEY (`tipo_cambio_id`) REFERENCES `tipo_cambios` (`id`),
   ADD CONSTRAINT `movimiento_cajas_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
@@ -734,6 +783,7 @@ ALTER TABLE `registros`
   ADD CONSTRAINT `registros_habitacion_id_foreign` FOREIGN KEY (`habitacion_id`) REFERENCES `habitacions` (`id`),
   ADD CONSTRAINT `registros_moneda_id_foreign` FOREIGN KEY (`moneda_id`) REFERENCES `monedas` (`id`),
   ADD CONSTRAINT `registros_moneda_id_tc_foreign` FOREIGN KEY (`moneda_id_tc`) REFERENCES `monedas` (`id`),
+  ADD CONSTRAINT `registros_tipo_cambio_id_foreign` FOREIGN KEY (`tipo_cambio_id`) REFERENCES `tipo_cambios` (`id`),
   ADD CONSTRAINT `registros_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
@@ -742,7 +792,19 @@ ALTER TABLE `registros`
 ALTER TABLE `registro_servicios`
   ADD CONSTRAINT `registro_servicios_moneda_id_foreign` FOREIGN KEY (`moneda_id`) REFERENCES `monedas` (`id`),
   ADD CONSTRAINT `registro_servicios_moneda_id_tc_foreign` FOREIGN KEY (`moneda_id_tc`) REFERENCES `monedas` (`id`),
-  ADD CONSTRAINT `registro_servicios_registro_id_foreign` FOREIGN KEY (`registro_id`) REFERENCES `registros` (`id`);
+  ADD CONSTRAINT `registro_servicios_registro_id_foreign` FOREIGN KEY (`registro_id`) REFERENCES `registros` (`id`),
+  ADD CONSTRAINT `registro_servicios_tipo_cambio_id_foreign` FOREIGN KEY (`tipo_cambio_id`) REFERENCES `tipo_cambios` (`id`);
+
+--
+-- Filtros para la tabla `servicio_detalles`
+--
+ALTER TABLE `servicio_detalles`
+  ADD CONSTRAINT `servicio_detalles_moneda_id_foreign` FOREIGN KEY (`moneda_id`) REFERENCES `monedas` (`id`),
+  ADD CONSTRAINT `servicio_detalles_moneda_id_tc_foreign` FOREIGN KEY (`moneda_id_tc`) REFERENCES `monedas` (`id`),
+  ADD CONSTRAINT `servicio_detalles_producto_id_foreign` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
+  ADD CONSTRAINT `servicio_detalles_registro_id_foreign` FOREIGN KEY (`registro_id`) REFERENCES `registros` (`id`),
+  ADD CONSTRAINT `servicio_detalles_registro_servicio_id_foreign` FOREIGN KEY (`registro_servicio_id`) REFERENCES `registro_servicios` (`id`),
+  ADD CONSTRAINT `servicio_detalles_tipo_cambio_id_foreign` FOREIGN KEY (`tipo_cambio_id`) REFERENCES `tipo_cambios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

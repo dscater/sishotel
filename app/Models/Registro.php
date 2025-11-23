@@ -8,4 +8,64 @@ use Illuminate\Database\Eloquent\Model;
 class Registro extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "habitacion_id",
+        "cliente_id",
+        "fecha_entrada",
+        "hora_entrada",
+        "dias_estadia",
+        "fecha_salida",
+        "hora_salida",
+        "hora_salida_reg",
+        "total",
+        "adelanto",
+        "saldo",
+        "garantia",
+        "moneda_id",
+        "total_tc",
+        "adelanto_tc",
+        "saldo_tc",
+        "garantia_tc",
+        "moneda_id_tc",
+        "motivo_salida",
+        "tipo",
+        "fecha_reserva",
+        "hora_reserva",
+        "nro_reserva",
+        "cod_reserva",
+        "tipo_reserva",
+        "status",
+        "user_id",
+    ];
+
+    public function habitacion()
+    {
+        return $this->belongsTo(Habitacion::class);
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
+
+    public function moneda()
+    {
+        return $this->belongsTo(Moneda::class);
+    }
+
+    public function moneda_tc()
+    {
+        return $this->belongsTo(Moneda::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class);
+    }
 }

@@ -28,7 +28,15 @@ return new class extends Migration
             $table->decimal("cancelado_tc", 24, 2)->default(0);
             $table->decimal("saldo_tc", 24, 2);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
+            $table->unsignedBigInteger('tipo_cambio_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('registro_servicio_id')->references('id')->on('registro_servicios');
+            $table->foreign('registro_id')->references('id')->on('registros');
+            $table->foreign('producto_id')->references('id')->on('productos');
+            $table->foreign('moneda_id')->references('id')->on('monedas');
+            $table->foreign('moneda_id_tc')->references('id')->on('monedas');
+            $table->foreign('tipo_cambio_id')->references('id')->on('tipo_cambios');
         });
     }
 

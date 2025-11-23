@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('moneda_id');
             $table->decimal("monto_tc", 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
+            $table->unsignedBigInteger('tipo_cambio_id')->nullable();
             $table->string('tipo'); // INGRESO, EGRESO
             $table->string("efectivo_banco"); // EFECTIVO, BANCO
             $table->string('descripcion')->nullable();
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('moneda_id')->references('id')->on('monedas');
             $table->foreign('moneda_id_tc')->references('id')->on('monedas');
+            $table->foreign('tipo_cambio_id')->references('id')->on('tipo_cambios');
         });
     }
 

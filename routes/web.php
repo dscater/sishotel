@@ -4,6 +4,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ProfileController;
@@ -102,11 +103,23 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("clientes/eliminados", [ClienteController::class, 'eliminados'])->name("clientes.eliminados");
     Route::get("clientes/paginado_eliminados", [ClienteController::class, 'paginado_eliminados'])->name("clientes.paginado_eliminados");
     Route::patch("clientes/reestablecer/{cliente}", [ClienteController::class, 'reestablecer'])->name("clientes.reestablecer");
-    Route::delete("clientes/eliminacion_permanente/{user}", [ClienteController::class, 'eliminacion_permanente'])->name("clientes.eliminacion_permanente");
+    Route::delete("clientes/eliminacion_permanente/{cliente}", [ClienteController::class, 'eliminacion_permanente'])->name("clientes.eliminacion_permanente");
     Route::get("clientes/api", [ClienteController::class, 'api'])->name("clientes.api");
     Route::get("clientes/paginado", [ClienteController::class, 'paginado'])->name("clientes.paginado");
     Route::get("clientes/listado", [ClienteController::class, 'listado'])->name("clientes.listado");
     Route::resource("clientes", ClienteController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
+    // HABITACIONES
+    Route::get("habitacions/eliminados", [HabitacionController::class, 'eliminados'])->name("habitacions.eliminados");
+    Route::get("habitacions/paginado_eliminados", [HabitacionController::class, 'paginado_eliminados'])->name("habitacions.paginado_eliminados");
+    Route::patch("habitacions/reestablecer/{habitacion}", [HabitacionController::class, 'reestablecer'])->name("habitacions.reestablecer");
+    Route::delete("habitacions/eliminacion_permanente/{habitacion}", [HabitacionController::class, 'eliminacion_permanente'])->name("habitacions.eliminacion_permanente");
+    Route::get("habitacions/api", [HabitacionController::class, 'api'])->name("habitacions.api");
+    Route::get("habitacions/paginado", [HabitacionController::class, 'paginado'])->name("habitacions.paginado");
+    Route::get("habitacions/listado", [HabitacionController::class, 'listado'])->name("habitacions.listado");
+    Route::resource("habitacions", HabitacionController::class)->only(
         ["index", "store", "edit", "show", "update", "destroy"]
     );
 

@@ -188,6 +188,11 @@ onUnmounted(() => {});
                         </ul>
                     </li>
                     <ItemMenu
+                        :label="'Habitaciones'"
+                        :ruta="'habitacions.index'"
+                        :icon="'fa fa-list'"
+                    ></ItemMenu>
+                    <ItemMenu
                         :label="'Caja'"
                         :ruta="'clientes.index'"
                         :icon="'fa fa-cash-register'"

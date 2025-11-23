@@ -20,12 +20,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('habitacion_id');
             $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('reserva_id')->nullable();
             $table->date('fecha_entrada');
             $table->time("hora_entrada");
             $table->integer("dias_estadia")->nullable()->default(0);
             $table->date('fecha_salida')->nullable();
             $table->time("hora_salida")->nullable();
+            $table->time("hora_salida_reg")->nullable();
             $table->decimal('total', 24, 2);
             $table->decimal('adelanto', 24, 2)->nullable()->default(0);
             $table->decimal("saldo", 24, 2)->nullable()->default(0);
@@ -36,6 +36,7 @@ return new class extends Migration
             $table->decimal('saldo_tc', 24, 2)->nullable()->default(0);
             $table->decimal('garantia_tc', 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
+            $table->unsignedBigInteger('tipo_cambio_id')->nullable();
             $table->text("motivo_salida")->nullable();
             $table->string("tipo")->default("NORMAL"); // RESERVA, NORMAL
             $table->date("fecha_reserva")->nullable();
@@ -51,6 +52,7 @@ return new class extends Migration
             $table->foreign('cliente_id')->references('id')->on('clientes');
             $table->foreign('moneda_id')->references('id')->on('monedas');
             $table->foreign('moneda_id_tc')->references('id')->on('monedas');
+            $table->foreign('tipo_cambio_id')->references('id')->on('tipo_cambios');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }
