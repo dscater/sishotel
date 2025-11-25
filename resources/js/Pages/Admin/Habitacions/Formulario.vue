@@ -1,8 +1,9 @@
 <script setup>
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
-import { useClientes } from "@/composables/clientes/useClientes";
-import { watch, ref, computed, defineEmits, onMounted, nextTick } from "vue";
+import { useHabitacions } from "@/composables/habitacions/useHabitacions";
+import { watch, ref, computed, onMounted, nextTick } from "vue";
+import MiDropZone from "@/Components/MiDropZone.vue";
 const props = defineProps({
     muestra_formulario: {
         type: Boolean,
@@ -14,20 +15,22 @@ const props = defineProps({
     },
 });
 
-const { oCliente, limpiarCliente } = useClientes();
+const { oHabitacion, limpiarHabitacion } = useHabitacions();
 const accion_form = ref(props.accion_formulario);
 const muestra_form = ref(props.muestra_formulario);
 const enviando = ref(false);
-let form = useForm(oCliente.value);
+let form = useForm(oHabitacion.value);
 watch(
     () => props.muestra_formulario,
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
+            form = useForm(oHabitacion.value);
+            cargarListas();
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
-            form = useForm(oCliente.value);
+            form = useForm(oHabitacion.value);
         } else {
             document
                 .getElementsByTagName("body")[0]
@@ -42,22 +45,10 @@ watch(
     }
 );
 
-const listExpedido = [
-    { value: "LP", label: "La Paz" },
-    { value: "CB", label: "Cochabamba" },
-    { value: "SC", label: "Santa Cruz" },
-    { value: "CH", label: "Chuquisaca" },
-    { value: "OR", label: "Oruro" },
-    { value: "PT", label: "Potosi" },
-    { value: "TJ", label: "Tarija" },
-    { value: "PD", label: "Pando" },
-    { value: "BN", label: "Beni" },
-];
-
 const tituloDialog = computed(() => {
     return accion_form.value == 0
-        ? `<i class="fa fa-plus"></i> Nuevo Cliente`
-        : `<i class="fa fa-edit"></i> Editar Cliente`;
+        ? `<i class="fa fa-plus"></i> Nueva Habitación`
+        : `<i class="fa fa-edit"></i> Editar Habitación`;
 });
 
 const textBtn = computed(() => {
@@ -74,8 +65,8 @@ const enviarFormulario = () => {
     enviando.value = true;
     let url =
         form["_method"] == "POST"
-            ? route("clientes.store")
-            : route("clientes.update", form.id);
+            ? route("habitacions.store")
+            : route("habitacions.update", form.id);
 
     form.post(url, {
         preserveScroll: true,
@@ -93,7 +84,7 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
-            limpiarCliente();
+            limpiarHabitacion();
             emits("envio-formulario");
         },
         onError: (err, code) => {
@@ -145,39 +136,58 @@ const cerrarFormulario = () => {
     document.getElementsByTagName("body")[0].classList.remove("modal-open");
 };
 
-const calculaEdad = () => {
-    const fechaNacimiento = form.fecha_nac;
+const detectaArchivos = (files) => {
+    form.habitacion_fotos = files;
+};
 
-    if (fechaNacimiento) {
-        const nacimiento = new Date(fechaNacimiento);
-        const hoy = new Date();
+const detectaEliminados = (eliminados) => {
+    form.eliminados_fotos = eliminados;
+};
 
-        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+const listTipoHabitacions = ref([]);
+const listEstados = ref([]);
 
-        // Ajuste si aún no cumplió años este año
-        const mesNacimiento = nacimiento.getMonth();
-        const diaNacimiento = nacimiento.getDate();
-
-        const mesHoy = hoy.getMonth();
-        const diaHoy = hoy.getDate();
-
-        if (
-            mesHoy < mesNacimiento ||
-            (mesHoy === mesNacimiento && diaHoy < diaNacimiento)
-        ) {
-            edad--;
-        }
-        form.edad = edad;
-    } else {
-        form.edad = null;
+const cargarEstados = async () => {
+    try {
+        const response = await axios.get(
+            route("estado_habitacions.getEstadosHabitacion")
+        );
+        listEstados.value = Object.entries(response.data).map(
+            ([key, value]) => ({
+                value: Number(key),
+                label: value,
+            })
+        );
+    } catch (error) {
+        listEstados.value = [];
     }
 };
 
-const cargarListas = () => {};
+const cargarTipoHabitacions = async () => {
+    try {
+        const response = await axios.get(route("tipo_habitacions.listado"));
+        listTipoHabitacions.value = response.data.tipo_habitacions;
+    } catch (error) {
+        listTipoHabitacions.value = [];
+    }
+};
 
-onMounted(() => {
-    cargarListas();
-});
+const cargarListas = () => {
+    cargarEstados();
+    cargarTipoHabitacions();
+};
+
+const getTipoHabitacionDetails = () => {
+    if (form.tipo_habitacion_id && form.tipo_habitacion_id != "") {
+        axios
+            .get(route("tipo_habitacions.show", form.tipo_habitacion_id))
+            .then((response) => {
+                form.capacidad = response.data.capacidad ?? 1;
+            });
+    }
+};
+
+onMounted(() => {});
 </script>
 
 <template>
@@ -201,256 +211,182 @@ onMounted(() => {
 
         <template #body>
             <form @submit.prevent="enviarFormulario()">
-                <p class="text-muted text-xs mb-0">
-                    Todos los campos con
-                    <span class="text-danger">(*)</span> son obligatorios.
-                </p>
                 <div class="row">
                     <div class="col-md-4 mt-2">
-                        <label class="required">Nombre(s)</label>
+                        <label>Código de habitación</label>
                         <input
                             type="text"
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.nombre,
+                                'parsley-error': form.errors?.numero_habitacion,
                             }"
-                            v-model="form.nombre"
+                            v-model="form.numero_habitacion"
                         />
                         <ul
-                            v-if="form.errors?.nombre"
+                            v-if="form.errors?.numero_habitacion"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.nombre }}
+                                {{ form.errors?.numero_habitacion }}
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Ap. Paterno</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.paterno,
-                            }"
-                            v-model="form.paterno"
-                        />
-
-                        <ul
-                            v-if="form.errors?.paterno"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.paterno }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Ap. Materno</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.materno,
-                            }"
-                            v-model="form.materno"
-                        />
-
-                        <ul
-                            v-if="form.errors?.materno"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.materno }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label class="required">Nro. C.I./Pasaporte</label>
-                        <input
-                            type="number"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.ci,
-                            }"
-                            v-model="form.ci"
-                        />
-
-                        <ul
-                            v-if="form.errors?.ci"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.ci }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Expedido</label>
+                        <label>Tipo de habitación</label>
                         <select
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.ci_exp,
+                                'parsley-error':
+                                    form.errors?.tipo_habitacion_id,
                             }"
-                            v-model="form.ci_exp"
+                            v-model="form.tipo_habitacion_id"
+                            @change="getTipoHabitacionDetails()"
                         >
                             <option value="">- Seleccione -</option>
                             <option
-                                v-for="item in listExpedido"
+                                v-for="item in listTipoHabitacions"
+                                :value="item.id"
+                            >
+                                {{ item.nombre }}
+                            </option>
+                        </select>
+
+                        <ul
+                            v-if="form.errors?.tipo_habitacion_id"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.tipo_habitacion_id }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Piso</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.piso,
+                            }"
+                            v-model="form.piso"
+                        />
+
+                        <ul
+                            v-if="form.errors?.piso"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.piso }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Precio</label>
+                        <el-input-number
+                            class="w-100"
+                            v-model="form.precio"
+                            controls-position="right"
+                            size="large"
+                            :min="0"
+                            :precision="2"
+                            :step="0.1"
+                        />
+
+                        <ul
+                            v-if="form.errors?.precio"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.precio }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label
+                            >Precio Temporal
+                            <small class="text-muted">(Opcional)</small></label
+                        >
+                        <el-input-number
+                            class="w-100"
+                            v-model="form.precio_temp"
+                            controls-position="right"
+                            size="large"
+                            :min="0"
+                            :precision="2"
+                            :step="0.1"
+                        />
+                        <ul
+                            v-if="form.errors?.precio_temp"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.precio_temp }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Capacidad</label>
+                        <el-input-number
+                            class="w-100"
+                            v-model="form.capacidad"
+                            controls-position="right"
+                            size="large"
+                            :min="1"
+                            :precision="0"
+                            :step="1"
+                        />
+                        <ul
+                            v-if="form.errors?.capacidad"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.capacidad }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Estado</label>
+
+                        <select
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.estado,
+                            }"
+                            v-model="form.estado"
+                        >
+                            <option value="">- Seleccione -</option>
+                            <option
+                                v-for="item in listEstados"
                                 :value="item.value"
                             >
                                 {{ item.label }}
                             </option>
                         </select>
                         <ul
-                            v-if="form.errors?.ci_exp"
+                            v-if="form.errors?.estado"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.ci_exp }}
+                                {{ form.errors?.estado }}
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Dirección</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.dir,
-                            }"
-                            v-model="form.dir"
-                        />
-
+                    <div class="col-12 mt-3">
+                        <label class=""
+                            >Cargar fotografías
+                            <small class="text-muted">(Opcional)</small></label
+                        >
+                        <MiDropZone
+                            :files="form.habitacion_fotos"
+                            @UpdateFiles="detectaArchivos"
+                            @addEliminados="detectaEliminados"
+                        ></MiDropZone>
                         <ul
-                            v-if="form.errors?.dir"
+                            v-if="form.errors?.habitacion_fotos"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.dir }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Correo electrónico</label>
-                        <input
-                            type="email"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.correo,
-                            }"
-                            v-model="form.correo"
-                        />
-
-                        <ul
-                            v-if="form.errors?.correo"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.correo }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label class="required">Teléfono/Celular</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.fono,
-                            }"
-                            v-model="form.fono"
-                        />
-
-                        <ul
-                            v-if="form.errors?.fono"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.fono }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Fecha de nacimiento</label>
-                        <input
-                            type="date"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.fecha_nac,
-                            }"
-                            v-model="form.fecha_nac"
-                            @change="calculaEdad"
-                        />
-
-                        <ul
-                            v-if="form.errors?.fecha_nac"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.fecha_nac }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Edad</label>
-                        <input
-                            type="number"
-                            step="1"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.edad,
-                            }"
-                            v-model="form.edad"
-                            readonly
-                        />
-
-                        <ul
-                            v-if="form.errors?.edad"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.edad }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>Nacionalidad</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.nacionalidad,
-                            }"
-                            v-model="form.nacionalidad"
-                        />
-
-                        <ul
-                            v-if="form.errors?.nacionalidad"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.nacionalidad }}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 mt-2">
-                        <label>País</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            :class="{
-                                'parsley-error': form.errors?.pais,
-                            }"
-                            v-model="form.pais"
-                        />
-
-                        <ul
-                            v-if="form.errors?.pais"
-                            class="parsley-errors-list filled"
-                        >
-                            <li class="parsley-required">
-                                {{ form.errors?.pais }}
+                                {{ form.errors?.habitacion_fotos }}
                             </li>
                         </ul>
                     </div>

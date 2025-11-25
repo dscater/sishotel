@@ -14,11 +14,8 @@ return new class extends Migration
         Schema::create('tipo_habitacions', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->integer("piso");
-            $table->integer("capacidad");
+            $table->integer("capacidad")->nullable();
             $table->text('descripcion')->nullable();
-            $table->decimal('precio', 24, 2)->nullable();
-            $table->decimal('precio_temp', 24, 2)->nullable();
             $table->timestamps();
         });
     }

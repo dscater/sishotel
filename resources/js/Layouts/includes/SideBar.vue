@@ -187,11 +187,37 @@ onUnmounted(() => {});
                             ></ItemMenu>
                         </ul>
                     </li>
-                    <ItemMenu
-                        :label="'Habitaciones'"
-                        :ruta="'habitacions.index'"
-                        :icon="'fa fa-list'"
-                    ></ItemMenu>
+                    <li class="nav-item">
+                        <a
+                            href="#"
+                            class="nav-link sub-menu"
+                            :class="[
+                                route_current == 'habitacions.index' ||
+                                route_current == 'tipo_habitacions.index'
+                                    ? 'active menu-is-opening menu-open'
+                                    : '',
+                            ]"
+                            @click.stop="toggleSubMenu($event)"
+                        >
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>
+                                Habitaciones
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <ItemMenu
+                                :label="'Habitaciones'"
+                                :ruta="'habitacions.index'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                :label="'Tipo de Habitaciones'"
+                                :ruta="'tipo_habitacions.index'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                        </ul>
+                    </li>
                     <ItemMenu
                         :label="'Caja'"
                         :ruta="'clientes.index'"

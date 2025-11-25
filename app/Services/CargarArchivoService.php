@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class CargarArchivoService
 {
@@ -20,9 +21,13 @@ class CargarArchivoService
         if ($nombre) {
             $nombre_archivo = $nombre;
         }
-        $extension = "." . $file->getClientOriginalExtension();
-        $nombre_archivo .= $extension;
-        $file->move($ruta, $nombre_archivo);
+
+        if ($file &&  !is_string($file)) {
+            Log::debug("CargarArchivoService:cargarArchivo -> Cargando archivo: " . $file->getClientOriginalName());
+            $extension = "." . $file->getClientOriginalExtension();
+            $nombre_archivo .= $extension;
+            $file->move($ruta, $nombre_archivo);
+        }
 
         return $nombre_archivo;
     }

@@ -3,26 +3,19 @@
 namespace App\Services;
 
 use App\Models\Habitacion;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\UploadedFile;
+use App\Models\HabitacionFoto;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class HabitacionService
 {
-    private $modulo = "HABITACIÓNES";
-    public function __construct(private  CargarArchivoService $cargarArchivoService, private HistorialAccionService $historialAccionService) {}
+    private $modulo = "HABITACIONES";
+    public function __construct(private HistorialAccionService $historialAccionService, private HabitacionFotoService $habitacionFotoService) {}
 
 
     public function listado(string $search): array
     {
         return Habitacion::where("status", 1)
-            ->where(function ($query) use ($search) {
-                $query->where("ci", "LIKE", "%$search%")
-                    ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
-            })
-            ->orderBy("nombre")
             ->get()
             ->toArray();
     }
@@ -39,7 +32,7 @@ class HabitacionService
      */
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $habitacions = Habitacion::select("habitacions.*");
+        $habitacions = Habitacion::with(["tipo_habitacion", "habitacion_fotos"])->select("habitacions.*");
 
         $habitacions->where("status", 1);
 
@@ -91,7 +84,8 @@ class HabitacionService
      */
     public function listadoPaginadoEliminados(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $habitacions = Habitacion::select("habitacions.*");
+        $habitacions = Habitacion::with(["tipo_habitacion"])->select("habitacions.*")
+            ->join("tipo_habitacions", "habitacions.tipo_habitacion_id", "=", "tipo_habitacions.id");
 
         $habitacions->where("status", 0);
 
@@ -113,7 +107,7 @@ class HabitacionService
         if (!empty($search) && !empty($columnsSerachLike)) {
             $habitacions->where(function ($query) use ($search, $columnsSerachLike) {
                 foreach ($columnsSerachLike as $col) {
-                    $query->orWhere("habitacions.$col", "LIKE", "%$search%");
+                    $query->orWhere("$col", "LIKE", "%$search%");
                 }
             });
         }
@@ -139,23 +133,24 @@ class HabitacionService
     public function crear(array $datos): Habitacion
     {
         $habitacion = Habitacion::create([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
-            "fecha_registro" => date("Y-m-d"),
-            "user_id" => Auth::user()->id,
+            "numero_habitacion" => mb_strtoupper($datos["numero_habitacion"]),
+            "tipo_habitacion_id" => $datos["tipo_habitacion_id"],
+            "piso" => $datos["piso"],
+            "precio" => $datos["precio"],
+            "precio_temp" => $datos["precio_temp"],
+            "capacidad" => $datos["capacidad"],
+            "estado" => $datos["estado"],
         ]);
 
+        // registrar archivos
+        if (!empty($datos["habitacion_fotos"])) {
+            foreach ($datos["habitacion_fotos"] as $key => $archivo) {
+                $this->habitacionFotoService->guardarHabitacionFoto($habitacion, $archivo["file"], $key);
+            }
+        }
+
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UNA HABITACIÓN", $habitacion);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UNA HABITACIÓN", $habitacion, null, ["habitacion_fotos"]);
 
         return $habitacion;
     }
@@ -169,24 +164,40 @@ class HabitacionService
      */
     public function actualizar(array $datos, Habitacion $habitacion): Habitacion
     {
-        $old_user = clone $habitacion;
+        $old_habitacion = clone $habitacion;
+        $old_habitacion->loadMissing(["habitacion_fotos"]);
 
         $habitacion->update([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
+            "numero_habitacion" => mb_strtoupper($datos["numero_habitacion"]),
+            "tipo_habitacion_id" => $datos["tipo_habitacion_id"],
+            "piso" => $datos["piso"],
+            "precio" => $datos["precio"],
+            "precio_temp" => $datos["precio_temp"],
+            "capacidad" => $datos["capacidad"],
+            "estado" => $datos["estado"],
         ]);
 
+        // actualizar archivos
+        if (!empty($datos["habitacion_fotos"])) {
+            foreach ($datos["habitacion_fotos"] as $key => $imagen) {
+                if ($imagen["id"] == 0) {
+                    $this->habitacionFotoService->guardarHabitacionFoto($habitacion, $imagen["file"], $key);
+                }
+            }
+        }
+
+        // archivos eliminados
+        if (!empty($datos["eliminados_fotos"])) {
+            foreach ($datos["eliminados_fotos"] as $key => $eliminado) {
+                $habitacionFoto = HabitacionFoto::find($eliminado);
+                if ($habitacionFoto) {
+                    $this->habitacionFotoService->eliminarHabitacionFoto($habitacionFoto);
+                }
+            }
+        }
+
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN", $old_user, $habitacion->withoutRelations());
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN", $old_habitacion, $habitacion, ["habitacion_fotos"]);
 
         return $habitacion;
     }
@@ -199,13 +210,19 @@ class HabitacionService
      */
     public function eliminar(Habitacion $habitacion): bool
     {
+        // usos
+        $usos = Registro::where("habitacion_id", $habitacion->id)->count();
+        if ($usos > 0) {
+            throw new \Exception("No se puede eliminar el registro de la habitación porque está siendo usado en otros procesos.");
+        }
+
         // no eliminar users predeterminados para el funcionamiento del sistema
-        $old_user = clone $habitacion;
+        $old_habitacion = clone $habitacion;
         $habitacion->status = 0;
         $habitacion->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN HABITACIÓN " . $old_user->usuario, $old_user, $habitacion);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN HABITACIÓN " . $old_habitacion->numero_habitacion, $old_habitacion, $habitacion, ["habitacion_fotos"]);
         return true;
     }
 
@@ -222,7 +239,7 @@ class HabitacionService
         $habitacion->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UN HABITACIÓN " . $old_habitacion->usuario, $old_habitacion, $habitacion);
+        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UN HABITACIÓN " . $old_habitacion->numero_habitacion, $old_habitacion, $habitacion, ["habitacion_fotos"]);
         return true;
     }
 
@@ -238,7 +255,7 @@ class HabitacionService
         $habitacion->delete();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN HABITACIÓN " . $old_habitacion->usuario, $old_habitacion);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN HABITACIÓN " . $old_habitacion->numero_habitacion, $old_habitacion, null, ["habitacion_fotos"]);
         return true;
     }
 }

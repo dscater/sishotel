@@ -2,7 +2,7 @@
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { useUsuarios } from "@/composables/usuarios/useUsuarios";
-import { watch, ref, computed, defineEmits, onMounted, nextTick } from "vue";
+import { watch, ref, computed, onMounted, nextTick } from "vue";
 const props = defineProps({
     muestra_formulario: {
         type: Boolean,
@@ -24,6 +24,7 @@ watch(
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
+            form = useForm(oUsuario.value);
             cargarListas();
             document
                 .getElementsByTagName("body")[0]

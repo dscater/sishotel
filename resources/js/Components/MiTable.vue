@@ -166,7 +166,7 @@ watch(
     () => props.multiSearch,
     (newVal) => {
         // console.log("watch 4");
-        setLoading(true)
+        setLoading(true);
         clearInterval(intervalSearch.value);
         intervalSearch.value = setTimeout(() => {
             currentPage.value = 1;
@@ -181,7 +181,7 @@ watch(
     () => props.search,
     (newVal) => {
         // console.log("watch 5");
-        setLoading(true)
+        setLoading(true);
         tSearch.value = newVal;
         clearInterval(intervalSearch.value);
         intervalSearch.value = setTimeout(() => {

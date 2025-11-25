@@ -23,6 +23,10 @@ body {
     min-height: 100vh;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 /* FORMULARIO */
 .oculto {
     display: none;
@@ -36,6 +40,16 @@ label.required::after {
     font-weight: 700;
 }
 /* MIS ESTILOS */
+.bg-secundario {
+    background-color: var(--secundario);
+    color: white;
+}
+
+.bg-secundario:hover {
+    background-color: var(--secundario_hover);
+    color: white;
+}
+
 .bg1 {
     background-color: var(--bg1);
     color: white;
@@ -147,8 +161,12 @@ body li a.bg-primary,
 body a.bg-primary,
 body .pagination .page-item.active .page-link,
 body .main-sidebar .sidebar .nav .nav-link.active {
-    background-color: var(--principal);
+    background-color: var(--principal) !important;
     font-weight: 600;
+}
+
+body .btn-primary:disabled {
+    background-color: var(--principal_t);
 }
 
 body .btn {
@@ -156,27 +174,17 @@ body .btn {
     font-weight: 700;
 }
 
-body .main-sidebar .sidebar .nav .nav-link.active {
-    background-color: transparent;
-    box-shadow: none;
-    border-top: solid 2px var(--principal);
-    border-bottom: solid 2px var(--principal);
-    background-color: var(--principal_t);
-    color: var(--principal);
-    border-radius: 0;
+body .main-sidebar .sidebar .nav .nav-link {
+    padding: 10px 0px 10px 10px;
+    position: relative;
+    width: 100%;
 }
 
-body .main-sidebar .sidebar .nav .nav-link.active::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-top: 16.5px solid transparent; /* Altura del triángulo */
-    border-bottom: 16.5px solid transparent;
-    border-right: 16.5px solid var(--principal); /* Color del triángulo */
+body .main-sidebar .sidebar .nav .nav-link.active {
+    color: var(--white1);
+    background-color: var(--principal);
+    border-radius: 0;
+    width: 100%;
 }
 
 body .btn-primary:disabled {
@@ -336,8 +344,10 @@ body .nav-sidebar .nav-item .nav-link.sub-menu.menu-is-opening i.right {
 body .main-sidebar .sidebar .nav.nav-treeview .nav-link.active,
 body .main-sidebar .sidebar .nav.nav-treeview .nav-link.active:focus,
 body .main-sidebar .sidebar .nav.nav-treeview .nav-link.active:hover {
-    background: var(--white1);
-    color: var(--bg__dark3);
+    background-color: transparent !important;
+    border-top: solid 1px var(--principal);
+    border-bottom: solid 1px var(--principal);
+    color: var(--principal);
 }
 
 .modal-title {
@@ -435,4 +445,11 @@ body.app-blank.login {
 
 .text-center {
     text-align: center;
+}
+
+@media (max-width: 1000px) {
+    .el-input__suffix {
+        width: 0px !important;
+        display: none !important;
+    }
 }

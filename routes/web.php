@@ -4,12 +4,14 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\EstadoHabitacionController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\TipoHabitacionController;
 use App\Http\Controllers\TipoUsuarioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioController;
@@ -99,6 +101,9 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     // TIPO USUARIOS
     Route::get("tipo_usuarios/getTipos", [TipoUsuarioController::class, 'getTipos'])->name("tipo_usuarios.getTipos");
 
+    // ESTADOS DE HABITACIÓN
+    Route::get("estado_habitacions/getEstadosHabitacion", [EstadoHabitacionController::class, 'getEstadosHabitacion'])->name("estado_habitacions.getEstadosHabitacion");
+
     // CLIENTES
     Route::get("clientes/eliminados", [ClienteController::class, 'eliminados'])->name("clientes.eliminados");
     Route::get("clientes/paginado_eliminados", [ClienteController::class, 'paginado_eliminados'])->name("clientes.paginado_eliminados");
@@ -111,7 +116,16 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
         ["index", "store", "edit", "show", "update", "destroy"]
     );
 
+    // TIPO DE HABITACIONES
+    Route::get("tipo_habitacions/api", [TipoHabitacionController::class, 'api'])->name("tipo_habitacions.api");
+    Route::get("tipo_habitacions/paginado", [TipoHabitacionController::class, 'paginado'])->name("tipo_habitacions.paginado");
+    Route::get("tipo_habitacions/listado", [TipoHabitacionController::class, 'listado'])->name("tipo_habitacions.listado");
+    Route::resource("tipo_habitacions", TipoHabitacionController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
     // HABITACIONES
+    Route::get("habitacions/listadoCheckIn", [HabitacionController::class, 'listadoCheckIn'])->name("habitacions.listadoCheckIn");
     Route::get("habitacions/eliminados", [HabitacionController::class, 'eliminados'])->name("habitacions.eliminados");
     Route::get("habitacions/paginado_eliminados", [HabitacionController::class, 'paginado_eliminados'])->name("habitacions.paginado_eliminados");
     Route::patch("habitacions/reestablecer/{habitacion}", [HabitacionController::class, 'reestablecer'])->name("habitacions.reestablecer");

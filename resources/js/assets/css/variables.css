@@ -1,8 +1,9 @@
 :root {
     --principal: #5cc72f;
     --principal_hover: #48b619;
-    --principal_t: rgb(28, 58, 16);
+    --principal_t: #5dc72fd5;
     --secundario: #0d2649;
+    --secundario_hover: #013b92;
     --bg1: #205080;
     --bg2: rgb(10, 30, 50);
     --bg3: rgb(3, 10, 20);

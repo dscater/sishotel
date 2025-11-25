@@ -1,5 +1,5 @@
 <script setup>
-import { watch, defineEmits, ref, onMounted, onBeforeUnmount } from "vue";
+import { watch, ref, onMounted, onBeforeUnmount } from "vue";
 const props = defineProps({
     open_modal: {
         type: Boolean,

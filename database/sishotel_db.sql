@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 23-11-2025 a las 15:36:08
+-- Tiempo de generación: 24-11-2025 a las 20:04:59
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -92,7 +92,7 @@ CREATE TABLE `configuracions` (
 --
 
 INSERT INTO `configuracions` (`id`, `nombre_sistema`, `razon_social`, `alias`, `logo`, `created_at`, `updated_at`) VALUES
-(1, 'SISHOTEL', 'SISHOTEL S.A.', 'I', 'logo.png', '2025-11-23 15:10:27', '2025-11-23 15:10:27');
+(1, 'SISHOTEL', 'SISHOTEL S.A.', 'I', 'logo.png', '2025-11-24 20:04:52', '2025-11-24 20:04:52');
 
 -- --------------------------------------------------------
 
@@ -121,7 +121,8 @@ CREATE TABLE `habitacions` (
   `numero_habitacion` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tipo_habitacion_id` bigint UNSIGNED NOT NULL,
   `piso` int NOT NULL DEFAULT '0',
-  `precio_actual` decimal(24,2) NOT NULL,
+  `capacidad` int NOT NULL DEFAULT '1',
+  `precio` decimal(24,2) NOT NULL,
   `precio_temp` decimal(24,2) DEFAULT NULL,
   `estado` int NOT NULL DEFAULT '0',
   `status` int NOT NULL DEFAULT '1',
@@ -389,11 +390,8 @@ CREATE TABLE `tipo_cambios` (
 CREATE TABLE `tipo_habitacions` (
   `id` bigint UNSIGNED NOT NULL,
   `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `piso` int NOT NULL,
   `capacidad` int NOT NULL,
   `descripcion` text COLLATE utf8mb4_unicode_ci,
-  `precio` decimal(24,2) DEFAULT NULL,
-  `precio_temp` decimal(24,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -445,7 +443,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `nombre`, `paterno`, `materno`, `ci`, `ci_exp`, `dir`, `fono`, `fecha_nac`, `correo`, `usuario`, `password`, `acceso`, `tipo`, `foto`, `fecha_registro`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', '$2y$12$65d4fgZsvBV5Lc/AxNKh4eoUdbGyaczQ4sSco20feSQANshNLuxSC', 1, 'ADMINISTRADOR', NULL, '2025-11-23', 1, '2025-11-23 15:10:27', '2025-11-23 15:10:27');
+(1, 'admin', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'admin', '$2y$12$65d4fgZsvBV5Lc/AxNKh4eoUdbGyaczQ4sSco20feSQANshNLuxSC', 1, 'ADMINISTRADOR', NULL, '2025-11-24', 1, '2025-11-24 20:04:52', '2025-11-24 20:04:52');
 
 --
 -- Índices para tablas volcadas

@@ -257,12 +257,12 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-    </Content>
 
-    <Formulario
-        :muestra_formulario="muestra_formulario"
-        :accion_formulario="accion_formulario"
-        @envio-formulario="updateDatatable"
-        @cerrar-formulario="muestra_formulario = false"
-    ></Formulario>
+        <Formulario
+            :muestra_formulario="muestra_formulario"
+            :accion_formulario="accion_formulario"
+            @envio-formulario="updateDatatable"
+            @cerrar-formulario="muestra_formulario = false"
+        ></Formulario>
+    </Content>
 </template>

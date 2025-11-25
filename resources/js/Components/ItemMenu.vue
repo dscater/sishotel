@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, defineEmits, watch, computed } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 const appStore = useAppStore();

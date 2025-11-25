@@ -40,7 +40,7 @@ export const useClientes = () => {
     };
 
     const limpiarCliente = () => {
-        oCliente.id = 0;
+        oCliente.value.id = 0;
         oCliente.value.nombre = "";
         oCliente.value.paterno = "";
         oCliente.value.materno = "";
@@ -53,7 +53,7 @@ export const useClientes = () => {
         oCliente.value.edad = "";
         oCliente.value.nacionalidad = "";
         oCliente.value.pais = "";
-        oCliente._method = "POST";
+        oCliente.value._method = "POST";
     };
 
     onMounted(() => {});

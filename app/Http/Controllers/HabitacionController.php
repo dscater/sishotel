@@ -26,20 +26,38 @@ class HabitacionController extends Controller
         return Inertia::render("Admin/Habitacions/Index");
     }
 
-    public function habitacions(): InertiaResponse
-    {
-        return Inertia::render("Admin/Habitacions/Habitacions");
-    }
-
     public function listado(Request $request): JsonResponse
     {
-        $habitacions = Habitacion::where("id", "!=", 1);
+        $habitacions = Habitacion::select("habitacions.*");
 
         if (isset($request->tipo) && $request->tipo) {
             $habitacions->where("tipo", $request->tipo);
         }
 
         $habitacions = $habitacions->where("status", 1)->get();
+        return response()->JSON([
+            "habitacions" => $habitacions
+        ]);
+    }
+
+    public function listadoCheckIn(Request $request)
+    {
+        $tipoHabitaciones = $request->input('tipo_habitacion_id', []); // será un array
+        $capacidad = $request->input('capacidad'); // número o null
+
+        $habitacions = Habitacion::with(["tipo_habitacion"])->select("habitacions.*");
+
+        if (!empty($tipoHabitaciones)) {
+            $habitacions->whereIn('tipo_habitacion_id', $tipoHabitaciones);
+        }
+
+        if (isset($capacidad) && $capacidad) {
+            $habitacions->where("capacidad", $capacidad);
+        }
+
+        $habitacions = $habitacions->where("status", 1)
+            ->where("estado", 0)
+            ->get();
         return response()->JSON([
             "habitacions" => $habitacions
         ]);
@@ -53,7 +71,7 @@ class HabitacionController extends Controller
         $orderByCol = $request->orderByCol;
         $desc = $request->desc;
 
-        $columnsSerachLike = ["nombre", "paterno", "materno", "ci", "fono", "dir"];
+        $columnsSerachLike = ["numero_habitacion", "tipo_habitacions.nombre"];
         $columnsFilter = [];
         $columnsBetweenFilter = [];
         $arrayOrderBy = [];
@@ -94,7 +112,7 @@ class HabitacionController extends Controller
 
     public function show(Habitacion $habitacion)
     {
-        return response()->JSON($habitacion->load("persona"));
+        return response()->JSON($habitacion->load("habitacion_fotos"));
     }
 
     /**

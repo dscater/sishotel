@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref, defineEmits, onMounted } from "vue";
+import { watch, ref, onMounted } from "vue";
 
 const props = defineProps({
     paginationClass: {
@@ -191,7 +191,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.pagination{
+.pagination {
     flex-wrap: wrap;
 }
 .page-item.disabled,

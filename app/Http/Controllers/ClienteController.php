@@ -26,14 +26,10 @@ class ClienteController extends Controller
         return Inertia::render("Admin/Clientes/Index");
     }
 
-    public function clientes(): InertiaResponse
-    {
-        return Inertia::render("Admin/Clientes/Clientes");
-    }
 
     public function listado(Request $request): JsonResponse
     {
-        $clientes = Cliente::where("id", "!=", 1);
+        $clientes = Cliente::select("clientes.*");
 
         if (isset($request->tipo) && $request->tipo) {
             $clientes->where("tipo", $request->tipo);

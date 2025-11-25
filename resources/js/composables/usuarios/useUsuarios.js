@@ -61,7 +61,7 @@ export const useUsuarios = () => {
         oUsuario.value.acceso = "" + 0;
         oUsuario.value.tipo = "";
         oUsuario.value.foto = "";
-        oUsuario._method = "POST";
+        oUsuario.value._method = "POST";
     };
 
     onMounted(() => {});

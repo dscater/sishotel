@@ -21,6 +21,7 @@ onBeforeUnmount(() => {
 });
 onMounted(async () => {
     caclularFechaSalida();
+    cargarListas();
     appStore.stopLoading();
 });
 
@@ -90,10 +91,54 @@ const remoteMethod = async (query) => {
         listClientes.value = [];
     }
 };
+
+const listTipoHabitacions = ref([]);
+const cargarTipoHabitacions = async () => {
+    try {
+        const response = await axios.get(route("tipo_habitacions.listado"));
+        listTipoHabitacions.value = response.data.tipo_habitacions;
+    } catch (error) {
+        listTipoHabitacions.value = [];
+    }
+};
+
+const listHabitacions = ref([]);
+const loadingHabitacions = ref(false);
+const paramHabitacions = ref({
+    tipo_habitacion_id: [],
+    capacidad: null,
+});
+const cargarHabitacions = async () => {
+    loadingHabitacions.value = true;
+    try {
+        const response = await axios.get(route("habitacions.listadoCheckIn"), {
+            params: paramHabitacions.value,
+        });
+        listHabitacions.value = response.data.habitacions;
+    } catch (error) {
+        listHabitacions.value = [];
+    } finally {
+        loadingHabitacions.value = false;
+    }
+};
+
+const cargarHabitacionsTimeout = ref(null);
+const precarCargarHabitacions = () => {
+    if (cargarHabitacionsTimeout.value) {
+        clearTimeout(cargarHabitacionsTimeout.value);
+    }
+    cargarHabitacionsTimeout.value = setTimeout(() => {
+        cargarHabitacions();
+    }, 300);
+};
+
+const cargarListas = () => {
+    cargarTipoHabitacions();
+    cargarHabitacions();
+};
 </script>
 <template>
     <Head title="Recepción-CheckIn"></Head>
-
     <Content>
         <template #header>
             <div class="row mb-2">
@@ -133,23 +178,14 @@ const remoteMethod = async (query) => {
                         </button>
                     </div>
                 </div> -->
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <p class="text-muted text-xs mb-0">
-                            Todos los campos con
-                            <span class="text-danger">(*)</span> son
-                            obligatorios.
-                        </p>
-                    </div>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
                                 <form>
                                     <div class="row">
                                         <div class="col-12 mb-1">
-                                            <label class="required"
-                                                >Buscar cliente</label
-                                            >
+                                            <label>Buscar cliente</label>
                                             <div class="input-group mb-3">
                                                 <el-select-v2
                                                     v-model="form.cliente_id"
@@ -206,9 +242,7 @@ const remoteMethod = async (query) => {
                                             </h4>
                                         </div>
                                         <div class="col-md-4 mb-1">
-                                            <label class="required">
-                                                Fecha de Ingreso
-                                            </label>
+                                            <label> Fecha de Ingreso </label>
                                             <input
                                                 type="date"
                                                 class="form-control"
@@ -235,9 +269,7 @@ const remoteMethod = async (query) => {
                                             </ul>
                                         </div>
                                         <div class="col-md-4 mb-1">
-                                            <label class="required">
-                                                Hora de Ingreso
-                                            </label>
+                                            <label> Hora de Ingreso </label>
                                             <input
                                                 type="time"
                                                 class="form-control"
@@ -261,9 +293,7 @@ const remoteMethod = async (query) => {
                                             </ul>
                                         </div>
                                         <div class="col-md-4 mb-1">
-                                            <label class="required"
-                                                >Días de estadía</label
-                                            >
+                                            <label>Días de estadía</label>
                                             <el-input-number
                                                 class="w-100"
                                                 v-model="form.dias_estadia"
@@ -291,9 +321,7 @@ const remoteMethod = async (query) => {
                                             >
                                         </div>
                                         <div class="col-md-4 mb-1 offset-md-2">
-                                            <label class="required">
-                                                Fecha de Salida
-                                            </label>
+                                            <label> Fecha de Salida </label>
                                             <input
                                                 type="date"
                                                 class="form-control"
@@ -318,9 +346,7 @@ const remoteMethod = async (query) => {
                                             </ul>
                                         </div>
                                         <div class="col-md-4 mb-1">
-                                            <label class="required">
-                                                Hora de Salida
-                                            </label>
+                                            <label> Hora de Salida </label>
                                             <input
                                                 type="time"
                                                 class="form-control"
@@ -347,8 +373,7 @@ const remoteMethod = async (query) => {
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
@@ -356,6 +381,309 @@ const remoteMethod = async (query) => {
                                         <h4 class="h5 text-center">
                                             Asignar Habitación
                                         </h4>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <b>Filtros</b>
+                                                <div class="row mb-1">
+                                                    <div class="col-12">
+                                                        <input
+                                                            type="number"
+                                                            class="form-control"
+                                                            placeholder="Capacidad"
+                                                            v-model="
+                                                                paramHabitacions.capacidad
+                                                            "
+                                                            @keyup="
+                                                                precarCargarHabitacions
+                                                            "
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div
+                                                        class="col-sm-6 col-md-12"
+                                                        v-for="item in listTipoHabitacions"
+                                                        :key="item.id"
+                                                    >
+                                                        <label
+                                                            class="btn btn-default w-100 rounded-0"
+                                                            :class="
+                                                                paramHabitacions.tipo_habitacion_id.includes(
+                                                                    item.id
+                                                                )
+                                                                    ? 'bg-success'
+                                                                    : 'bg-white'
+                                                            "
+                                                            :for="`th${item.id}`"
+                                                            >{{
+                                                                item.nombre
+                                                            }}</label
+                                                        >
+                                                        <input
+                                                            class="d-none"
+                                                            type="checkbox"
+                                                            v-model="
+                                                                paramHabitacions.tipo_habitacion_id
+                                                            "
+                                                            :value="item.id"
+                                                            @change="
+                                                                cargarHabitacions
+                                                            "
+                                                            :id="`th${item.id}`"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        Habitaciones
+                                                        Disponibles:
+                                                        <b class="text-md">{{
+                                                            listHabitacions.length
+                                                        }}</b>
+
+                                                        <i
+                                                            class="fa fa-sync ml-2 text-primary cursor-pointer"
+                                                            @click.prevent="
+                                                                cargarHabitacions
+                                                            "
+                                                        ></i>
+                                                    </div>
+                                                    <el-skeleton
+                                                        :loading="
+                                                            loadingHabitacions
+                                                        "
+                                                        animated
+                                                        class="w-100 row"
+                                                        :count="9"
+                                                    >
+                                                        <template #template>
+                                                            <div
+                                                                class="col-md-4"
+                                                            >
+                                                                <div
+                                                                    style="
+                                                                        padding: 14px;
+                                                                    "
+                                                                >
+                                                                    <el-skeleton-item
+                                                                        variant="h2"
+                                                                        class="w-100"
+                                                                    />
+                                                                    <el-skeleton-item
+                                                                        variant="text"
+                                                                        class="w-100"
+                                                                    />
+                                                                    <el-skeleton-item
+                                                                        variant="text"
+                                                                        class="w-100"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <template #default>
+                                                            <div
+                                                                class="col-md-4 col-lg-4"
+                                                                v-for="item in listHabitacions"
+                                                            >
+                                                                <div
+                                                                    class="card"
+                                                                >
+                                                                    <div
+                                                                        class="card-body text-center"
+                                                                    >
+                                                                        <h5>
+                                                                            {{
+                                                                                item.numero_habitacion
+                                                                            }}
+                                                                        </h5>
+                                                                        <div
+                                                                            class="row"
+                                                                        >
+                                                                            <div
+                                                                                class="col-12"
+                                                                            >
+                                                                                <b
+                                                                                    >Piso:</b
+                                                                                >
+                                                                                {{
+                                                                                    item.piso
+                                                                                }}
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-12"
+                                                                            >
+                                                                                {{
+                                                                                    item
+                                                                                        ?.tipo_habitacion
+                                                                                        ?.nombre
+                                                                                }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div
+                                                                        class="card-footer p-0"
+                                                                    >
+                                                                        <div
+                                                                            class="row justify-content-end"
+                                                                        >
+                                                                            <div
+                                                                                class="col-3"
+                                                                            >
+                                                                                <button
+                                                                                    class="btn btn-sm bg-secundario w-100"
+                                                                                >
+                                                                                    <i
+                                                                                        class="fa fa-info"
+                                                                                    ></i>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-3"
+                                                                            >
+                                                                                <button
+                                                                                    class="btn btn-sm btn-success w-100"
+                                                                                >
+                                                                                    <i
+                                                                                        class="fa fa-check"
+                                                                                    ></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </el-skeleton>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="h5 text-center">
+                                            Información del Registro
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Cliente:</b>
+                                            </div>
+                                            <div class="col-6">Juan Perez</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Nro. C.I. / Pasaporte:</b>
+                                            </div>
+                                            <div class="col-6">11111111</div>
+                                        </div>
+                                    </div>
+                                    <!-- 
+                                    to do: VER COMO SE MANEJARA CON DIFERENTES MONEDAS -->
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Costo/Día Moneda:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Total:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Cancelado:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Moneda:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <select class="form-control">
+                                                    <option value="">
+                                                        Moneda por Defecto
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- SOLO MOSTRAR SI LA MONEDA ES DIFERENTE A LA POR DEFECTO -->
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Tipo de Cambio:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <select class="form-control">
+                                                    <option value="">
+                                                        Moneda por Defecto
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Saldo:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="col-6 offset-6">
+                                                <button
+                                                    class="btn btn-primary w-100"
+                                                >
+                                                    Finalizar Registro
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

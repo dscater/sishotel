@@ -2,64 +2,62 @@
 import Content from "@/Components/Content.vue";
 import MiTable from "@/Components/MiTable.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import { useClientes } from "@/composables/clientes/useClientes";
+import { useHabitacions } from "@/composables/habitacions/useHabitacions";
 import { ref, onMounted, onBeforeMount } from "vue";
 import Formulario from "./Formulario.vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useAxios } from "@/composables/axios/useAxios";
 // TOAST
-import { toast } from "vue3-toastify";
-import "vue3-toastify/dist/index.css";
-toast.success("Operación completada correctamente!");
+// import { toast } from "vue3-toastify";
+// import "vue3-toastify/dist/index.css";
+// toast.success("Operación completada correctamente!");
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 const { axiosDelete } = useAxios();
 
 onBeforeMount(() => {});
 
-const { setCliente, limpiarCliente } = useClientes();
+const { setHabitacion, limpiarHabitacion } = useHabitacions();
 
 const miTable = ref(null);
 
 const headers = [
     {
-        label: "",
-        key: "id",
+        label: "CÓDIGO",
+        key: "numero_habitacion",
         sortable: true,
         width: "3%",
     },
     {
-        label: "AP. PATERNO",
-        key: "paterno",
+        label: "TIPO DE HABITACIÓN",
+        key: "tipo_habitacion.nombre",
+        keySortable: "tipo_habitacions.nombre",
         sortable: true,
     },
     {
-        label: "AP. MATERNO",
-        key: "materno",
+        label: "PISO",
+        key: "piso",
         sortable: true,
     },
     {
-        label: "NOMBRE(S)",
-        key: "nombre",
+        label: "PRECIO",
+        key: "precio",
         sortable: true,
     },
     {
-        label: "C.I.",
-        key: "full_ci",
+        label: "PRECIO TEMPORAL",
+        key: "precio_temp",
         sortable: true,
     },
     {
-        label: "DIRECCIÓN",
-        key: "dir",
+        label: "CAPACIDAD",
+        key: "capacidad",
         sortable: true,
     },
     {
-        label: "CORREO",
-        key: "correo",
-    },
-    {
-        label: "TELÉFONO",
-        key: "fono",
+        label: "ESTADO",
+        key: "estado_t",
+        sortable: true,
     },
     {
         label: "ACCIÓN",
@@ -78,7 +76,7 @@ const accion_formulario = ref(0);
 const muestra_formulario = ref(false);
 
 const agregarRegistro = () => {
-    limpiarCliente();
+    limpiarHabitacion();
     accion_formulario.value = 0;
     muestra_formulario.value = true;
 };
@@ -90,7 +88,7 @@ const updateDatatable = async () => {
     }
 };
 
-const eliminarCliente = (item) => {
+const eliminarHabitacion = (item) => {
     Swal.fire({
         title: "¿Quierés eliminar este registro?",
         html: `<strong>${item.full_name}</strong>`,
@@ -105,7 +103,7 @@ const eliminarCliente = (item) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             let respuesta = await axiosDelete(
-                route("clientes.destroy", item.id)
+                route("habitacions.destroy", item.id)
             );
             if (respuesta && respuesta.sw) {
                 updateDatatable();
@@ -119,13 +117,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <Head title="Clientes"></Head>
+    <Head title="Habitaciones"></Head>
 
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Clientes</h1>
+                    <h1 class="m-0">Habitaciones</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -133,7 +131,7 @@ onMounted(async () => {
                         <li class="breadcrumb-item">
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
-                        <li class="breadcrumb-item active">Clientes</li>
+                        <li class="breadcrumb-item active">Habitaciones</li>
                     </ol>
                 </div>
                 <!-- /.col -->
@@ -149,24 +147,24 @@ onMounted(async () => {
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'clientes.create'
+                                    'habitacions.create'
                                 )
                             "
                             type="button"
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nuevo Cliente
+                            <i class="fa fa-plus"></i> Nueva Habitación
                         </button>
                         <Link
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'clientes.eliminados'
+                                    'habitacions.eliminados'
                                 )
                             "
                             class="btn btn-outline-danger mx-1"
-                            :href="route('clientes.eliminados')"
+                            :href="route('habitacions.eliminados')"
                         >
                             <i class="fa fa-trash"></i> Eliminados
                         </Link>
@@ -203,7 +201,7 @@ onMounted(async () => {
                             ref="miTable"
                             :cols="headers"
                             :api="true"
-                            :url="route('clientes.paginado')"
+                            :url="route('habitacions.paginado')"
                             :numPages="5"
                             :multiSearch="multiSearch"
                             :syncOrderBy="'id'"
@@ -212,6 +210,20 @@ onMounted(async () => {
                             :header-class="'bg__primary'"
                             fixed-header
                         >
+                            <template #estado_t="{ item }">
+                                <span
+                                    class="badge text-xs"
+                                    :class="[
+                                        {
+                                            'badge-success': item.estado == 0,
+                                            'badge-danger': item.estado == 1,
+                                            'badge-warning': item.estado == 2,
+                                        },
+                                    ]"
+                                    >{{ item.estado_t }}</span
+                                >
+                            </template>
+
                             <template #accion="{ item }">
                                 <el-tooltip
                                     class="box-item"
@@ -222,7 +234,7 @@ onMounted(async () => {
                                     <button
                                         class="btn btn-warning"
                                         @click="
-                                            setCliente(item);
+                                            setHabitacion(item);
                                             accion_formulario = 1;
                                             muestra_formulario = true;
                                         "
@@ -230,7 +242,7 @@ onMounted(async () => {
                                             props_page.auth?.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'clientes.edit'
+                                                'habitacions.edit'
                                             )
                                         "
                                     >
@@ -244,12 +256,12 @@ onMounted(async () => {
                                 >
                                     <button
                                         class="btn btn-danger"
-                                        @click="eliminarCliente(item)"
+                                        @click="eliminarHabitacion(item)"
                                         v-if="
                                             props_page.auth?.user.permisos ==
                                                 '*' ||
                                             props_page.auth?.user.permisos.includes(
-                                                'clientes.destroy'
+                                                'habitacions.destroy'
                                             )
                                         "
                                     >
@@ -261,12 +273,12 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-    </Content>
 
-    <Formulario
-        :muestra_formulario="muestra_formulario"
-        :accion_formulario="accion_formulario"
-        @envio-formulario="updateDatatable"
-        @cerrar-formulario="muestra_formulario = false"
-    ></Formulario>
+        <Formulario
+            :muestra_formulario="muestra_formulario"
+            :accion_formulario="accion_formulario"
+            @envio-formulario="updateDatatable"
+            @cerrar-formulario="muestra_formulario = false"
+        ></Formulario>
+    </Content>
 </template>

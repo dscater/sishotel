@@ -344,18 +344,18 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-    </Content>
 
-    <Formulario
-        :muestra_formulario="muestra_formulario"
-        :accion_formulario="accion_formulario"
-        @envio-formulario="updateDatatable"
-        @cerrar-formulario="muestra_formulario = false"
-    ></Formulario>
-    <FormPassword
-        :muestra_formulario="muestra_formulario_pass"
-        :accion_formulario="accion_formulario_pass"
-        @envio-formulario="muestra_formulario_pass = false"
-        @cerrar-formulario="muestra_formulario_pass = false"
-    ></FormPassword>
+        <Formulario
+            :muestra_formulario="muestra_formulario"
+            :accion_formulario="accion_formulario"
+            @envio-formulario="updateDatatable"
+            @cerrar-formulario="muestra_formulario = false"
+        ></Formulario>
+        <FormPassword
+            :muestra_formulario="muestra_formulario_pass"
+            :accion_formulario="accion_formulario_pass"
+            @envio-formulario="muestra_formulario_pass = false"
+            @cerrar-formulario="muestra_formulario_pass = false"
+        ></FormPassword>
+    </Content>
 </template>

@@ -39,6 +39,33 @@ class PermisoService
             "clientes.reestablecer",
             "clientes.eliminacion_permanente",
 
+            "estado_habitacions.getEstadosHabitacion",
+
+            "habitacions.listado",
+            "habitacions.listadoCheckIn",
+            "habitacions.paginado",
+            "habitacions.index",
+            "habitacions.create",
+            "habitacions.store",
+            "habitacions.edit",
+            "habitacions.show",
+            "habitacions.update",
+            "habitacions.destroy",
+            "habitacions.eliminados",
+            "habitacions.paginado_eliminados",
+            "habitacions.reestablecer",
+            "habitacions.eliminacion_permanente",
+
+            "tipo_habitacions.listado",
+            "tipo_habitacions.paginado",
+            "tipo_habitacions.index",
+            "tipo_habitacions.create",
+            "tipo_habitacions.store",
+            "tipo_habitacions.edit",
+            "tipo_habitacions.show",
+            "tipo_habitacions.update",
+            "tipo_habitacions.destroy",
+
             "registros.checkin",
 
             "configuracions.index",

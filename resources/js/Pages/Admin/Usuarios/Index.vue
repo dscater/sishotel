@@ -38,42 +38,35 @@ const headers = [
     {
         label: "AP. PATERNO",
         key: "paterno",
-        keySortable: "personas.paterno",
         sortable: true,
     },
     {
         label: "AP. MATERNO",
         key: "materno",
-        keySortable: "personas.materno",
         sortable: true,
     },
     {
         label: "NOMBRE(S)",
         key: "nombre",
-        keySortable: "personas.nombre",
         sortable: true,
     },
     {
         label: "C.I.",
         key: "full_ci",
-        keySortable: "personas.full_ci",
         sortable: true,
     },
     {
         label: "DIRECCIÓN",
         key: "dir",
-        keySortable: "personas.dir",
         sortable: true,
     },
     {
         label: "CORREO",
         key: "correo",
-        keySortable: "personas.correo",
     },
     {
         label: "TELÉFONO",
         key: "fono",
-        keySortable: "personas.fono",
     },
     {
         label: "TIPO",
@@ -314,18 +307,18 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
-    </Content>
 
-    <Formulario
-        :muestra_formulario="muestra_formulario"
-        :accion_formulario="accion_formulario"
-        @envio-formulario="updateDatatable"
-        @cerrar-formulario="muestra_formulario = false"
-    ></Formulario>
-    <FormPassword
-        :muestra_formulario="muestra_formulario_pass"
-        :accion_formulario="accion_formulario_pass"
-        @envio-formulario="muestra_formulario_pass = false"
-        @cerrar-formulario="muestra_formulario_pass = false"
-    ></FormPassword>
+        <Formulario
+            :muestra_formulario="muestra_formulario"
+            :accion_formulario="accion_formulario"
+            @envio-formulario="updateDatatable"
+            @cerrar-formulario="muestra_formulario = false"
+        ></Formulario>
+        <FormPassword
+            :muestra_formulario="muestra_formulario_pass"
+            :accion_formulario="accion_formulario_pass"
+            @envio-formulario="muestra_formulario_pass = false"
+            @cerrar-formulario="muestra_formulario_pass = false"
+        ></FormPassword>
+    </Content>
 </template>
