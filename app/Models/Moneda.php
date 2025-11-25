@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Moneda extends Model
 {
     use HasFactory;
+
+    protected $fillable  = [
+        "codigo",
+        "nombre",
+        "simbolo",
+        "oficial",
+    ];
 }

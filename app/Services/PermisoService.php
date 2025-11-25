@@ -66,6 +66,27 @@ class PermisoService
             "tipo_habitacions.update",
             "tipo_habitacions.destroy",
 
+            "monedas.listado",
+            "monedas.paginado",
+            "monedas.index",
+            "monedas.create",
+            "monedas.store",
+            "monedas.edit",
+            "monedas.show",
+            "monedas.update",
+            "monedas.destroy",
+            "monedas.getMonedaOficial",
+
+            "tipo_cambios.listado",
+            "tipo_cambios.paginado",
+            "tipo_cambios.index",
+            "tipo_cambios.create",
+            "tipo_cambios.store",
+            "tipo_cambios.edit",
+            "tipo_cambios.show",
+            "tipo_cambios.update",
+            "tipo_cambios.destroy",
+
             "registros.checkin",
 
             "configuracions.index",

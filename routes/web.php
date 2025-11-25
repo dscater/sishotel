@@ -7,10 +7,12 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\EstadoHabitacionController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\TipoHabitacionController;
 use App\Http\Controllers\TipoUsuarioController;
 use App\Http\Controllers\UserController;
@@ -134,6 +136,23 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("habitacions/paginado", [HabitacionController::class, 'paginado'])->name("habitacions.paginado");
     Route::get("habitacions/listado", [HabitacionController::class, 'listado'])->name("habitacions.listado");
     Route::resource("habitacions", HabitacionController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
+    // MONEDAS
+    Route::get("monedas/getMonedaOficial", [MonedaController::class, 'getMonedaOficial'])->name("monedas.getMonedaOficial");
+    Route::get("monedas/api", [MonedaController::class, 'api'])->name("monedas.api");
+    Route::get("monedas/paginado", [MonedaController::class, 'paginado'])->name("monedas.paginado");
+    Route::get("monedas/listado", [MonedaController::class, 'listado'])->name("monedas.listado");
+    Route::resource("monedas", MonedaController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
+    // TIPO DE CAMBIO
+    Route::get("tipo_cambios/api", [TipoCambioController::class, 'api'])->name("tipo_cambios.api");
+    Route::get("tipo_cambios/paginado", [TipoCambioController::class, 'paginado'])->name("tipo_cambios.paginado");
+    Route::get("tipo_cambios/listado", [TipoCambioController::class, 'listado'])->name("tipo_cambios.listado");
+    Route::resource("tipo_cambios", TipoCambioController::class)->only(
         ["index", "store", "edit", "show", "update", "destroy"]
     );
 

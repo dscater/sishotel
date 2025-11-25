@@ -218,6 +218,37 @@ onUnmounted(() => {});
                             ></ItemMenu>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a
+                            href="#"
+                            class="nav-link sub-menu"
+                            :class="[
+                                route_current == 'monedas.index' ||
+                                route_current == 'tipo_cambios.index'
+                                    ? 'active menu-is-opening menu-open'
+                                    : '',
+                            ]"
+                            @click.stop="toggleSubMenu($event)"
+                        >
+                            <i class="nav-icon fa fa-dollar-sign"></i>
+                            <p>
+                                Monedas
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <ItemMenu
+                                :label="'Monedas'"
+                                :ruta="'monedas.index'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                :label="'Tipo de Cambio'"
+                                :ruta="'tipo_cambios.index'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                        </ul>
+                    </li>
                     <ItemMenu
                         :label="'Caja'"
                         :ruta="'clientes.index'"

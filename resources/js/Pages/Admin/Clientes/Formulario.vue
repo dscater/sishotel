@@ -394,7 +394,10 @@ onMounted(() => {
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label>Edad</label>
+                        <label
+                            >Edad
+                            <small class="text-muted">(Automatico)</small>
+                        </label>
                         <input
                             type="number"
                             step="1"
@@ -405,7 +408,6 @@ onMounted(() => {
                             v-model="form.edad"
                             readonly
                         />
-
                         <ul
                             v-if="form.errors?.edad"
                             class="parsley-errors-list filled"
