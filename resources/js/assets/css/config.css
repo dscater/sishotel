@@ -40,6 +40,22 @@ label.required::after {
     font-weight: 700;
 }
 /* MIS ESTILOS */
+.bg-oficial {
+    background-color: var(--principal_hover);
+}
+
+body .mi-table tr.bg-oficial td,
+body .mi-table tr.bg-oficial td.fixed-column-right,
+body .mi-table tr.bg-oficial td .mi-celda {
+    background-color: var(--principal_hover);
+    color: white;
+    font-weight: bold;
+}
+
+body .mi-table tr.bg-oficial td .label-responsive {
+    color: black;
+}
+
 .bg-secundario {
     background-color: var(--secundario);
     color: white;
@@ -452,4 +468,30 @@ body.app-blank.login {
         width: 0px !important;
         display: none !important;
     }
+}
+
+/* HABITACIONES */
+.contenedorHabiaciones {
+    border-radius: 6px;
+    padding-top: 5px;
+    margin-left: 0px;
+    max-height: 65vh;
+    overflow: auto;
+    background-color: var(--secundario);
+}
+
+.contenedorHabitacion {
+    position: relative;
+}
+
+.contenedorHabitacion .piso {
+    background-color: var(--principal);
+    color: white;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0px 0px 10px 0px;
 }

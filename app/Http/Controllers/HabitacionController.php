@@ -43,7 +43,8 @@ class HabitacionController extends Controller
     public function listadoCheckIn(Request $request)
     {
         $tipoHabitaciones = $request->input('tipo_habitacion_id', []); // será un array
-        $capacidad = $request->input('capacidad'); // número o null
+        $capacidad = $request->input('capacidad', null); // número o null
+        $numero_habitacion = $request->input('numero_habitacion', null); // número o null
 
         $habitacions = Habitacion::with(["tipo_habitacion"])->select("habitacions.*");
 
@@ -53,6 +54,10 @@ class HabitacionController extends Controller
 
         if (isset($capacidad) && $capacidad) {
             $habitacions->where("capacidad", $capacidad);
+        }
+
+        if (isset($numero_habitacion) && $numero_habitacion) {
+            $habitacions->where("numero_habitacion", $numero_habitacion);
         }
 
         $habitacions = $habitacions->where("status", 1)

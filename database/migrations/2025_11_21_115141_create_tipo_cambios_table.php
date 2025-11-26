@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tipo_cambios', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('moneda_id');
-            $table->unsignedBigInteger('fecha');
+            $table->date('fecha');
             $table->decimal('valor', 24, 2);
             $table->timestamps();
         });

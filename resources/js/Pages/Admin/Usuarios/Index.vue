@@ -201,6 +201,7 @@ onMounted(async () => {
                                     style="align-items: end"
                                 >
                                     <input
+                                        type="search"
                                         v-model="multiSearch.search"
                                         placeholder="Buscar"
                                         class="form-control border-1 border-right-0"

@@ -4,6 +4,8 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref, onMounted, onBeforeMount, onBeforeUnmount } from "vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useAxios } from "@/composables/axios/useAxios";
+import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+const { monedaOficial } = useMonedaOficial();
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 const { axiosDelete } = useAxios();
@@ -59,12 +61,27 @@ const caclularFechaSalida = () => {
 };
 
 const form = useForm({
+    habitacion_id: null,
     cliente_id: null,
+    desayuno: 0,
     fecha_entrada: getFechaAtual(),
     hora_entrada: getHoraActual(),
     dias_estadia: 1,
     fecha_salida: null,
     hora_salida: "12:00",
+    cd: 0,
+    total: 0,
+    adelanto: 0,
+    saldo: 0,
+    garantia: 0,
+    moneda_id: null,
+    tc: 0,
+    cd_tc: null,
+    total_tc: null,
+    adelanto_tc: null,
+    saldo_tc: null,
+    garantia_tc: null,
+    moneda_id_tc: null,
 });
 
 const listClientes = ref([]);
@@ -107,6 +124,7 @@ const loadingHabitacions = ref(false);
 const paramHabitacions = ref({
     tipo_habitacion_id: [],
     capacidad: null,
+    numero_habitacion: "",
 });
 const cargarHabitacions = async () => {
     loadingHabitacions.value = true;
@@ -130,6 +148,11 @@ const precarCargarHabitacions = () => {
     cargarHabitacionsTimeout.value = setTimeout(() => {
         cargarHabitacions();
     }, 300);
+};
+
+const actualizaFechaIngreso = () => {
+    form.fecha_entrada = getFechaAtual();
+    form.hora_entrada = getHoraActual();
 };
 
 const cargarListas = () => {
@@ -184,61 +207,19 @@ const cargarListas = () => {
                             <div class="card-body">
                                 <form>
                                     <div class="row">
-                                        <div class="col-12 mb-1">
-                                            <label>Buscar cliente</label>
-                                            <div class="input-group mb-3">
-                                                <el-select-v2
-                                                    v-model="form.cliente_id"
-                                                    style="
-                                                        width: calc(
-                                                            100% - 40px
-                                                        );
-                                                    "
-                                                    filterable
-                                                    remote
-                                                    :remote-method="
-                                                        remoteMethod
-                                                    "
-                                                    clearable
-                                                    :options="listClientes"
-                                                    :loading="loadingClientes"
-                                                    placeholder="Nombre o C.I./Pasaporte..."
-                                                    size="large"
-                                                    no-data-text="Sin resultados"
-                                                    loading-text="Buscando..."
-                                                    :class="{
-                                                        'is-invalid':
-                                                            form.errors
-                                                                ?.cliente_id,
-                                                    }"
-                                                    class="rounded-0"
-                                                />
-                                                <div class="input-group-append">
-                                                    <button
-                                                        class="btn btn-primary"
-                                                    >
-                                                        <i
-                                                            class="fa fa-plus"
-                                                        ></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <ul
-                                                v-if="form.errors?.cliente_id"
-                                                class="parsley-errors-list filled"
-                                            >
-                                                <li class="parsley-required">
-                                                    {{
-                                                        form.errors?.cliente_id
-                                                    }}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-12">
                                             <h4 class="h5 text-center">
                                                 Ingreso
+                                                <small
+                                                    class="text-primary cursor-pointer"
+                                                >
+                                                    <i
+                                                        class="fa fa-sync text-sm"
+                                                        @click="
+                                                            actualizaFechaIngreso
+                                                        "
+                                                    ></i>
+                                                </small>
                                             </h4>
                                         </div>
                                         <div class="col-md-4 mb-1">
@@ -386,14 +367,36 @@ const cargarListas = () => {
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <b>Filtros</b>
-                                                <div class="row mb-1">
+                                                <div class="row">
                                                     <div class="col-12">
+                                                        <small
+                                                            class="text-muted font-weight-bold"
+                                                            >Capacidad</small
+                                                        >
                                                         <input
                                                             type="number"
                                                             class="form-control"
-                                                            placeholder="Capacidad"
                                                             v-model="
                                                                 paramHabitacions.capacidad
+                                                            "
+                                                            @keyup="
+                                                                precarCargarHabitacions
+                                                            "
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-1">
+                                                    <div class="col-12">
+                                                        <small
+                                                            class="text-muted font-weight-bold"
+                                                            >Código/Número
+                                                            Habitación</small
+                                                        >
+                                                        <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            v-model="
+                                                                paramHabitacions.numero_habitacion
                                                             "
                                                             @keyup="
                                                                 precarCargarHabitacions
@@ -438,12 +441,14 @@ const cargarListas = () => {
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="row">
-                                                    <div class="col-12">
-                                                        Habitaciones
-                                                        Disponibles:
-                                                        <b class="text-md">{{
-                                                            listHabitacions.length
-                                                        }}</b>
+                                                    <div class="col-12 mb-2">
+                                                        <b>Disponibles: </b>
+                                                        <b
+                                                            class="badge bg-primary text-md"
+                                                            >{{
+                                                                listHabitacions.length
+                                                            }}</b
+                                                        >
 
                                                         <i
                                                             class="fa fa-sync ml-2 text-primary cursor-pointer"
@@ -452,112 +457,135 @@ const cargarListas = () => {
                                                             "
                                                         ></i>
                                                     </div>
-                                                    <el-skeleton
-                                                        :loading="
-                                                            loadingHabitacions
-                                                        "
-                                                        animated
-                                                        class="w-100 row"
-                                                        :count="9"
-                                                    >
-                                                        <template #template>
-                                                            <div
-                                                                class="col-md-4"
-                                                            >
+                                                    <div class="col-12">
+                                                        <el-skeleton
+                                                            :loading="
+                                                                loadingHabitacions
+                                                            "
+                                                            animated
+                                                            class="w-100 row"
+                                                            :count="9"
+                                                        >
+                                                            <template #template>
                                                                 <div
-                                                                    style="
-                                                                        padding: 14px;
-                                                                    "
-                                                                >
-                                                                    <el-skeleton-item
-                                                                        variant="h2"
-                                                                        class="w-100"
-                                                                    />
-                                                                    <el-skeleton-item
-                                                                        variant="text"
-                                                                        class="w-100"
-                                                                    />
-                                                                    <el-skeleton-item
-                                                                        variant="text"
-                                                                        class="w-100"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </template>
-                                                        <template #default>
-                                                            <div
-                                                                class="col-md-4 col-lg-4"
-                                                                v-for="item in listHabitacions"
-                                                            >
-                                                                <div
-                                                                    class="card"
+                                                                    class="card col-md-4"
                                                                 >
                                                                     <div
-                                                                        class="card-body text-center"
+                                                                        class="card-body"
+                                                                        style="
+                                                                            padding: 14px;
+                                                                        "
                                                                     >
-                                                                        <h5>
-                                                                            {{
-                                                                                item.numero_habitacion
-                                                                            }}
-                                                                        </h5>
+                                                                        <el-skeleton-item
+                                                                            variant="h1"
+                                                                            class="w-100"
+                                                                        />
+                                                                        <el-skeleton-item
+                                                                            variant="text"
+                                                                            class="w-100"
+                                                                        />
+                                                                        <el-skeleton-item
+                                                                            variant="text"
+                                                                            class="w-100"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                            <template #default>
+                                                                <div
+                                                                    class="row contenedorHabiaciones"
+                                                                >
+                                                                    <div
+                                                                        class="col-md-4 col-lg-4"
+                                                                        v-for="item in listHabitacions"
+                                                                    >
                                                                         <div
-                                                                            class="row"
+                                                                            class="card"
                                                                         >
                                                                             <div
-                                                                                class="col-12"
+                                                                                class="card-body text-center contenedorHabitacion"
                                                                             >
-                                                                                <b
-                                                                                    >Piso:</b
+                                                                                <h5>
+                                                                                    {{
+                                                                                        item.numero_habitacion
+                                                                                    }}
+                                                                                </h5>
+                                                                                <div
+                                                                                    class="row mb-1"
                                                                                 >
-                                                                                {{
-                                                                                    item.piso
-                                                                                }}
+                                                                                    <div
+                                                                                        class="col-12 text-muted"
+                                                                                    >
+                                                                                        {{
+                                                                                            item
+                                                                                                ?.tipo_habitacion
+                                                                                                ?.nombre
+                                                                                        }}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div
+                                                                                    class="row"
+                                                                                >
+                                                                                    <div
+                                                                                        class="col-4 offset-2 text-primary"
+                                                                                    >
+                                                                                        {{
+                                                                                            item.piso
+                                                                                        }}
+                                                                                        <br />
+                                                                                        <i
+                                                                                            class="fa fa-building"
+                                                                                        ></i>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="col-4 text-success"
+                                                                                    >
+                                                                                        {{
+                                                                                            item.capacidad
+                                                                                        }}
+                                                                                        <br />
+                                                                                        <i
+                                                                                            class="fa fa-users"
+                                                                                        ></i>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                             <div
-                                                                                class="col-12"
+                                                                                class="card-footer p-0"
                                                                             >
-                                                                                {{
-                                                                                    item
-                                                                                        ?.tipo_habitacion
-                                                                                        ?.nombre
-                                                                                }}
+                                                                                <div
+                                                                                    class="row justify-content-end"
+                                                                                >
+                                                                                    <div
+                                                                                        class="col-3"
+                                                                                    >
+                                                                                        <button
+                                                                                            class="btn btn-sm bg-secundario w-100"
+                                                                                        >
+                                                                                            <i
+                                                                                                class="fa fa-info"
+                                                                                            ></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="col-3"
+                                                                                    >
+                                                                                        <button
+                                                                                            class="btn btn-sm btn-success w-100"
+                                                                                        >
+                                                                                            <i
+                                                                                                class="fa fa-check"
+                                                                                            ></i>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div
-                                                                        class="card-footer p-0"
-                                                                    >
-                                                                        <div
-                                                                            class="row justify-content-end"
-                                                                        >
-                                                                            <div
-                                                                                class="col-3"
-                                                                            >
-                                                                                <button
-                                                                                    class="btn btn-sm bg-secundario w-100"
-                                                                                >
-                                                                                    <i
-                                                                                        class="fa fa-info"
-                                                                                    ></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div
-                                                                                class="col-3"
-                                                                            >
-                                                                                <button
-                                                                                    class="btn btn-sm btn-success w-100"
-                                                                                >
-                                                                                    <i
-                                                                                        class="fa fa-check"
-                                                                                    ></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </template>
-                                                    </el-skeleton>
+                                                            </template>
+                                                        </el-skeleton>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -575,28 +603,95 @@ const cargarListas = () => {
                                             Información del Registro
                                         </h4>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="row">
-                                            <div class="col-6 text-right">
-                                                <b>Cliente:</b>
+                                    <div class="col-12">
+                                        <label>Buscar cliente</label>
+                                        <div class="input-group mb-3">
+                                            <el-select-v2
+                                                v-model="form.cliente_id"
+                                                style="width: calc(100% - 40px)"
+                                                filterable
+                                                remote
+                                                :remote-method="remoteMethod"
+                                                clearable
+                                                :options="listClientes"
+                                                :loading="loadingClientes"
+                                                placeholder="Nombre o C.I./Pasaporte..."
+                                                size="large"
+                                                no-data-text="Sin resultados"
+                                                loading-text="Buscando..."
+                                                :class="{
+                                                    'is-invalid':
+                                                        form.errors?.cliente_id,
+                                                }"
+                                                class="rounded-0"
+                                            />
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
                                             </div>
-                                            <div class="col-6">Juan Perez</div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="row">
-                                            <div class="col-6 text-right">
-                                                <b>Nro. C.I. / Pasaporte:</b>
-                                            </div>
-                                            <div class="col-6">11111111</div>
-                                        </div>
+                                        <ul
+                                            v-if="form.errors?.cliente_id"
+                                            class="parsley-errors-list filled"
+                                        >
+                                            <li class="parsley-required">
+                                                {{ form.errors?.cliente_id }}
+                                            </li>
+                                        </ul>
                                     </div>
                                     <!-- 
                                     to do: VER COMO SE MANEJARA CON DIFERENTES MONEDAS -->
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 bg-info">
+                                        <div class="row py-1">
+                                            <div class="col-6 text-right">
+                                                <b>Habitación Asignada:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <template
+                                                    v-if="form.habitacion_id"
+                                                ></template>
+                                                <template v-else>
+                                                    <span
+                                                        class="badge badge-danger text-md"
+                                                        >SIN ASIGNAR</span
+                                                    >
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="row py-1">
+                                            <div class="col-6 text-right">
+                                                <b>Desayuno:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <el-radio-group
+                                                    v-model="form.desayuno"
+                                                    fill="#5cc72f"
+                                                    text-color="#fff"
+                                                >
+                                                    <el-radio-button :value="0"
+                                                        ><span class=""
+                                                            >No</span
+                                                        ></el-radio-button
+                                                    >
+                                                    <el-radio-button :value="1"
+                                                        ><span class=""
+                                                            >Si</span
+                                                        ></el-radio-button
+                                                    >
+                                                </el-radio-group>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 py-1 bg-info">
                                         <div class="row">
                                             <div class="col-6 text-right">
-                                                <b>Costo/Día Moneda:</b>
+                                                <b
+                                                    >Costo/Día
+                                                    {{
+                                                        monedaOficial?.simbolo
+                                                    }}:</b
+                                                >
                                             </div>
                                             <div class="col-6">
                                                 <input
@@ -606,10 +701,15 @@ const cargarListas = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 py-1 bg-info">
                                         <div class="row">
                                             <div class="col-6 text-right">
-                                                <b>Total:</b>
+                                                <b
+                                                    >Total
+                                                    {{
+                                                        monedaOficial?.simbolo
+                                                    }}:</b
+                                                >
                                             </div>
                                             <div class="col-6">
                                                 <input
@@ -619,7 +719,67 @@ const cargarListas = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 py-1 bg-info">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Pagar en otra moneda:</b>
+                                            </div>
+                                            <div class="col-6">
+                                                <el-radio-group
+                                                    v-model="form.tc"
+                                                    fill="#5cc72f"
+                                                    text-color="#fff"
+                                                >
+                                                    <el-radio-button :value="0"
+                                                        ><span class=""
+                                                            >No</span
+                                                        ></el-radio-button
+                                                    >
+                                                    <el-radio-button :value="1"
+                                                        ><span class=""
+                                                            >Si</span
+                                                        ></el-radio-button
+                                                    >
+                                                </el-radio-group>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <template v-show="form.tc == 1">
+                                        <div class="col-12 py-1 bg-success">
+                                            <div class="row">
+                                                <div class="col-6 text-right">
+                                                    <b>Moneda:</b>
+                                                </div>
+                                                <div class="col-6">
+                                                    <select
+                                                        class="form-control"
+                                                    >
+                                                        <option value="">
+                                                            Moneda por Defecto
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 py-1 bg-success">
+                                            <div class="row">
+                                                <div class="col-6 text-right">
+                                                    <b>Tipo de Cambio:</b>
+                                                </div>
+                                                <div class="col-6">
+                                                    <select
+                                                        class="form-control"
+                                                    >
+                                                        <option value="">
+                                                            Moneda por Defecto
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="col-12 py-1 bg2">
                                         <div class="row">
                                             <div class="col-6 text-right">
                                                 <b>Cancelado:</b>
@@ -632,53 +792,45 @@ const cargarListas = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 py-1 bg2">
                                         <div class="row">
                                             <div class="col-6 text-right">
-                                                <b>Moneda:</b>
-                                            </div>
-                                            <div class="col-6">
-                                                <select class="form-control">
-                                                    <option value="">
-                                                        Moneda por Defecto
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- SOLO MOSTRAR SI LA MONEDA ES DIFERENTE A LA POR DEFECTO -->
-                                    <div class="col-12 mb-2">
-                                        <div class="row">
-                                            <div class="col-6 text-right">
-                                                <b>Tipo de Cambio:</b>
-                                            </div>
-                                            <div class="col-6">
-                                                <select class="form-control">
-                                                    <option value="">
-                                                        Moneda por Defecto
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mb-2">
-                                        <div class="row">
-                                            <div class="col-6 text-right">
-                                                <b>Saldo:</b>
+                                                <b>Saldo:</b><br />
+                                                <small>(Automatico)</small>
                                             </div>
                                             <div class="col-6">
                                                 <input
                                                     type="number"
                                                     class="form-control"
+                                                    readonly
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 py-1 bg2">
+                                        <div class="row">
+                                            <div class="col-6 text-right">
+                                                <b>Saldo:</b><br />
+                                                <small>(Automatico)</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    readonly
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
                                         <div class="row">
                                             <div class="col-6 offset-6">
                                                 <button
                                                     class="btn btn-primary w-100"
+                                                    :disabled="
+                                                        !form.cliente_id ||
+                                                        !form.habitacion_id
+                                                    "
                                                 >
                                                     Finalizar Registro
                                                 </button>
@@ -694,3 +846,5 @@ const cargarListas = () => {
         </div>
     </Content>
 </template>
+
+<style></style>

@@ -22,6 +22,12 @@ const headers = [
         label: "CÓDIGO",
         key: "codigo",
         sortable: true,
+        classRow: (item) => {
+            if (item.oficial == 1) {
+                return "bg-oficial";
+            }
+            return "";
+        },
     },
     {
         label: "NOMBRE",
@@ -139,6 +145,7 @@ onMounted(async () => {
                                     style="align-items: end"
                                 >
                                     <input
+                                        type="search"
                                         v-model="multiSearch.search"
                                         placeholder="Buscar"
                                         class="form-control border-1 border-right-0"

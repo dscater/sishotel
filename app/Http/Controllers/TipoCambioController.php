@@ -44,9 +44,6 @@ class TipoCambioController extends Controller
         $orderByCol = $request->orderByCol;
         $desc = $request->desc;
 
-        $columnsSerachLike = ["nombre", "paterno", "materno", "ci", "fono", "dir"];
-        $columnsFilter = [];
-        $columnsBetweenFilter = [];
         $arrayOrderBy = [];
         if ($orderByCol && $desc) {
             $arrayOrderBy = [
@@ -54,7 +51,7 @@ class TipoCambioController extends Controller
             ];
         }
 
-        $personas = $this->tipo_cambioService->listadoPaginado($perPage, $page, $search, $columnsSerachLike, $columnsFilter, $columnsBetweenFilter, $arrayOrderBy);
+        $personas = $this->tipo_cambioService->listadoPaginado($perPage, $page, $search, $arrayOrderBy);
         return response()->JSON([
             "data" => $personas->items(),
             "total" => $personas->total(),

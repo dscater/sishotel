@@ -20,17 +20,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('habitacion_id');
             $table->unsignedBigInteger('cliente_id');
+            $table->integer('desayuno')->default(0); //0:NO, 1:SI
             $table->date('fecha_entrada');
             $table->time("hora_entrada");
             $table->integer("dias_estadia")->nullable()->default(0);
             $table->date('fecha_salida')->nullable();
             $table->time("hora_salida")->nullable();
             $table->time("hora_salida_reg")->nullable();
+            $table->decimal('cd', 24, 2);
             $table->decimal('total', 24, 2);
             $table->decimal('adelanto', 24, 2)->nullable()->default(0);
             $table->decimal("saldo", 24, 2)->nullable()->default(0);
             $table->decimal('garantia', 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id');
+            $table->integer('tc')->default(0);  //0: SIN TIPO DE CAMBIO, 1: CON TIPO DE CAMBIO
+            $table->decimal('cd_tc', 24, 2)->nullable();  //COSTO DIARIO CON TIPO DE CAMBIO
             $table->decimal('total_tc', 24, 2)->nullable()->default(0);
             $table->decimal('adelanto_tc', 24, 2)->nullable()->default(0);
             $table->decimal('saldo_tc', 24, 2)->nullable()->default(0);

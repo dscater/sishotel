@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Habitacion;
 use App\Models\TipoCambio;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
@@ -39,30 +40,37 @@ class TipoCambioService
      * @param array $columnsFilter
      * @return LengthAwarePaginator
      */
-    public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
+    public function listadoPaginado(int $length, int $page, string $search, array $orderBy = []): LengthAwarePaginator
     {
-        $tipo_cambios = TipoCambio::select("tipo_cambios.*");
+        $tipo_cambios = TipoCambio::select("tipo_cambios.*")
+            ->with(["moneda:id,nombre"])
+            ->join("monedas", "monedas.id", "=", "tipo_cambios.moneda_id");
 
-        // Filtros exactos
-        foreach ($columnsFilter as $key => $value) {
-            if (!is_null($value)) {
-                $tipo_cambios->where("tipo_cambios.$key", $value);
-            }
-        }
 
-        // Filtros por rango
-        foreach ($columnsBetweenFilter as $key => $value) {
-            if (isset($value[0], $value[1])) {
-                $tipo_cambios->whereBetween("tipo_cambios.$key", $value);
-            }
-        }
-
-        // Búsqueda en múltiples columnas con LIKE
-        if (!empty($search) && !empty($columnsSerachLike)) {
-            $tipo_cambios->where(function ($query) use ($search, $columnsSerachLike) {
-                foreach ($columnsSerachLike as $col) {
-                    $query->orWhere("tipo_cambios.$col", "LIKE", "%$search%");
+        if (!empty($search)) {
+            // Detectar si el texto parece una fecha (ej: 12/10/2025 o 12-10-2025)
+            $fecha = null;
+            if (preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/', trim($search), $matches)) {
+                try {
+                    $fecha = Carbon::createFromFormat('d/m/Y', str_replace('-', '/', $search))->format('Y-m-d');
+                } catch (\Exception $e) {
+                    // Si falla el formato anterior, intentar con d-m-Y
+                    try {
+                        $fecha = Carbon::createFromFormat('d-m-Y', $search)->format('Y-m-d');
+                    } catch (\Exception $e2) {
+                        $fecha = null;
+                    }
                 }
+            }
+
+            // Agrupar ORs correctamente
+            $tipo_cambios->where(function ($q) use ($search, $fecha) {
+                if ($fecha) {
+                    $q->orWhereDate("fecha", $fecha);
+                }
+
+                $q->orWhere("monedas.nombre", "LIKE", "%$search%");
+                $q->orWhere("valor", "LIKE", "%$search%");
             });
         }
 
@@ -72,7 +80,6 @@ class TipoCambioService
                 $tipo_cambios->orderBy($value[0], $value[1]);
             }
         }
-
 
         $tipo_cambios = $tipo_cambios->paginate($length, ['*'], 'page', $page);
         return $tipo_cambios;

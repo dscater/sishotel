@@ -25,18 +25,18 @@ const headers = [
         width: "3%",
     },
     {
-        label: "NOMBRE",
-        key: "nombre",
+        label: "MONEDA",
+        key: "moneda.nombre",
         sortable: true,
     },
     {
-        label: "CAPACIDAD",
-        key: "capacidad",
+        label: "VALOR",
+        key: "valor",
         sortable: true,
     },
     {
-        label: "DESCRIPCIÓN",
-        key: "descripcion",
+        label: "FECHA",
+        key: "fecha_t",
         sortable: true,
     },
     {
@@ -145,6 +145,7 @@ onMounted(async () => {
                                     style="align-items: end"
                                 >
                                     <input
+                                        type="search"
                                         v-model="multiSearch.search"
                                         placeholder="Buscar"
                                         class="form-control border-1 border-right-0"
