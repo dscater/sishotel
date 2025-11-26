@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 24-11-2025 a las 20:04:59
+-- Tiempo de generación: 26-11-2025 a las 16:54:37
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -130,6 +130,16 @@ CREATE TABLE `habitacions` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `habitacions`
+--
+
+INSERT INTO `habitacions` (`id`, `numero_habitacion`, `tipo_habitacion_id`, `piso`, `capacidad`, `precio`, `precio_temp`, `estado`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'H-001', 1, 0, 1, 300.00, 0.00, 0, 1, '2025-11-24 21:08:48', '2025-11-24 21:08:48'),
+(2, 'H-002', 2, 1, 2, 500.00, 0.00, 0, 1, '2025-11-24 21:17:59', '2025-11-24 21:26:51'),
+(3, 'H-003', 3, 1, 2, 800.00, 200.00, 0, 1, '2025-11-24 21:23:46', '2025-11-24 21:26:43'),
+(4, 'H-004', 4, 1, 3, 800.00, 0.00, 0, 1, '2025-11-24 21:30:34', '2025-11-24 21:30:56');
+
 -- --------------------------------------------------------
 
 --
@@ -143,6 +153,16 @@ CREATE TABLE `habitacion_fotos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `habitacion_fotos`
+--
+
+INSERT INTO `habitacion_fotos` (`id`, `habitacion_id`, `foto`, `created_at`, `updated_at`) VALUES
+(1, 1, '011764018528.jpeg', '2025-11-24 21:08:48', '2025-11-24 21:08:48'),
+(2, 1, '111764018528.jpeg', '2025-11-24 21:08:48', '2025-11-24 21:08:48'),
+(3, 4, '041764019834.webp', '2025-11-24 21:30:34', '2025-11-24 21:30:34'),
+(4, 4, '141764019834.jpg', '2025-11-24 21:30:34', '2025-11-24 21:30:34');
 
 -- --------------------------------------------------------
 
@@ -163,6 +183,47 @@ CREATE TABLE `historial_accions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `historial_accions`
+--
+
+INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `datos_original`, `datos_nuevo`, `modulo`, `fecha`, `hora`, `created_at`, `updated_at`) VALUES
+(1, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": \"1\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:26:26.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE HABITACIÓN', '2025-11-24', '16:26:26', '2025-11-24 20:26:26', '2025-11-24 20:26:26'),
+(2, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": 1, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:26:26.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:27:50.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:27:50', '2025-11-24 20:27:50', '2025-11-24 20:27:50'),
+(3, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:27:50.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:27:58.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:27:58', '2025-11-24 20:27:58', '2025-11-24 20:27:58'),
+(4, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:27:58.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:19.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:28:19', '2025-11-24 20:28:19', '2025-11-24 20:28:19'),
+(5, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:19.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:28.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:28:28', '2025-11-24 20:28:28', '2025-11-24 20:28:28'),
+(6, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:28.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:42.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:28:42', '2025-11-24 20:28:42', '2025-11-24 20:28:42'),
+(7, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:28:42.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:30:58.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:30:58', '2025-11-24 20:30:58', '2025-11-24 20:30:58'),
+(8, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:30:58.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:32:15.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:32:15', '2025-11-24 20:32:15', '2025-11-24 20:32:15'),
+(9, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:32:15.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:32:21.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:32:21', '2025-11-24 20:32:21', '2025-11-24 20:32:21'),
+(10, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:32:21.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:33:55.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:33:55', '2025-11-24 20:33:55', '2025-11-24 20:33:55'),
+(11, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:33:55.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:36:29.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:36:29', '2025-11-24 20:36:29', '2025-11-24 20:36:29'),
+(12, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:36:29.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:38:56.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:38:56', '2025-11-24 20:38:56', '2025-11-24 20:38:56'),
+(13, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:38:56.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:39:02.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:39:02', '2025-11-24 20:39:02', '2025-11-24 20:39:02'),
+(14, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 1, \"nombre\": \"DOBLE\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:39:02.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"nombre\": \"SIMPLE\", \"capacidad\": null, \"created_at\": \"2025-11-24T20:26:26.000000Z\", \"updated_at\": \"2025-11-24T20:39:44.000000Z\", \"descripcion\": \"\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:39:44', '2025-11-24 20:39:44', '2025-11-24 20:39:44'),
+(15, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE HABITACIÓN', '{\"id\": 2, \"nombre\": \"DOBLE\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:42:10.000000Z\", \"updated_at\": \"2025-11-24T20:42:10.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE HABITACIÓN', '2025-11-24', '16:42:10', '2025-11-24 20:42:10', '2025-11-24 20:42:10'),
+(16, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE HABITACIÓN', '{\"id\": 3, \"nombre\": \"MATRIMONIAL\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:43:24.000000Z\", \"updated_at\": \"2025-11-24T20:43:24.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE HABITACIÓN', '2025-11-24', '16:43:24', '2025-11-24 20:43:24', '2025-11-24 20:43:24'),
+(17, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE HABITACIÓN', '{\"id\": 3, \"nombre\": \"MATRIMONIAL\", \"capacidad\": 2, \"created_at\": \"2025-11-24T20:43:24.000000Z\", \"updated_at\": \"2025-11-24T20:43:24.000000Z\", \"descripcion\": \"\"}', '{\"id\": 3, \"nombre\": \"MATRIMONIAL\", \"capacidad\": \"2\", \"created_at\": \"2025-11-24T20:43:24.000000Z\", \"updated_at\": \"2025-11-24T20:44:38.000000Z\", \"descripcion\": \"MATRIMONIAL\"}', 'TIPO DE HABITACIÓN', '2025-11-24', '16:44:38', '2025-11-24 20:44:38', '2025-11-24 20:44:38'),
+(18, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE HABITACIÓN', '{\"id\": 4, \"nombre\": \"FAMILIAR 1\", \"capacidad\": \"3\", \"created_at\": \"2025-11-24T20:47:31.000000Z\", \"updated_at\": \"2025-11-24T20:47:31.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE HABITACIÓN', '2025-11-24', '16:47:31', '2025-11-24 20:47:31', '2025-11-24 20:47:31'),
+(19, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE HABITACIÓN', '{\"id\": 5, \"nombre\": \"FAMILIAR 2\", \"capacidad\": \"5\", \"created_at\": \"2025-11-24T20:47:36.000000Z\", \"updated_at\": \"2025-11-24T20:47:36.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE HABITACIÓN', '2025-11-24', '16:47:36', '2025-11-24 20:47:36', '2025-11-24 20:47:36'),
+(20, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA HABITACIÓN', '{\"id\": 1, \"piso\": \"0\", \"estado\": \"0\", \"precio\": \"300\", \"created_at\": \"2025-11-24T21:08:48.000000Z\", \"updated_at\": \"2025-11-24T21:08:48.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [{\"id\": 1, \"ext\": \"jpeg\", \"foto\": \"011764018528.jpeg\", \"name\": \"011764018528.jpeg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/011764018528.jpeg\", \"created_at\": \"2025-11-24T21:08:48.000000Z\", \"updated_at\": \"2025-11-24T21:08:48.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/011764018528.jpeg\", \"habitacion_id\": 1}, {\"id\": 2, \"ext\": \"jpeg\", \"foto\": \"111764018528.jpeg\", \"name\": \"111764018528.jpeg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/111764018528.jpeg\", \"created_at\": \"2025-11-24T21:08:48.000000Z\", \"updated_at\": \"2025-11-24T21:08:48.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/111764018528.jpeg\", \"habitacion_id\": 1}], \"numero_habitacion\": \"H-001\", \"tipo_habitacion_id\": \"1\"}', NULL, 'HABITACIONES', '2025-11-24', '17:08:48', '2025-11-24 21:08:48', '2025-11-24 21:08:48'),
+(21, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA HABITACIÓN', '{\"id\": 2, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"500\", \"created_at\": \"2025-11-24T21:17:59.000000Z\", \"updated_at\": \"2025-11-24T21:17:59.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H001\", \"tipo_habitacion_id\": \"2\"}', NULL, 'HABITACIONES', '2025-11-24', '17:17:59', '2025-11-24 21:17:59', '2025-11-24 21:17:59'),
+(22, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 2, \"piso\": 1, \"estado\": 0, \"precio\": \"500.00\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:17:59.000000Z\", \"updated_at\": \"2025-11-24T21:17:59.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H001\", \"tipo_habitacion_id\": 2}', '{\"id\": 2, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"500\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:17:59.000000Z\", \"updated_at\": \"2025-11-24T21:23:07.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-002\", \"tipo_habitacion_id\": \"2\"}', 'HABITACIONES', '2025-11-24', '17:23:07', '2025-11-24 21:23:07', '2025-11-24 21:23:07'),
+(23, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA HABITACIÓN', '{\"id\": 3, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"created_at\": \"2025-11-24T21:23:46.000000Z\", \"updated_at\": \"2025-11-24T21:23:46.000000Z\", \"precio_temp\": \"200\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-003\", \"tipo_habitacion_id\": \"3\"}', NULL, 'HABITACIONES', '2025-11-24', '17:23:46', '2025-11-24 21:23:46', '2025-11-24 21:23:46'),
+(24, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 3, \"piso\": 1, \"estado\": 0, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:23:46.000000Z\", \"updated_at\": \"2025-11-24T21:23:46.000000Z\", \"precio_temp\": \"200.00\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-003\", \"tipo_habitacion_id\": 3}', '{\"id\": 3, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:23:46.000000Z\", \"updated_at\": \"2025-11-24T21:26:25.000000Z\", \"precio_temp\": \"200\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-003\", \"tipo_habitacion_id\": \"3\"}', 'HABITACIONES', '2025-11-24', '17:26:25', '2025-11-24 21:26:25', '2025-11-24 21:26:25'),
+(25, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 3, \"piso\": 1, \"estado\": 0, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:23:46.000000Z\", \"updated_at\": \"2025-11-24T21:26:25.000000Z\", \"precio_temp\": \"200.00\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-003\", \"tipo_habitacion_id\": 3}', '{\"id\": 3, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"status\": 1, \"capacidad\": \"2\", \"created_at\": \"2025-11-24T21:23:46.000000Z\", \"updated_at\": \"2025-11-24T21:26:43.000000Z\", \"precio_temp\": \"200\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-003\", \"tipo_habitacion_id\": \"3\"}', 'HABITACIONES', '2025-11-24', '17:26:43', '2025-11-24 21:26:43', '2025-11-24 21:26:43'),
+(26, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 2, \"piso\": 1, \"estado\": 0, \"precio\": \"500.00\", \"status\": 1, \"capacidad\": 1, \"created_at\": \"2025-11-24T21:17:59.000000Z\", \"updated_at\": \"2025-11-24T21:23:07.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-002\", \"tipo_habitacion_id\": 2}', '{\"id\": 2, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"500\", \"status\": 1, \"capacidad\": \"2\", \"created_at\": \"2025-11-24T21:17:59.000000Z\", \"updated_at\": \"2025-11-24T21:26:51.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [], \"numero_habitacion\": \"H-002\", \"tipo_habitacion_id\": \"2\"}', 'HABITACIONES', '2025-11-24', '17:26:51', '2025-11-24 21:26:51', '2025-11-24 21:26:51'),
+(27, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA HABITACIÓN', '{\"id\": 4, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"capacidad\": \"3\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": \"4\"}', NULL, 'HABITACIONES', '2025-11-24', '17:30:34', '2025-11-24 21:30:34', '2025-11-24 21:30:34'),
+(28, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 4, \"piso\": 1, \"estado\": 0, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 3, \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": 4}', '{\"id\": 4, \"piso\": \"1\", \"estado\": \"1\", \"precio\": \"800\", \"status\": 1, \"capacidad\": \"3\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:46.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": \"4\"}', 'HABITACIONES', '2025-11-24', '17:30:46', '2025-11-24 21:30:46', '2025-11-24 21:30:46'),
+(29, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 4, \"piso\": 1, \"estado\": 1, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 3, \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:46.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": 4}', '{\"id\": 4, \"piso\": \"1\", \"estado\": \"2\", \"precio\": \"800\", \"status\": 1, \"capacidad\": \"3\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:49.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": \"4\"}', 'HABITACIONES', '2025-11-24', '17:30:49', '2025-11-24 21:30:49', '2025-11-24 21:30:49'),
+(30, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 4, \"piso\": 1, \"estado\": 2, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 3, \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:49.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": 4}', '{\"id\": 4, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"status\": 1, \"capacidad\": \"3\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:56.000000Z\", \"precio_temp\": \"0\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": \"4\"}', 'HABITACIONES', '2025-11-24', '17:30:56', '2025-11-24 21:30:56', '2025-11-24 21:30:56'),
+(31, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA MONEDA', '{\"id\": 1, \"codigo\": \"BOB\", \"nombre\": \"Bolivianos\", \"simbolo\": \"Bs\", \"created_at\": \"2025-11-25T20:41:17.000000Z\", \"updated_at\": \"2025-11-25T20:41:17.000000Z\"}', NULL, 'MONEDAS', '2025-11-25', '16:41:17', '2025-11-25 20:41:17', '2025-11-25 20:41:17'),
+(32, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA MONEDA', '{\"id\": 2, \"codigo\": \"USD\", \"nombre\": \"Dólares\", \"simbolo\": \"$us\", \"created_at\": \"2025-11-25T20:42:42.000000Z\", \"updated_at\": \"2025-11-25T20:42:42.000000Z\"}', NULL, 'MONEDAS', '2025-11-25', '16:42:42', '2025-11-25 20:42:42', '2025-11-25 20:42:42'),
+(33, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA MONEDA', '{\"id\": 3, \"codigo\": \"EUR\", \"nombre\": \"Euros\", \"simbolo\": \"€\", \"created_at\": \"2025-11-25T20:42:49.000000Z\", \"updated_at\": \"2025-11-25T20:42:49.000000Z\"}', NULL, 'MONEDAS', '2025-11-25', '16:42:50', '2025-11-25 20:42:50', '2025-11-25 20:42:50'),
+(34, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 1, \"fecha\": \"2025-11-26\", \"valor\": \"6.91\", \"moneda_id\": \"2\", \"created_at\": \"2025-11-26T13:28:22.000000Z\", \"updated_at\": \"2025-11-26T13:28:22.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-11-26', '09:28:22', '2025-11-26 13:28:22', '2025-11-26 13:28:22'),
+(35, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 2, \"fecha\": \"2025-11-26\", \"valor\": \"8\", \"moneda_id\": \"3\", \"created_at\": \"2025-11-26T13:39:41.000000Z\", \"updated_at\": \"2025-11-26T13:39:41.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-11-26', '09:39:41', '2025-11-26 13:39:41', '2025-11-26 13:39:41');
 
 -- --------------------------------------------------------
 
@@ -233,6 +294,15 @@ CREATE TABLE `monedas` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `monedas`
+--
+
+INSERT INTO `monedas` (`id`, `codigo`, `nombre`, `simbolo`, `oficial`, `created_at`, `updated_at`) VALUES
+(1, 'BOB', 'Bolivianos', 'Bs', 1, '2025-11-25 20:41:17', '2025-11-25 20:41:17'),
+(2, 'USD', 'Dólares', '$us', 0, '2025-11-25 20:42:42', '2025-11-25 20:42:42'),
+(3, 'EUR', 'Euros', '€', 0, '2025-11-25 20:42:49', '2025-11-25 20:42:49');
+
 -- --------------------------------------------------------
 
 --
@@ -286,17 +356,21 @@ CREATE TABLE `registros` (
   `id` bigint UNSIGNED NOT NULL,
   `habitacion_id` bigint UNSIGNED NOT NULL,
   `cliente_id` bigint UNSIGNED NOT NULL,
+  `desayuno` int NOT NULL DEFAULT '0',
   `fecha_entrada` date NOT NULL,
   `hora_entrada` time NOT NULL,
   `dias_estadia` int DEFAULT '0',
   `fecha_salida` date DEFAULT NULL,
   `hora_salida` time DEFAULT NULL,
   `hora_salida_reg` time DEFAULT NULL,
+  `cd` decimal(24,2) NOT NULL,
   `total` decimal(24,2) NOT NULL,
   `adelanto` decimal(24,2) DEFAULT '0.00',
   `saldo` decimal(24,2) DEFAULT '0.00',
   `garantia` decimal(24,2) DEFAULT '0.00',
   `moneda_id` bigint UNSIGNED NOT NULL,
+  `tc` int NOT NULL DEFAULT '0',
+  `cd_tc` decimal(24,2) DEFAULT NULL,
   `total_tc` decimal(24,2) DEFAULT '0.00',
   `adelanto_tc` decimal(24,2) DEFAULT '0.00',
   `saldo_tc` decimal(24,2) DEFAULT '0.00',
@@ -375,11 +449,19 @@ CREATE TABLE `servicio_detalles` (
 CREATE TABLE `tipo_cambios` (
   `id` bigint UNSIGNED NOT NULL,
   `moneda_id` bigint UNSIGNED NOT NULL,
-  `fecha` bigint UNSIGNED NOT NULL,
+  `fecha` date NOT NULL,
   `valor` decimal(24,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_cambios`
+--
+
+INSERT INTO `tipo_cambios` (`id`, `moneda_id`, `fecha`, `valor`, `created_at`, `updated_at`) VALUES
+(1, 2, '2025-11-26', 6.91, '2025-11-26 13:28:22', '2025-11-26 13:28:22'),
+(2, 3, '2025-11-26', 8.00, '2025-11-26 13:39:41', '2025-11-26 13:39:41');
 
 -- --------------------------------------------------------
 
@@ -390,11 +472,22 @@ CREATE TABLE `tipo_cambios` (
 CREATE TABLE `tipo_habitacions` (
   `id` bigint UNSIGNED NOT NULL,
   `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `capacidad` int NOT NULL,
+  `capacidad` int DEFAULT NULL,
   `descripcion` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_habitacions`
+--
+
+INSERT INTO `tipo_habitacions` (`id`, `nombre`, `capacidad`, `descripcion`, `created_at`, `updated_at`) VALUES
+(1, 'SIMPLE', NULL, '', '2025-11-24 20:26:26', '2025-11-24 20:39:44'),
+(2, 'DOBLE', 2, '', '2025-11-24 20:42:10', '2025-11-24 20:42:10'),
+(3, 'MATRIMONIAL', 2, 'MATRIMONIAL', '2025-11-24 20:43:24', '2025-11-24 20:44:38'),
+(4, 'FAMILIAR 1', 3, '', '2025-11-24 20:47:31', '2025-11-24 20:47:31'),
+(5, 'FAMILIAR 2', 5, '', '2025-11-24 20:47:36', '2025-11-24 20:47:36');
 
 -- --------------------------------------------------------
 
@@ -625,19 +718,19 @@ ALTER TABLE `egreso_productos`
 -- AUTO_INCREMENT de la tabla `habitacions`
 --
 ALTER TABLE `habitacions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion_fotos`
 --
 ALTER TABLE `habitacion_fotos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
@@ -655,7 +748,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT de la tabla `monedas`
 --
 ALTER TABLE `monedas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_cajas`
@@ -691,13 +784,13 @@ ALTER TABLE `servicio_detalles`
 -- AUTO_INCREMENT de la tabla `tipo_cambios`
 --
 ALTER TABLE `tipo_cambios`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_habitacions`
 --
 ALTER TABLE `tipo_habitacions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_productos`
