@@ -127,7 +127,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // HABITACIONES
-    Route::get("habitacions/listadoCheckIn", [HabitacionController::class, 'listadoCheckIn'])->name("habitacions.listadoCheckIn");
+    Route::get("habitacions/listadoRecepcion", [HabitacionController::class, 'listadoRecepcion'])->name("habitacions.listadoRecepcion");
     Route::get("habitacions/eliminados", [HabitacionController::class, 'eliminados'])->name("habitacions.eliminados");
     Route::get("habitacions/paginado_eliminados", [HabitacionController::class, 'paginado_eliminados'])->name("habitacions.paginado_eliminados");
     Route::patch("habitacions/reestablecer/{habitacion}", [HabitacionController::class, 'reestablecer'])->name("habitacions.reestablecer");
@@ -157,7 +157,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // REGISTROS
-    Route::get("registros/checkin", [RegistroController::class, 'checkin'])->name("registros.checkin");
+    Route::get("registros", [RegistroController::class, 'index'])->name("registros.index");
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

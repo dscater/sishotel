@@ -22,8 +22,8 @@ class RegistroController extends Controller
 {
     public function __construct(private RegistroService $registroService) {}
 
-    public function checkin(): InertiaResponse
+    public function index(): InertiaResponse
     {
-        return Inertia::render("Admin/Registros/Checkin/Checkin");
+        return Inertia::render("Admin/Registros/Index");
     }
 }

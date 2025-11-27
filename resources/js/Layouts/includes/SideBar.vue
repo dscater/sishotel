@@ -121,32 +121,26 @@ onUnmounted(() => {});
                         :ruta="'inicio'"
                         :icon="'fa fa-home'"
                     ></ItemMenu>
-                    <li class="nav-header font-weight-bold bg3">RECEPCIÓN</li>
+                    <li class="nav-header font-weight-bold bg3">OPERACIONES</li>
                     <ItemMenu
-                        :label="'Check-In'"
-                        :ruta="'registros.checkin'"
+                        :label="'Recepción'"
+                        :ruta="'registros.index'"
                         :icon="'fa fa-sign-in-alt'"
                     ></ItemMenu>
                     <ItemMenu
-                        :label="'Check-Out'"
+                        :label="'Listado de Reservas'"
                         :ruta="'clientes.index'"
-                        :icon="'fa fa-sign-out-alt'"
+                        :icon="'fa fa-list'"
                     ></ItemMenu>
                     <ItemMenu
                         :label="'Cierre de caja'"
                         :ruta="'clientes.index'"
                         :icon="'fa fa-cash-register'"
                     ></ItemMenu>
-                    <li class="nav-header font-weight-bold bg3">RESERVAS</li>
                     <ItemMenu
-                        :label="'Crear reserva'"
+                        :label="'Clientes'"
                         :ruta="'clientes.index'"
-                        :icon="'fa fa-calendar-plus'"
-                    ></ItemMenu>
-                    <ItemMenu
-                        :label="'Listado reservas'"
-                        :ruta="'clientes.index'"
-                        :icon="'fa fa-list'"
+                        :icon="'fa fa-user-friends'"
                     ></ItemMenu>
                     <li class="nav-header font-weight-bold bg3">
                         ADMINISTRACIÓN
@@ -253,11 +247,6 @@ onUnmounted(() => {});
                         :label="'Caja'"
                         :ruta="'clientes.index'"
                         :icon="'fa fa-cash-register'"
-                    ></ItemMenu>
-                    <ItemMenu
-                        :label="'Clientes'"
-                        :ruta="'clientes.index'"
-                        :icon="'fa fa-user-friends'"
                     ></ItemMenu>
                     <ItemMenu
                         :label="'Usuarios'"

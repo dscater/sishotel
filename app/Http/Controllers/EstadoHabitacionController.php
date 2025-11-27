@@ -15,9 +15,11 @@ class EstadoHabitacionController extends Controller
     {
         // 0: DISPONIBLE, 1: OCUPADO, 2: EN MANTENIMIENTO
         return [
-            0 =>  "DISPONIBLE",
+            0 => "DISPONIBLE",
             1 => "OCUPADO",
             2 => "EN MANTENIMIENTO",
+            3 => "EN LIMPIEZA",
+            4 => "SALIENTE",
         ];
     }
 

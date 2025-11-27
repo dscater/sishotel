@@ -475,7 +475,7 @@ body.app-blank.login {
     border-radius: 6px;
     padding-top: 5px;
     margin-left: 0px;
-    max-height: 65vh;
+    max-height: 80vh;
     overflow: auto;
     background-color: var(--secundario);
 }

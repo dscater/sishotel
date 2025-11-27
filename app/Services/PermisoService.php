@@ -87,7 +87,7 @@ class PermisoService
             "tipo_cambios.update",
             "tipo_cambios.destroy",
 
-            "registros.checkin",
+            "registros.index",
 
             "configuracions.index",
             "configuracions.create",
