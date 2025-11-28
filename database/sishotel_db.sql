@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 26-11-2025 a las 16:54:37
+-- Tiempo de generación: 28-11-2025 a las 16:41:49
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -62,14 +62,42 @@ CREATE TABLE `clientes` (
   `fono` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fecha_nac` date DEFAULT NULL,
   `correo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `edad` int NOT NULL,
-  `nacionalidad` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pais` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `edad` int DEFAULT NULL,
+  `nacionalidad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pais` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `status` int NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`id`, `nombre`, `paterno`, `materno`, `ci`, `ci_exp`, `dir`, `fono`, `fecha_nac`, `correo`, `edad`, `nacionalidad`, `pais`, `user_id`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'EDUARDO', 'CONDORI', '', '123456', 'LP', '', '777777', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 14:58:29', '2025-11-28 14:58:29'),
+(2, 'ALEX', 'MAMANI', '', '56565656', NULL, '', '6767676767', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:07:12', '2025-11-28 15:07:12'),
+(3, 'MARIA', 'MAMANI', '', '345345354', 'LP', '', '676767', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:09:10', '2025-11-28 15:09:10'),
+(4, 'FRANZ', 'GONZALES', '', '3453453', NULL, '', '345345345', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:09:26', '2025-11-28 15:10:56'),
+(5, 'FELIX', 'MARTINEZ', '', '12313132', 'CB', '', '546456546', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:11:11', '2025-11-28 15:11:11'),
+(6, 'ALEJANDRA', 'PALACIOS', '', '433433434', NULL, '', '676767676', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:18:18', '2025-11-28 15:18:18'),
+(7, 'JUAN', 'MARTINEZ', '', '12313123', 'LP', '', '234234243', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:21:35', '2025-11-28 15:21:35'),
+(8, 'DANITZ', 'GONZALES', '', '3222323', NULL, '', '234234234', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:23:45', '2025-11-28 15:23:45'),
+(9, 'ALICIA', 'GUTIERREZ', '', '34343434', NULL, '', '6767676767', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:28:24', '2025-11-28 15:28:24'),
+(10, 'JOSE', 'PALACIOS', '', '43343434', 'LP', '', '76767676', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:29:14', '2025-11-28 15:29:14'),
+(11, 'JUAN', 'CARVAJAL', '', '1234567', NULL, '', '23424223', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:30:35', '2025-11-28 15:31:11'),
+(12, 'ALBERTO', 'SURCO', '', '12345678', NULL, '', '768787878', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:31:34', '2025-11-28 15:31:34'),
+(13, 'ALVARO', 'CHOQUEHUANCA', '', '3131313123', NULL, '', '456456456', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:52:50', '2025-11-28 15:52:50'),
+(14, 'SANDRA', 'ALVARES', '', '3223232', NULL, '', '234234243234', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:53:14', '2025-11-28 15:53:14'),
+(15, 'ESTHER', 'MARTINEZ', '', '433434', NULL, '', '6556657567', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:55:14', '2025-11-28 15:55:14'),
+(16, 'JORGE', 'CALLISAYA', '', '3456456465', NULL, '', '67676767', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:56:35', '2025-11-28 15:56:35'),
+(17, 'GROVER', 'SOLIZ', '', '535345', NULL, '', '345345345', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:57:15', '2025-11-28 15:57:15'),
+(18, 'AFDSF', 'ASDFASDF', '', '3423456', 'LP', '', '546456456', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 15:59:29', '2025-11-28 15:59:29'),
+(19, 'ERERERER', 'ERERER', '', '1213233', NULL, '', '123123', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 16:04:49', '2025-11-28 16:04:49'),
+(20, 'ELVIS', 'SANTA CRUZ', '', '1231313', NULL, '', '1321313', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 16:06:16', '2025-11-28 16:06:16'),
+(21, 'JOSUE', 'AGUIRRE', '', '4535345', NULL, '', '1321312', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 16:06:48', '2025-11-28 16:06:48'),
+(22, 'ALEXANDER', 'SURCO', '', '123131', NULL, '', '3434', NULL, NULL, NULL, '', '', 1, 1, '2025-11-28 16:07:05', '2025-11-28 16:07:05');
 
 -- --------------------------------------------------------
 
@@ -138,7 +166,7 @@ INSERT INTO `habitacions` (`id`, `numero_habitacion`, `tipo_habitacion_id`, `pis
 (1, 'H-001', 1, 0, 1, 300.00, 0.00, 0, 1, '2025-11-24 21:08:48', '2025-11-24 21:08:48'),
 (2, 'H-002', 2, 1, 2, 500.00, 0.00, 0, 1, '2025-11-24 21:17:59', '2025-11-24 21:26:51'),
 (3, 'H-003', 3, 1, 2, 800.00, 200.00, 0, 1, '2025-11-24 21:23:46', '2025-11-24 21:26:43'),
-(4, 'H-004', 4, 1, 3, 800.00, 0.00, 0, 1, '2025-11-24 21:30:34', '2025-11-24 21:30:56');
+(4, 'H-004', 4, 1, 3, 800.00, 250.00, 0, 1, '2025-11-24 21:30:34', '2025-11-28 14:33:24');
 
 -- --------------------------------------------------------
 
@@ -223,7 +251,32 @@ INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `dato
 (32, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA MONEDA', '{\"id\": 2, \"codigo\": \"USD\", \"nombre\": \"Dólares\", \"simbolo\": \"$us\", \"created_at\": \"2025-11-25T20:42:42.000000Z\", \"updated_at\": \"2025-11-25T20:42:42.000000Z\"}', NULL, 'MONEDAS', '2025-11-25', '16:42:42', '2025-11-25 20:42:42', '2025-11-25 20:42:42'),
 (33, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UNA MONEDA', '{\"id\": 3, \"codigo\": \"EUR\", \"nombre\": \"Euros\", \"simbolo\": \"€\", \"created_at\": \"2025-11-25T20:42:49.000000Z\", \"updated_at\": \"2025-11-25T20:42:49.000000Z\"}', NULL, 'MONEDAS', '2025-11-25', '16:42:50', '2025-11-25 20:42:50', '2025-11-25 20:42:50'),
 (34, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 1, \"fecha\": \"2025-11-26\", \"valor\": \"6.91\", \"moneda_id\": \"2\", \"created_at\": \"2025-11-26T13:28:22.000000Z\", \"updated_at\": \"2025-11-26T13:28:22.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-11-26', '09:28:22', '2025-11-26 13:28:22', '2025-11-26 13:28:22'),
-(35, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 2, \"fecha\": \"2025-11-26\", \"valor\": \"8\", \"moneda_id\": \"3\", \"created_at\": \"2025-11-26T13:39:41.000000Z\", \"updated_at\": \"2025-11-26T13:39:41.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-11-26', '09:39:41', '2025-11-26 13:39:41', '2025-11-26 13:39:41');
+(35, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 2, \"fecha\": \"2025-11-26\", \"valor\": \"8\", \"moneda_id\": \"3\", \"created_at\": \"2025-11-26T13:39:41.000000Z\", \"updated_at\": \"2025-11-26T13:39:41.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-11-26', '09:39:41', '2025-11-26 13:39:41', '2025-11-26 13:39:41'),
+(36, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN HABITACIÓN', '{\"id\": 4, \"piso\": 1, \"estado\": 0, \"precio\": \"800.00\", \"status\": 1, \"capacidad\": 3, \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:56.000000Z\", \"precio_temp\": \"0.00\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": 4}', '{\"id\": 4, \"piso\": \"1\", \"estado\": \"0\", \"precio\": \"800\", \"status\": 1, \"capacidad\": \"3\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-28T14:33:24.000000Z\", \"precio_temp\": \"250\", \"habitacion_fotos\": [{\"id\": 3, \"ext\": \"webp\", \"foto\": \"041764019834.webp\", \"name\": \"041764019834.webp\", \"url_file\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/041764019834.webp\", \"habitacion_id\": 4}, {\"id\": 4, \"ext\": \"jpg\", \"foto\": \"141764019834.jpg\", \"name\": \"141764019834.jpg\", \"url_file\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"created_at\": \"2025-11-24T21:30:34.000000Z\", \"updated_at\": \"2025-11-24T21:30:34.000000Z\", \"url_archivo\": \"http://sishotel.test/imgs/habitacions/141764019834.jpg\", \"habitacion_id\": 4}], \"numero_habitacion\": \"H-004\", \"tipo_habitacion_id\": \"4\"}', 'HABITACIONES', '2025-11-28', '10:33:24', '2025-11-28 14:33:24', '2025-11-28 14:33:24'),
+(37, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": \"123456\", \"id\": 1, \"dir\": \"\", \"edad\": null, \"fono\": \"777777\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"EDUARDO\", \"materno\": \"\", \"paterno\": \"CONDORI\", \"user_id\": 1, \"created_at\": \"2025-11-28T14:58:29.000000Z\", \"updated_at\": \"2025-11-28T14:58:29.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '10:58:29', '2025-11-28 14:58:29', '2025-11-28 14:58:29'),
+(38, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": \"56565656\", \"id\": 2, \"dir\": \"\", \"edad\": null, \"fono\": \"6767676767\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALEX\", \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:07:12.000000Z\", \"updated_at\": \"2025-11-28T15:07:12.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:07:12', '2025-11-28 15:07:12', '2025-11-28 15:07:12'),
+(39, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": \"345345354\", \"id\": 3, \"dir\": \"\", \"edad\": null, \"fono\": \"676767\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"MARIA\", \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:09:10.000000Z\", \"updated_at\": \"2025-11-28T15:09:10.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:09:10', '2025-11-28 15:09:10', '2025-11-28 15:09:10'),
+(40, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": \"3453453\", \"id\": 4, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"EDUARDO\", \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:09:26.000000Z\", \"updated_at\": \"2025-11-28T15:09:26.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:09:26', '2025-11-28 15:09:26', '2025-11-28 15:09:26'),
+(41, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN CLIENTE', '{\"ci\": \"3453453\", \"id\": 4, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"EDUARDO\", \"status\": 1, \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:26.000000Z\", \"updated_at\": \"2025-11-28T15:09:26.000000Z\", \"nacionalidad\": \"\"}', '{\"ci\": \"3453453\", \"id\": 4, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"FRANZ\", \"status\": 1, \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:26.000000Z\", \"updated_at\": \"2025-11-28T15:10:56.000000Z\", \"nacionalidad\": \"\"}', 'CLIENTES', '2025-11-28', '11:10:56', '2025-11-28 15:10:56', '2025-11-28 15:10:56'),
+(42, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 12313132, \"id\": 5, \"dir\": \"\", \"edad\": null, \"fono\": \"546456546\", \"pais\": \"\", \"ci_exp\": \"CB\", \"correo\": null, \"nombre\": \"FELIX\", \"materno\": \"\", \"paterno\": \"MARTINEZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:11:11.000000Z\", \"updated_at\": \"2025-11-28T15:11:11.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:11:11', '2025-11-28 15:11:11', '2025-11-28 15:11:11'),
+(43, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 433433434, \"id\": 6, \"dir\": \"\", \"edad\": null, \"fono\": \"676767676\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALEJANDRA\", \"materno\": \"\", \"paterno\": \"PALACIOS\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:18:18.000000Z\", \"updated_at\": \"2025-11-28T15:18:18.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:18:18', '2025-11-28 15:18:18', '2025-11-28 15:18:18'),
+(44, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 12313123, \"id\": 7, \"dir\": \"\", \"edad\": null, \"fono\": \"234234243\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"JUAN\", \"materno\": \"\", \"paterno\": \"MARTINEZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:21:35.000000Z\", \"updated_at\": \"2025-11-28T15:21:35.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:21:35', '2025-11-28 15:21:35', '2025-11-28 15:21:35'),
+(45, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 3222323, \"id\": 8, \"dir\": \"\", \"edad\": null, \"fono\": \"234234234\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"DANITZ\", \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:23:45.000000Z\", \"updated_at\": \"2025-11-28T15:23:45.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:23:45', '2025-11-28 15:23:45', '2025-11-28 15:23:45'),
+(46, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 34343434, \"id\": 9, \"dir\": \"\", \"edad\": null, \"fono\": \"6767676767\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALICIA\", \"materno\": \"\", \"paterno\": \"GUTIERREZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:28:24.000000Z\", \"updated_at\": \"2025-11-28T15:28:24.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:28:24', '2025-11-28 15:28:24', '2025-11-28 15:28:24'),
+(47, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 43343434, \"id\": 10, \"dir\": \"\", \"edad\": null, \"fono\": \"76767676\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"JOSE\", \"materno\": \"\", \"paterno\": \"PALACIOS\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:29:14.000000Z\", \"updated_at\": \"2025-11-28T15:29:14.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:29:14', '2025-11-28 15:29:14', '2025-11-28 15:29:14'),
+(48, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 123456, \"id\": 11, \"dir\": \"\", \"edad\": null, \"fono\": \"23424223\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"JUAN\", \"materno\": \"\", \"paterno\": \"CARVAJAL\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:30:35.000000Z\", \"updated_at\": \"2025-11-28T15:30:35.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:30:35', '2025-11-28 15:30:35', '2025-11-28 15:30:35'),
+(49, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN CLIENTE', '{\"ci\": \"123456\", \"id\": 11, \"dir\": \"\", \"edad\": null, \"fono\": \"23424223\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"JUAN\", \"status\": 1, \"materno\": \"\", \"paterno\": \"CARVAJAL\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:30:35.000000Z\", \"updated_at\": \"2025-11-28T15:30:35.000000Z\", \"nacionalidad\": \"\"}', '{\"ci\": \"1234567\", \"id\": 11, \"dir\": \"\", \"edad\": null, \"fono\": \"23424223\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"JUAN\", \"status\": 1, \"materno\": \"\", \"paterno\": \"CARVAJAL\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:30:35.000000Z\", \"updated_at\": \"2025-11-28T15:31:11.000000Z\", \"nacionalidad\": \"\"}', 'CLIENTES', '2025-11-28', '11:31:11', '2025-11-28 15:31:11', '2025-11-28 15:31:11'),
+(50, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 12345678, \"id\": 12, \"dir\": \"\", \"edad\": null, \"fono\": \"768787878\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALBERTO\", \"materno\": \"\", \"paterno\": \"SURCO\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:31:34.000000Z\", \"updated_at\": \"2025-11-28T15:31:34.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:31:34', '2025-11-28 15:31:34', '2025-11-28 15:31:34'),
+(51, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 3131313123, \"id\": 13, \"dir\": \"\", \"edad\": null, \"fono\": \"456456456\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALVARO\", \"materno\": \"\", \"paterno\": \"CHOQUEHUANCA\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:52:50.000000Z\", \"updated_at\": \"2025-11-28T15:52:50.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:52:50', '2025-11-28 15:52:50', '2025-11-28 15:52:50'),
+(52, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 3223232, \"id\": 14, \"dir\": \"\", \"edad\": null, \"fono\": \"234234243234\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"SANDRA\", \"materno\": \"\", \"paterno\": \"ALVARES\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:53:14.000000Z\", \"updated_at\": \"2025-11-28T15:53:14.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:53:14', '2025-11-28 15:53:14', '2025-11-28 15:53:14'),
+(53, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 433434, \"id\": 15, \"dir\": \"\", \"edad\": null, \"fono\": \"6556657567\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ESTHER\", \"materno\": \"\", \"paterno\": \"MARTINEZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:55:14.000000Z\", \"updated_at\": \"2025-11-28T15:55:14.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:55:14', '2025-11-28 15:55:14', '2025-11-28 15:55:14'),
+(54, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 3456456465, \"id\": 16, \"dir\": \"\", \"edad\": null, \"fono\": \"67676767\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"JORGE\", \"materno\": \"\", \"paterno\": \"CALLISAYA\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:56:35.000000Z\", \"updated_at\": \"2025-11-28T15:56:35.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:56:35', '2025-11-28 15:56:35', '2025-11-28 15:56:35'),
+(55, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 535345, \"id\": 17, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"GROVER\", \"materno\": \"\", \"paterno\": \"SOLIZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:57:15.000000Z\", \"updated_at\": \"2025-11-28T15:57:15.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:57:15', '2025-11-28 15:57:15', '2025-11-28 15:57:15'),
+(56, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 3423456, \"id\": 18, \"dir\": \"\", \"edad\": null, \"fono\": \"546456456\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"AFDSF\", \"materno\": \"\", \"paterno\": \"ASDFASDF\", \"user_id\": 1, \"created_at\": \"2025-11-28T15:59:29.000000Z\", \"updated_at\": \"2025-11-28T15:59:29.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '11:59:29', '2025-11-28 15:59:29', '2025-11-28 15:59:29'),
+(57, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 1213233, \"id\": 19, \"dir\": \"\", \"edad\": null, \"fono\": \"123123\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ERERERER\", \"materno\": \"\", \"paterno\": \"ERERER\", \"user_id\": 1, \"created_at\": \"2025-11-28T16:04:49.000000Z\", \"updated_at\": \"2025-11-28T16:04:49.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '12:04:49', '2025-11-28 16:04:49', '2025-11-28 16:04:49'),
+(58, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 1231313, \"id\": 20, \"dir\": \"\", \"edad\": null, \"fono\": \"1321313\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ELVIS\", \"materno\": \"\", \"paterno\": \"SANTA CRUZ\", \"user_id\": 1, \"created_at\": \"2025-11-28T16:06:16.000000Z\", \"updated_at\": \"2025-11-28T16:06:16.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '12:06:16', '2025-11-28 16:06:16', '2025-11-28 16:06:16'),
+(59, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 4535345, \"id\": 21, \"dir\": \"\", \"edad\": null, \"fono\": \"1321312\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"JOSUE\", \"materno\": \"\", \"paterno\": \"AGUIRRE\", \"user_id\": 1, \"created_at\": \"2025-11-28T16:06:48.000000Z\", \"updated_at\": \"2025-11-28T16:06:48.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '12:06:48', '2025-11-28 16:06:48', '2025-11-28 16:06:48'),
+(60, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN CLIENTE', '{\"ci\": 123131, \"id\": 22, \"dir\": \"\", \"edad\": null, \"fono\": \"3434\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALEXANDER\", \"materno\": \"\", \"paterno\": \"SURCO\", \"user_id\": 1, \"created_at\": \"2025-11-28T16:07:05.000000Z\", \"updated_at\": \"2025-11-28T16:07:05.000000Z\", \"nacionalidad\": \"\"}', NULL, 'CLIENTES', '2025-11-28', '12:07:05', '2025-11-28 16:07:05', '2025-11-28 16:07:05');
 
 -- --------------------------------------------------------
 
@@ -384,6 +437,7 @@ CREATE TABLE `registros` (
   `nro_reserva` bigint DEFAULT NULL,
   `cod_reserva` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tipo_reserva` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `dev_garantia` int DEFAULT '0',
   `status` int NOT NULL DEFAULT '1',
   `user_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -700,7 +754,7 @@ ALTER TABLE `cajas`
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracions`
@@ -730,7 +784,7 @@ ALTER TABLE `habitacion_fotos`
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
