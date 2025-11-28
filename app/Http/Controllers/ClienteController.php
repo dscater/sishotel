@@ -27,6 +27,21 @@ class ClienteController extends Controller
     }
 
 
+    public function listadoSelectElementUi(Request $request): JsonResponse
+    {
+        $search = $request->input("search", "");
+        $clientes = Cliente::select("clientes.*");
+        $clientes->where(function ($query) use ($search) {
+            $query->where("ci", "LIKE", "%$search%")
+                ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
+        });
+        $clientes = $clientes->where("status", 1)->get()->toArray();
+        return response()->JSON([
+            "clientes" => $clientes
+        ]);
+    }
+
+
     public function listado(Request $request): JsonResponse
     {
         $clientes = Cliente::select("clientes.*");
@@ -35,7 +50,7 @@ class ClienteController extends Controller
             $clientes->where("tipo", $request->tipo);
         }
 
-        $clientes = $clientes->where("status", 1)->get();
+        $clientes = $clientes->where("status", 1)->get()->toArray();
         return response()->JSON([
             "clientes" => $clientes
         ]);
@@ -73,12 +88,19 @@ class ClienteController extends Controller
      * @param ClienteStoreRequest $request
      * @return RedirectResponse|Response
      */
-    public function store(ClienteStoreRequest $request): RedirectResponse|Response
+    public function store(ClienteStoreRequest $request): RedirectResponse|Response|JsonResponse
     {
         DB::beginTransaction();
         try {
-            $this->clienteService->crear($request->validated());
+            $cliente = $this->clienteService->crear($request->validated());
             DB::commit();
+
+            $respuesta = $request->validated("respuesta");
+
+            if ($respuesta && $respuesta == 'json') {
+                return response()->JSON($cliente);
+            }
+
             return redirect()->route("clientes.index")->with("bien", "Registro realizado");
         } catch (\Exception $e) {
             DB::rollBack();

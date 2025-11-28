@@ -17,7 +17,7 @@ class Habitacion extends Model
         "capacidad",
         "precio",
         "precio_temp",
-        "estado",
+        "estado", // 0: disponible, 1: ocupado, 2: mantenimiento, 3: en limpieza, 4: saliente
         "status",
     ];
 

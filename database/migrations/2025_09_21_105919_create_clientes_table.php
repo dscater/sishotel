@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string("fono", 255)->nullable();
             $table->date("fecha_nac")->nullable();
             $table->string("correo", 255)->nullable();
-            $table->integer("edad");
-            $table->string("nacionalidad");
-            $table->string("pais", 255);
+            $table->integer("edad")->nullable();
+            $table->string("nacionalidad")->nullable();
+            $table->string("pais", 255)->nullable();
             $table->unsignedBigInteger("user_id");
             $table->integer("status")->default(1);
             $table->timestamps();

@@ -43,6 +43,7 @@ class HabitacionController extends Controller
     public function listadoRecepcion(Request $request)
     {
         $tipoHabitaciones = $request->input('tipo_habitacion_id', []); // será un array
+        $estados = $request->input('estados', []); // será un array
         $capacidad = $request->input('capacidad', null); // número o null
         $numero_habitacion = $request->input('numero_habitacion', null); // número o null
 
@@ -60,13 +61,17 @@ class HabitacionController extends Controller
             $habitacions->where("numero_habitacion", $numero_habitacion);
         }
 
+        if (!empty($estados)) {
+            $habitacions->whereIn('estado', $estados);
+        }
+
+
         $habitacions = $habitacions->where("status", 1)
-            ->where("estado", 0)
             ->orderBy("piso", "desc")
             ->orderBy("numero_habitacion", "desc")
             ->get();
         return response()->JSON([
-            "habitacions" => $habitacions
+            "habitacions" => $habitacions,
         ]);
     }
 

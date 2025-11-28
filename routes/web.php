@@ -105,6 +105,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
 
     // ESTADOS DE HABITACIÓN
     Route::get("estado_habitacions/getEstadosHabitacion", [EstadoHabitacionController::class, 'getEstadosHabitacion'])->name("estado_habitacions.getEstadosHabitacion");
+    Route::get("estado_habitacions/getEstadosConteoHabitacion", [EstadoHabitacionController::class, 'getEstadosConteoHabitacion'])->name("estado_habitacions.getEstadosConteoHabitacion");
+
 
     // CLIENTES
     Route::get("clientes/eliminados", [ClienteController::class, 'eliminados'])->name("clientes.eliminados");
@@ -114,6 +116,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("clientes/api", [ClienteController::class, 'api'])->name("clientes.api");
     Route::get("clientes/paginado", [ClienteController::class, 'paginado'])->name("clientes.paginado");
     Route::get("clientes/listado", [ClienteController::class, 'listado'])->name("clientes.listado");
+    Route::get("clientes/listadoSelectElementUi", [ClienteController::class, 'listadoSelectElementUi'])->name("clientes.listadoSelectElementUi");
     Route::resource("clientes", ClienteController::class)->only(
         ["index", "store", "edit", "show", "update", "destroy"]
     );
@@ -158,6 +161,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
 
     // REGISTROS
     Route::get("registros", [RegistroController::class, 'index'])->name("registros.index");
+    Route::post("registros", [RegistroController::class, 'store'])->name("registros.store");
+    Route::put("registros/update/{registro}", [RegistroController::class, 'update'])->name("registros.update");
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

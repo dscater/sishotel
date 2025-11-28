@@ -34,7 +34,6 @@ class MonedaController extends Controller
             $monedas->where("oficial", 0);
         }
 
-
         $monedas = $monedas->get();
         return response()->JSON([
             "monedas" => $monedas

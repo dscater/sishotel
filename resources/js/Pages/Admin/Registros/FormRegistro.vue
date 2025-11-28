@@ -1,9 +1,16 @@
 <script setup>
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
-import { useUsuarios } from "@/composables/usuarios/useUsuarios";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
+import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+import Formulario from "../Clientes/Formulario.vue";
+const { monedaOficial } = useMonedaOficial();
+
 const props = defineProps({
+    oHabitacion: {
+        type: Object,
+        default: null,
+    },
     muestra_formulario: {
         type: Boolean,
         default: false,
@@ -14,35 +21,82 @@ const props = defineProps({
     },
 });
 
-const { oUsuario, limpiarUsuario } = useUsuarios();
+const accion_formulario_cliente = ref(0);
+const muestra_formulario_cliente = ref(false);
+
 const accion_form = ref(props.accion_formulario);
 const muestra_form = ref(props.muestra_formulario);
+const habitacion = ref(props.oHabitacion);
 const enviando = ref(false);
-let form = useForm(oUsuario.value);
+
+const getFechaAtual = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+};
+
+const getHoraActual = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+};
+
+const form = useForm({
+    id: 0,
+    habitacion_id: null,
+    cliente_id: null,
+    desayuno: 0,
+    fecha_entrada: getFechaAtual(),
+    hora_entrada: getHoraActual(),
+    dias_estadia: 1,
+    fecha_salida: null,
+    hora_salida: "12:00",
+    cd: 0,
+    total: 0,
+    adelanto: 0,
+    saldo: 0,
+    garantia: 0,
+    cd_tc: null,
+    total_tc: null,
+    adelanto_tc: null,
+    saldo_tc: null,
+    garantia_tc: null,
+    moneda_id_tc: null,
+    tipo: "NORMAL",
+    _method: "POST",
+});
+
 watch(
     () => props.muestra_formulario,
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
-            form = useForm(oUsuario.value);
             cargarListas();
+            caclularFechaSalida();
+            form.habitacion_id = habitacion.value.id;
+            form.moneda_id_tc = monedaOficial?.value.id;
+            form.cd = habitacion.value.precio;
+            form.fecha_entrada = getFechaAtual();
+            form.hora_entrada = getHoraActual();
+            actualizaMontos();
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
-            form = useForm(oUsuario.value);
-            options.value = [
-                {
-                    value: oUsuario.value.persona_id,
-                    label: oUsuario.value.persona
-                        ? `${oUsuario.value.persona.full_name} - ${oUsuario.value.persona.ci}`
-                        : "Cargando...",
-                },
-            ];
         } else {
             document
                 .getElementsByTagName("body")[0]
                 .classList.remove("modal-open");
         }
+    }
+);
+watch(
+    () => props.oHabitacion,
+    (newValue) => {
+        habitacion.value = newValue;
+        form.habitacion_id = habitacion.value?.id;
     }
 );
 watch(
@@ -53,19 +107,10 @@ watch(
 );
 
 const { flash } = usePage().props;
-
-const listTipos = ref([]);
-const foto = ref(null);
-
-function cargaArchivo(e, key) {
-    form[key] = null;
-    form[key] = e.target.files[0];
-}
-
 const tituloDialog = computed(() => {
     return accion_form.value == 0
-        ? `<i class="fa fa-plus"></i> Nuevo Usuario`
-        : `<i class="fa fa-edit"></i> Editar Usuario`;
+        ? `<i class="fa fa-plus"></i> Nuevo Registro`
+        : `<i class="fa fa-edit"></i> Editar Registro`;
 });
 
 const textBtn = computed(() => {
@@ -82,8 +127,8 @@ const enviarFormulario = () => {
     enviando.value = true;
     let url =
         form["_method"] == "POST"
-            ? route("usuarios.store")
-            : route("usuarios.update", form.id);
+            ? route("registros.store")
+            : route("registros.update", form.id);
 
     form.post(url, {
         preserveScroll: true,
@@ -101,7 +146,6 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
-            limpiarUsuario();
             emits("envio-formulario");
         },
         onError: (err, code) => {
@@ -110,10 +154,19 @@ const enviarFormulario = () => {
             if (form.errors) {
                 const error =
                     "Existen errores en el formulario, por favor verifique";
+
+                let listaErrores = "<ul style='text-align:left;'>";
+
+                Object.values(form.errors).forEach((err) => {
+                    listaErrores += `<li>${err}</li>`;
+                });
+
+                listaErrores += "</ul>";
+
                 Swal.fire({
                     icon: "info",
                     title: "Error",
-                    html: `<strong>${error}</strong>`,
+                    html: `<strong>${error}</strong><br/>${listaErrores}`,
                     confirmButtonText: `Aceptar`,
                     customClass: {
                         confirmButton: "btn-primary",
@@ -153,42 +206,122 @@ const cerrarFormulario = () => {
     document.getElementsByTagName("body")[0].classList.remove("modal-open");
 };
 
-const cargarTiposUsuario = async () => {
-    try {
-        const response = await axios.get(route("tipo_usuarios.getTipos"));
-        listTipos.value = response.data;
-    } catch (error) {
-        listTipos.value = [];
-    }
-};
-const cargarListas = () => {
-    cargarTiposUsuario();
-};
-
-const options = ref([]);
-const loading = ref(false);
+const listClientes = ref([]);
+const loadingClientes = ref(false);
 const remoteMethod = async (query) => {
     if (query !== "") {
-        loading.value = true;
+        loadingClientes.value = true;
         try {
             const response = await axios.get(
-                route("personas.listado") +
+                route("clientes.listadoSelectElementUi") +
                     `?search=${encodeURIComponent(query)}`
             );
-            const data = response.data.personas;
-            // Suponiendo que data es un array de personas [{id, nombre}]
-            options.value = data.map((persona) => ({
-                value: persona.id,
-                label: `${persona.full_name} - ${persona.ci}`,
+            const data = response.data.clientes;
+            // Suponiendo que data es un array de clientes [{id, nombre}]
+            listClientes.value = data.map((cliente) => ({
+                value: cliente.id,
+                label: `${cliente.full_name} - ${cliente.ci}`,
             }));
         } catch (error) {
-            options.value = [];
+            listClientes.value = [];
         }
-        loading.value = false;
+        loadingClientes.value = false;
     } else {
-        options.value = [];
+        listClientes.value = [];
     }
 };
+
+const actualizaFechaIngreso = () => {
+    form.fecha_entrada = getFechaAtual();
+    form.hora_entrada = getHoraActual();
+};
+const caclularFechaSalida = () => {
+    if (!form.fecha_entrada) {
+        form.fecha_salida = null;
+    } else {
+        // Convertir la fecha a local para evitar bug de UTC
+        const [y, m, d] = form.fecha_entrada.split("-").map(Number);
+        const fecha = new Date(y, m - 1, d);
+
+        fecha.setDate(fecha.getDate() + Number(form.dias_estadia));
+
+        const year = fecha.getFullYear();
+        const month = String(fecha.getMonth() + 1).padStart(2, "0");
+        const day = String(fecha.getDate()).padStart(2, "0");
+
+        form.fecha_salida = `${year}-${month}-${day}`;
+    }
+};
+
+const actualizaPrecioTipo = () => {
+    form.cd = habitacion.value.precio;
+    if (form.tipo == "TEMPORAL") {
+        form.cd = habitacion.value.precio_temp;
+    }
+    // console.log(form.cd);
+
+    // USAR UNA FUNCION PARA TIPO DE CAMBIO
+    // DETECTANDO SI HAY O NO UN TIPO DE CAMBIO
+
+    actualizaMontos();
+};
+
+const actualizaMontos = () => {
+    form.moneda_id_tc = monedaOficial?.value.id;
+    form.total = form.dias_estadia * form.cd;
+    form.saldo = form.total - form.adelanto;
+    // USAR UNA FUNCION PARA TIPO DE CAMBIO
+    // DETECTANDO SI HAY O NO UN TIPO DE CAMBIO
+};
+
+const listMonedas = ref([]);
+const cargarMonedas = () => {
+    axios.get(route("monedas.listado")).then((response) => {
+        listMonedas.value = response.data.monedas;
+    });
+};
+
+const cargarListas = () => {
+    cargarMonedas();
+};
+
+const agregarCliente = () => {
+    muestra_formulario_cliente.value = true;
+    accion_formulario_cliente.value = 0;
+};
+
+const updateClientes = (item) => {
+    muestra_formulario_cliente.value = false;
+    accion_formulario_cliente.value = 0;
+    agregarClienteASelect(item);
+};
+
+const agregarClienteASelect = async (cliente) => {
+    if (!cliente) return;
+
+    const nuevo = {
+        value: cliente.id,
+        label: `${cliente.nombre} ${cliente.paterno} ${cliente.materno} - ${cliente.ci}`,
+    };
+
+    // Si no existe, agregarlo
+    const existe = listClientes.value.some((c) => c.value === nuevo.value);
+    if (!existe) {
+        listClientes.value.push(nuevo);
+    }
+
+    form.cliente_id = null;
+    nextTick(() => {
+        setTimeout(() => {
+            form.cliente_id = nuevo.value;
+        }, 300);
+    });
+};
+
+const cierreFormCliente = () => {
+    muestra_formulario_cliente.value = false;
+};
+
 onMounted(() => {});
 </script>
 
@@ -196,7 +329,7 @@ onMounted(() => {});
     <MiModal
         :open_modal="muestra_form"
         @close="cerrarFormulario"
-        :size="'modal-xl'"
+        :size="'modal-xl w-100 modal_registro'"
         :header-class="'bg-navy'"
         :footer-class="'justify-content-end'"
     >
@@ -213,281 +346,269 @@ onMounted(() => {});
 
         <template #body>
             <form @submit.prevent="enviarFormulario()">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <h4 class="h5 text-center">
-                                    Información del Registro
-                                </h4>
-                            </div>
-                            <div class="col-12">
-                                <label>Buscar cliente</label>
-                                <div class="input-group mb-3">
-                                    <el-select-v2
-                                        v-model="form.cliente_id"
-                                        style="width: calc(100% - 40px)"
-                                        filterable
-                                        remote
-                                        :remote-method="remoteMethod"
-                                        clearable
-                                        :options="listClientes"
-                                        :loading="loadingClientes"
-                                        placeholder="Nombre o C.I./Pasaporte..."
-                                        size="large"
-                                        no-data-text="Sin resultados"
-                                        loading-text="Buscando..."
-                                        :class="{
-                                            'is-invalid':
-                                                form.errors?.cliente_id,
-                                        }"
-                                        class="rounded-0"
-                                    />
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <ul
-                                    v-if="form.errors?.cliente_id"
-                                    class="parsley-errors-list filled"
+                <div class="row">
+                    <div class="col-md-7 mb-2">
+                        <label>Cliente</label>
+                        <div class="input-group">
+                            <el-select-v2
+                                v-model="form.cliente_id"
+                                style="width: calc(100% - 40px)"
+                                filterable
+                                remote
+                                :remote-method="remoteMethod"
+                                clearable
+                                :options="listClientes"
+                                :loading="loadingClientes"
+                                placeholder="Nombre o C.I./Pasaporte..."
+                                size="large"
+                                no-data-text="Sin resultados"
+                                loading-text="Buscando..."
+                                :class="{
+                                    'is-invalid': form.errors?.cliente_id,
+                                }"
+                                class="rounded-0"
+                            />
+                            <div class="input-group-append">
+                                <button
+                                    class="btn btn-primary"
+                                    @click.prevent="agregarCliente"
                                 >
-                                    <li class="parsley-required">
-                                        {{ form.errors?.cliente_id }}
-                                    </li>
-                                </ul>
+                                    <i class="fa fa-plus"></i>
+                                </button>
                             </div>
+                        </div>
+                        <ul
+                            v-if="form.errors?.cliente_id"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.cliente_id }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label>Tipo de Registro</label>
+                        <select
+                            class="form-control"
+                            v-model="form.tipo"
+                            @change="actualizaPrecioTipo()"
+                        >
+                            <option value="NORMAL">NORMAL</option>
+                            <option value="TEMPORAL">TEMPORAL</option>
+                            <option value="RESERVA">RESERVA</option>
+                        </select>
+                    </div>
 
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <form>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <h4 class="h5 text-center">
-                                                        Ingreso
-                                                        <small
-                                                            class="text-primary cursor-pointer"
-                                                        >
-                                                            <i
-                                                                class="fa fa-sync text-sm"
-                                                                @click="
-                                                                    actualizaFechaIngreso
-                                                                "
-                                                            ></i>
-                                                        </small>
-                                                    </h4>
-                                                </div>
-                                                <div class="col-md-4 mb-1">
-                                                    <label>
-                                                        Fecha de Ingreso
-                                                    </label>
-                                                    <input
-                                                        type="date"
-                                                        class="form-control"
-                                                        :class="{
-                                                            'parsley-error':
-                                                                form.errors
-                                                                    ?.fecha_entrada,
-                                                        }"
-                                                        v-model="
-                                                            form.fecha_entrada
-                                                        "
-                                                        @keyup="
-                                                            caclularFechaSalida
-                                                        "
-                                                    />
-                                                    <ul
-                                                        v-if="
-                                                            form.errors
-                                                                ?.fecha_entrada
-                                                        "
-                                                        class="parsley-errors-list filled"
-                                                    >
-                                                        <li
-                                                            class="parsley-required"
-                                                        >
-                                                            {{
-                                                                form.errors
-                                                                    ?.fecha_entrada
-                                                            }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4 mb-1">
-                                                    <label>
-                                                        Hora de Ingreso
-                                                    </label>
-                                                    <input
-                                                        type="time"
-                                                        class="form-control"
-                                                        :class="{
-                                                            'parsley-error':
-                                                                form.errors
-                                                                    ?.hora_entrada,
-                                                        }"
-                                                        v-model="
-                                                            form.hora_entrada
-                                                        "
-                                                    />
-                                                    <ul
-                                                        v-if="
-                                                            form.errors
-                                                                ?.hora_entrada
-                                                        "
-                                                        class="parsley-errors-list filled"
-                                                    >
-                                                        <li
-                                                            class="parsley-required"
-                                                        >
-                                                            {{
-                                                                form.errors
-                                                                    ?.hora_entrada
-                                                            }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4 mb-1">
-                                                    <label
-                                                        >Días de estadía</label
-                                                    >
-                                                    <el-input-number
-                                                        class="w-100"
-                                                        v-model="
-                                                            form.dias_estadia
-                                                        "
-                                                        :min="1"
-                                                        @change="
-                                                            caclularFechaSalida
-                                                        "
-                                                    >
-                                                        <template #suffix>
-                                                            <span>Día(s)</span>
-                                                        </template></el-input-number
-                                                    >
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <hr class="mt-2 mb-2" />
-                                                </div>
-                                                <div class="col-12">
-                                                    <h4
-                                                        class="h5 text-center mb-0"
-                                                    >
-                                                        Salida
-                                                    </h4>
-                                                    <small
-                                                        class="text-center w-100 d-block"
-                                                        >(Automatico)</small
-                                                    >
-                                                </div>
-                                                <div
-                                                    class="col-md-4 mb-1 offset-md-2"
-                                                >
-                                                    <label>
-                                                        Fecha de Salida
-                                                    </label>
-                                                    <input
-                                                        type="date"
-                                                        class="form-control"
-                                                        :class="{
-                                                            'parsley-error':
-                                                                form.errors
-                                                                    ?.fecha_salida,
-                                                        }"
-                                                        v-model="
-                                                            form.fecha_salida
-                                                        "
-                                                        readonly
-                                                    />
-                                                    <ul
-                                                        v-if="
-                                                            form.errors
-                                                                ?.fecha_salida
-                                                        "
-                                                        class="parsley-errors-list filled"
-                                                    >
-                                                        <li
-                                                            class="parsley-required"
-                                                        >
-                                                            {{
-                                                                form.errors
-                                                                    ?.fecha_salida
-                                                            }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-4 mb-1">
-                                                    <label>
-                                                        Hora de Salida
-                                                    </label>
-                                                    <input
-                                                        type="time"
-                                                        class="form-control"
-                                                        :class="{
-                                                            'parsley-error':
-                                                                form.errors
-                                                                    ?.hora_salida,
-                                                        }"
-                                                        v-model="
-                                                            form.hora_salida
-                                                        "
-                                                        readonly
-                                                    />
-                                                    <ul
-                                                        v-if="
-                                                            form.errors
-                                                                ?.hora_salida
-                                                        "
-                                                        class="parsley-errors-list filled"
-                                                    >
-                                                        <li
-                                                            class="parsley-required"
-                                                        >
-                                                            {{
-                                                                form.errors
-                                                                    ?.hora_salida
-                                                            }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </form>
+                    <div class="col-md-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="h5 text-center">
+                                            Ingreso
+                                            <small
+                                                class="text-primary cursor-pointer"
+                                            >
+                                                <i
+                                                    class="fa fa-sync text-sm"
+                                                    @click="
+                                                        actualizaFechaIngreso
+                                                    "
+                                                ></i>
+                                            </small>
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label> Fecha de Ingreso </label>
+                                        <input
+                                            type="date"
+                                            class="form-control"
+                                            :class="{
+                                                'parsley-error':
+                                                    form.errors?.fecha_entrada,
+                                            }"
+                                            v-model="form.fecha_entrada"
+                                            @keyup="caclularFechaSalida"
+                                        />
+                                        <ul
+                                            v-if="form.errors?.fecha_entrada"
+                                            class="parsley-errors-list filled"
+                                        >
+                                            <li class="parsley-required">
+                                                {{ form.errors?.fecha_entrada }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label> Hora de Ingreso </label>
+                                        <input
+                                            type="time"
+                                            class="form-control"
+                                            :class="{
+                                                'parsley-error':
+                                                    form.errors?.hora_entrada,
+                                            }"
+                                            v-model="form.hora_entrada"
+                                        />
+                                        <ul
+                                            v-if="form.errors?.hora_entrada"
+                                            class="parsley-errors-list filled"
+                                        >
+                                            <li class="parsley-required">
+                                                {{ form.errors?.hora_entrada }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label>Días de estadía</label>
+                                        <el-input-number
+                                            class="w-100"
+                                            v-model="form.dias_estadia"
+                                            :min="1"
+                                            @change="
+                                                caclularFechaSalida();
+                                                actualizaMontos();
+                                            "
+                                        >
+                                            <template #suffix>
+                                                <span>Día(s)</span>
+                                            </template></el-input-number
+                                        >
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- 
-                                    to do: VER COMO SE MANEJARA CON DIFERENTES MONEDAS -->
-                            <div class="col-12 bg-info">
-                                <div class="row py-1">
-                                    <div class="col-6 text-right">
-                                        <b>Habitación Asignada:</b>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="h5 text-center mb-0">
+                                            Salida
+                                            <small class="text-xs"
+                                                >(Automatico)</small
+                                            >
+                                        </h4>
                                     </div>
-                                    <div class="col-6">
-                                        <template
-                                            v-if="form.habitacion_id"
-                                        ></template>
+                                    <div class="col-md-4 mb-1 offset-md-2">
+                                        <label> Fecha de Salida </label>
+                                        <input
+                                            type="date"
+                                            class="form-control"
+                                            :class="{
+                                                'parsley-error':
+                                                    form.errors?.fecha_salida,
+                                            }"
+                                            v-model="form.fecha_salida"
+                                            readonly
+                                        />
+                                        <ul
+                                            v-if="form.errors?.fecha_salida"
+                                            class="parsley-errors-list filled"
+                                        >
+                                            <li class="parsley-required">
+                                                {{ form.errors?.fecha_salida }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4 mb-1">
+                                        <label> Hora de Salida </label>
+                                        <input
+                                            type="time"
+                                            class="form-control"
+                                            :class="{
+                                                'parsley-error':
+                                                    form.errors?.hora_salida,
+                                            }"
+                                            v-model="form.hora_salida"
+                                            readonly
+                                        />
+                                        <ul
+                                            v-if="form.errors?.hora_salida"
+                                            class="parsley-errors-list filled"
+                                        >
+                                            <li class="parsley-required">
+                                                {{ form.errors?.hora_salida }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <label>Habitación asignada</label>
+                                        <template v-if="habitacion">
+                                            <div
+                                                class="d-block badge bg1 text-md"
+                                            >
+                                                <div class="row">
+                                                    <div
+                                                        class="col-3 text-wrap"
+                                                    >
+                                                        {{
+                                                            habitacion.numero_habitacion
+                                                        }}
+                                                        <br />
+                                                        <i
+                                                            class="fa fa-info mt-1"
+                                                        ></i>
+                                                    </div>
+                                                    <div
+                                                        class="col-3 text-wrap"
+                                                    >
+                                                        {{
+                                                            habitacion
+                                                                .tipo_habitacion
+                                                                ?.nombre
+                                                        }}
+                                                        <br />
+                                                        <i
+                                                            class="fa fa-users mt-1"
+                                                        ></i>
+                                                    </div>
+                                                    <div
+                                                        class="col-3 text-wrap"
+                                                    >
+                                                        {{
+                                                            habitacion.capacidad
+                                                        }}
+                                                        <br />
+                                                        <i
+                                                            class="fa fa-users mt-1"
+                                                        ></i>
+                                                    </div>
+                                                    <div
+                                                        class="col-3 text-wrap"
+                                                    >
+                                                        {{ habitacion.piso }}
+                                                        <br />
+                                                        <i
+                                                            class="fa fa-building mt-1"
+                                                        ></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
                                         <template v-else>
                                             <span
-                                                class="badge badge-danger text-md"
+                                                class="d-block badge badge-danger text-md"
                                                 >SIN ASIGNAR</span
                                             >
                                         </template>
                                     </div>
-                                </div>
-                                <div class="row py-1">
-                                    <div class="col-6 text-right">
-                                        <b>Desayuno:</b>
-                                    </div>
-                                    <div class="col-6">
+                                    <div class="col-12 text-center">
+                                        <label>Con Desayuno</label>
                                         <el-radio-group
                                             v-model="form.desayuno"
                                             fill="#5cc72f"
                                             text-color="#fff"
+                                            class="d-block"
                                         >
                                             <el-radio-button :value="0"
                                                 ><span class=""
@@ -501,210 +622,161 @@ onMounted(() => {});
                                             >
                                         </el-radio-group>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-12 py-1 bg-info">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b
-                                            >Costo/Día
-                                            {{ monedaOficial?.simbolo }}:</b
-                                        >
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            type="number"
+                                    <div class="col-12 text-center">
+                                        <label>Moneda</label>
+                                        <select
                                             class="form-control"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 py-1 bg-info">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b
-                                            >Total
-                                            {{ monedaOficial?.simbolo }}:</b
+                                            v-model="form.moneda_id_tc"
                                         >
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 py-1 bg-info">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b>Pagar en otra moneda:</b>
-                                    </div>
-                                    <div class="col-6">
-                                        <el-radio-group
-                                            v-model="form.tc"
-                                            fill="#5cc72f"
-                                            text-color="#fff"
-                                        >
-                                            <el-radio-button :value="0"
-                                                ><span class=""
-                                                    >No</span
-                                                ></el-radio-button
+                                            <option
+                                                v-for="item in listMonedas"
+                                                :value="item.id"
                                             >
-                                            <el-radio-button :value="1"
-                                                ><span class=""
-                                                    >Si</span
-                                                ></el-radio-button
-                                            >
-                                        </el-radio-group>
+                                                {{ item.nombre }} -
+                                                {{ item.simbolo }}
+                                            </option>
+                                        </select>
                                     </div>
-                                </div>
-                            </div>
-                            <template v-if="form.tc == 1">
-                                <div class="col-12 py-1 bg-success">
-                                    <div class="row">
-                                        <div class="col-6 text-right">
-                                            <b>Moneda:</b>
-                                        </div>
-                                        <div class="col-6">
+                                    <div
+                                        class="col-12 text-center"
+                                        v-if="
+                                            form.moneda_id_tc !=
+                                            monedaOficial?.id
+                                        "
+                                    >
+                                        <label>Tipo de Cambio:</label>
+                                        <div class="input-group">
                                             <select class="form-control">
                                                 <option value="">
                                                     Moneda por Defecto
                                                 </option>
                                             </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 py-1 bg-success">
-                                    <div class="row">
-                                        <div class="col-6 text-right">
-                                            <b>Tipo de Cambio:</b>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="input-group">
-                                                <select class="form-control">
-                                                    <option value="">
-                                                        Moneda por Defecto
-                                                    </option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <button
-                                                        class="btn btn-primary"
-                                                    >
-                                                        <i
-                                                            class="fa fa-plus"
-                                                        ></i>
-                                                    </button>
-                                                </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-12 py-1 bg-success">
-                                    <div class="row">
-                                        <div class="col-6 text-right">
-                                            <b>Costo/Día:</b>
-                                        </div>
-                                        <div class="col-6">
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 py-1 bg-success">
-                                    <div class="row">
-                                        <div class="col-6 text-right">
-                                            <b>Costo/Día:</b>
-                                        </div>
-                                        <div class="col-6">
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                            <div class="col-12 py-1 bg2">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b>Cancelado:</b>
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 py-1 bg2">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b>Saldo:</b><br />
-                                        <small>(Automatico)</small>
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            readonly
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 py-1 bg2">
-                                <div class="row">
-                                    <div class="col-6 text-right">
-                                        <b>Saldo:</b><br />
-                                        <small>(Automatico)</small>
-                                    </div>
-                                    <div class="col-6">
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            readonly
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 mt-2">
-                                <div class="row">
-                                    <div class="col-6 offset-6">
-                                        <button
-                                            class="btn btn-primary w-100"
-                                            :disabled="
-                                                !form.cliente_id ||
-                                                !form.habitacion_id
-                                            "
+                                    <div class="col-12 text-center">
+                                        <label
+                                            >Costo/Día
+                                            {{ monedaOficial?.simbolo }}</label
                                         >
-                                            Finalizar Registro
-                                        </button>
+                                        <input
+                                            type="number"
+                                            class="form-control text-center"
+                                            v-model="form.cd"
+                                        />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <!-- SIN TIPO DE CAMBIO -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label
+                                    >Total {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    readonly
+                                    v-model="form.total"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label
+                                    >Cancelado
+                                    {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    @keyup="actualizaMontos"
+                                    v-model="form.adelanto"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label
+                                    >Saldo {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    readonly
+                                    v-model="form.saldo"
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label
+                                    >Garantía
+                                    {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    v-model="form.garantia"
+                                />
+                            </div>
+                        </div>
+                        <!-- CON TIPO DE CAMBIO -->
+                        <!-- SOLO MOSTRAR LOS DATOS SEGÚN MONEDA SELECCIONADA -->
+                        <!-- <div class="row">
+                            <div class="col-md-6">
+                                <label
+                                    >Total {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    readonly
+                                />
+                            </div>
+                            <div class="col-md-6">
+                                <label
+                                    >Cancelado
+                                    {{ monedaOficial?.simbolo }}:</label
+                                >
+                                <input type="number" class="form-control" />
+                            </div>
+                        </div> -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary w-100 my-1 mt-2"
+                                    @click.prevent="enviarFormulario"
+                                    :disabled="
+                                        enviando ||
+                                        !form.cliente_id ||
+                                        !form.habitacion_id
+                                    "
+                                    v-html="textBtn"
+                                ></button>
+                                <button
+                                    type="button"
+                                    class="btn btn-default w-100 my-1"
+                                    @click.prevent="cerrarFormulario()"
+                                >
+                                    <i class="fa fa-times"></i> Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
         </template>
-        <template #footer>
-            <button
-                type="button"
-                class="btn btn-default"
-                @click.prevent="cerrarFormulario()"
-            >
-                Cerrar
-            </button>
-            <button
-                type="button"
-                class="btn btn-primary"
-                :disabled="enviando"
-                @click.prevent="enviarFormulario"
-                v-html="textBtn"
-            ></button>
-        </template>
     </MiModal>
+    <Formulario
+        :muestra_formulario="muestra_formulario_cliente"
+        :accion_formulario="accion_formulario_cliente"
+        :disabled-body="false"
+        :respuesta="'json'"
+        @envio-formulario="updateClientes"
+        @cerrar-formulario="cierreFormCliente"
+    ></Formulario>
 </template>

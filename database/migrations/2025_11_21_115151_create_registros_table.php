@@ -48,6 +48,7 @@ return new class extends Migration
             $table->bigInteger("nro_reserva")->nullable();
             $table->string("cod_reserva")->nullable();
             $table->string("tipo_reserva")->nullable(); // DIARIA, MENSUAL, ANUAL
+            $table->integer("dev_garantia")->default(0)->nullable();  //0:SIN GARANTÍA, 1:SIN DEVOLVER, 2:DEVUELTO
             $table->integer("status")->default(1);
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();

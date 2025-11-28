@@ -468,6 +468,12 @@ body.app-blank.login {
         width: 0px !important;
         display: none !important;
     }
+
+    .modal .modal-dialog,
+    .modal .modal-content {
+        margin: 0;
+        width: 100vw !important;
+    }
 }
 
 /* HABITACIONES */
@@ -484,14 +490,19 @@ body.app-blank.login {
     position: relative;
 }
 
-.contenedorHabitacion .piso {
-    background-color: var(--principal);
-    color: white;
-    font-weight: bold;
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 0px 0px 10px 0px;
+.contenedorHabiaciones .habitacion {
+    width: 99%;
+    transition: all 0.1s;
+}
+
+.contenedorHabiaciones .habitacion:hover {
+    transform: scale(1.01);
+}
+
+.contenedorBotones {
+    display: flex;
+    justify-content: end;
+}
+.contenedorBotones .boton {
+    flex: 1;
 }

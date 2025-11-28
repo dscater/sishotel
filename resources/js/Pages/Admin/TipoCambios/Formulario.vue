@@ -14,6 +14,14 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    respuesta: {
+        type: String,
+        default: "",
+    },
+    disabledBody: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const { oTipoCambio, limpiarTipoCambio } = useTipoCambios();
@@ -33,9 +41,11 @@ watch(
                 .classList.add("modal-open");
             form = useForm(oTipoCambio.value);
         } else {
-            document
-                .getElementsByTagName("body")[0]
-                .classList.remove("modal-open");
+            if (props.disabledBody) {
+                document
+                    .getElementsByTagName("body")[0]
+                    .classList.remove("modal-open");
+            }
         }
     }
 );
@@ -134,7 +144,9 @@ watch(muestra_form, (newVal) => {
 
 const cerrarFormulario = () => {
     muestra_form.value = false;
-    document.getElementsByTagName("body")[0].classList.remove("modal-open");
+    if (props.disabledBody) {
+        document.getElementsByTagName("body")[0].classList.remove("modal-open");
+    }
 };
 
 const listMonedas = ref([]);

@@ -25,15 +25,16 @@ class ClienteStoreRequest extends FormRequest
             "nombre" => "required|min:2",
             "paterno" => "required|min:1",
             "materno" => "nullable|min:1",
-            "ci" => "required|numeric|digits_between:6,10|unique:users,ci",
+            "ci" => "required|numeric|digits_between:6,10|unique:clientes,ci",
             "ci_exp" => "nullable",
             "dir" => "nullable|min:1",
             "fono" => "required|min:1",
-            "correo" => "nullable|email|unique:users,correo",
+            "correo" => "nullable|email|unique:clientes,correo",
             "fecha_nac" => "nullable|date",
             "edad" => "nullable|numeric",
             "nacionalidad" => "nullable|min:1",
             "pais" => "nullable|min:1",
+            "respuesta" => "nullable"
         ];
     }
 

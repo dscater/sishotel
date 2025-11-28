@@ -91,7 +91,7 @@ const updateDatatable = async () => {
 const eliminarHabitacion = (item) => {
     Swal.fire({
         title: "¿Quierés eliminar este registro?",
-        html: `<strong>${item.full_name}</strong>`,
+        html: `<strong>${item.numero_habitacion}</strong>`,
         showCancelButton: true,
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",

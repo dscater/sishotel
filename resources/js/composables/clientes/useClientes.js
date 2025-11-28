@@ -14,6 +14,7 @@ const oCliente = ref({
     edad: "",
     nacionalidad: "",
     pais: "",
+    respuesta: "",
     _method: "POST",
 });
 
@@ -53,6 +54,7 @@ export const useClientes = () => {
         oCliente.value.edad = "";
         oCliente.value.nacionalidad = "";
         oCliente.value.pais = "";
+        oCliente.value.respuesta = "";
         oCliente.value._method = "POST";
     };
 

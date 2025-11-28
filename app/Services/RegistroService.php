@@ -80,84 +80,22 @@ class RegistroService
 
 
     /**
-     * Lista de registros paginado con filtros (eliminados)
-     *
-     * @param integer $length
-     * @param integer $page
-     * @param string $search
-     * @param array $columnsSerachLike
-     * @param array $columnsFilter
-     * @return LengthAwarePaginator
-     */
-    public function listadoPaginadoEliminados(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
-    {
-        $registros = Registro::select("registros.*");
-
-        $registros->where("status", 0);
-
-        // Filtros exactos
-        foreach ($columnsFilter as $key => $value) {
-            if (!is_null($value)) {
-                $registros->where("registros.$key", $value);
-            }
-        }
-
-        // Filtros por rango
-        foreach ($columnsBetweenFilter as $key => $value) {
-            if (isset($value[0], $value[1])) {
-                $registros->whereBetween("registros.$key", $value);
-            }
-        }
-
-        // Búsqueda en múltiples columnas con LIKE
-        if (!empty($search) && !empty($columnsSerachLike)) {
-            $registros->where(function ($query) use ($search, $columnsSerachLike) {
-                foreach ($columnsSerachLike as $col) {
-                    $query->orWhere("registros.$col", "LIKE", "%$search%");
-                }
-            });
-        }
-
-        // Ordenamiento
-        foreach ($orderBy as $value) {
-            if (isset($value[0], $value[1])) {
-                $registros->orderBy($value[0], $value[1]);
-            }
-        }
-
-
-        $registros = $registros->paginate($length, ['*'], 'page', $page);
-        return $registros;
-    }
-
-    /**
      * Crear registro
      *
      * @param array $datos
      * @return Registro
      */
-    public function crear(array $datos): Registro
+    public function crear(array $datos): Registro|array
     {
-        $registro = Registro::create([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
-            "fecha_registro" => date("Y-m-d"),
-            "user_id" => Auth::user()->id,
-        ]);
+
+        Log::debug($datos);
+        // $registro = Registro::create([]);
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UNA REGISTRO", $registro);
+        // $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UN REGISTRO", $registro);
 
-        return $registro;
+        // return $registro;
+        return [];
     }
 
     /**
@@ -186,7 +124,7 @@ class RegistroService
         ]);
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UN REGISTRO", $old_user, $registro->withoutRelations());
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN REGISTRO", $old_user, $registro->withoutRelations());
 
         return $registro;
     }
@@ -206,39 +144,6 @@ class RegistroService
 
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO " . $old_user->usuario, $old_user, $registro);
-        return true;
-    }
-
-    /**
-     * Reestablecer registro
-     *
-     * @param Registro $registro
-     * @return boolean
-     */
-    public function reestablecer(Registro $registro): bool
-    {
-        $old_registro = clone $registro;
-        $registro->status = 1;
-        $registro->save();
-
-        // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UN REGISTRO " . $old_registro->usuario, $old_registro, $registro);
-        return true;
-    }
-
-    /**
-     * Eliminación permanente de registro
-     *
-     * @param Registro $registro
-     * @return boolean
-     */
-    public function eliminacion_permanente(Registro $registro): bool
-    {
-        $old_registro = clone $registro;
-        $registro->delete();
-
-        // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN REGISTRO " . $old_registro->usuario, $old_registro);
         return true;
     }
 }

@@ -25,6 +25,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    disabledBody: {
+        type: Boolean,
+        default: true,
+    },
 });
 const emits = defineEmits(["close"]);
 const show = ref(props.open_modal);
@@ -38,9 +42,11 @@ watch(
                 .classList.add("modal-open");
             window.addEventListener("keyup", handleKeyup);
         } else {
-            document
-                .getElementsByTagName("body")[0]
-                .classList.remove("modal-open");
+            if (props.disabledBody) {
+                document
+                    .getElementsByTagName("body")[0]
+                    .classList.remove("modal-open");
+            }
             window.removeEventListener("keyup", handleKeyup);
         }
     }
@@ -114,7 +120,11 @@ onBeforeUnmount(() => {
                 <div class="modal-body" :class="[bodyClass]">
                     <slot name="body"></slot>
                 </div>
-                <div class="modal-footer" :class="[footerClass]">
+                <div
+                    class="modal-footer"
+                    :class="[footerClass]"
+                    v-if="$slots.footer"
+                >
                     <slot name="footer"></slot>
                 </div>
             </div>

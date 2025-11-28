@@ -39,6 +39,7 @@ class Registro extends Model
         "nro_reserva",
         "cod_reserva",
         "tipo_reserva",
+        "dev_garantia",
         "status",
         "user_id",
     ];

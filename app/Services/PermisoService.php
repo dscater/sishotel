@@ -26,6 +26,7 @@ class PermisoService
             "tipo_usuarios.getTipos",
 
             "clientes.listado",
+            "clientes.listadoSelectElementUi",
             "clientes.paginado",
             "clientes.index",
             "clientes.create",
@@ -40,9 +41,10 @@ class PermisoService
             "clientes.eliminacion_permanente",
 
             "estado_habitacions.getEstadosHabitacion",
+            "estado_habitacions.getEstadosConteoHabitacion",
 
             "habitacions.listado",
-            "habitacions.listadoCheckIn",
+            "habitacions.listadoRecepcion",
             "habitacions.paginado",
             "habitacions.index",
             "habitacions.create",
@@ -88,6 +90,8 @@ class PermisoService
             "tipo_cambios.destroy",
 
             "registros.index",
+            "registros.store",
+            "registros.update",
 
             "configuracions.index",
             "configuracions.create",

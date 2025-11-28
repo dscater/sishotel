@@ -26,4 +26,25 @@ class RegistroController extends Controller
     {
         return Inertia::render("Admin/Registros/Index");
     }
+
+    /**
+     * Store registro
+     *
+     * @param RegistroStoreRequest $request
+     * @return RedirectResponse|Response
+     */
+    public function store(RegistroStoreRequest $request): RedirectResponse|Response|JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $registro = $this->registroService->crear($request->validated());
+            DB::commit();
+            return redirect()->route("registros.index")->with("bien", "Registro realizado");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
+    }
 }

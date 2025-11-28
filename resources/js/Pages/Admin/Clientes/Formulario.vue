@@ -12,11 +12,20 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    respuesta: {
+        type: String,
+        default: "",
+    },
+    disabledBody: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const { oCliente, limpiarCliente } = useClientes();
 const accion_form = ref(props.accion_formulario);
 const muestra_form = ref(props.muestra_formulario);
+const tRespuesta = ref(props.respuesta);
 const enviando = ref(false);
 let form = useForm(oCliente.value);
 watch(
@@ -24,15 +33,21 @@ watch(
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
+            if (props.respuesta != "") {
+                oCliente.value.respuesta = props.respuesta;
+            }
             form = useForm(oCliente.value);
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
             form = useForm(oCliente.value);
         } else {
-            document
-                .getElementsByTagName("body")[0]
-                .classList.remove("modal-open");
+            if (props.disabledBody) {
+                console.log("QUITA modal open");
+                document
+                    .getElementsByTagName("body")[0]
+                    .classList.remove("modal-open");
+            }
         }
     }
 );
@@ -40,6 +55,13 @@ watch(
     () => props.accion_formulario,
     (newValue) => {
         accion_form.value = newValue;
+    }
+);
+watch(
+    () => props.respuesta,
+    (newValue) => {
+        tRespuesta.value = newValue;
+        form.respuesta = tRespuesta.value;
     }
 );
 
@@ -71,66 +93,118 @@ const textBtn = computed(() => {
     return `<i class="fa fa-edit"></i> Actualizar`;
 });
 
-const enviarFormulario = () => {
+const enviarFormulario = async () => {
     enviando.value = true;
     let url =
         form["_method"] == "POST"
             ? route("clientes.store")
             : route("clientes.update", form.id);
 
-    form.post(url, {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: (response) => {
-            console.log("correcto");
-            const success =
-                response.props.flash.success ?? "Proceso realizado con éxito";
+    if (form.respuesta == "json") {
+        try {
+            const response = await axios.post(url, form.data(), {
+                headers: {
+                    Accept: "application/json",
+                },
+            });
+
+            console.log("JSON recibido:", response.data);
+
             Swal.fire({
                 icon: "success",
                 title: "Correcto",
-                html: `<strong>${success}</strong>`,
+                html: `<strong>Guardado correctamente</strong>`,
                 confirmButtonText: `Aceptar`,
                 customClass: {
                     confirmButton: "btn-success",
                 },
             });
+
             limpiarCliente();
-            emits("envio-formulario");
-        },
-        onError: (err, code) => {
-            console.log(code ?? "");
-            console.log(form.errors);
-            if (form.errors) {
-                const error =
-                    "Existen errores en el formulario, por favor verifique";
+            emits("envio-formulario", response.data);
+        } catch (error) {
+            console.log("Error JSON:", error.response?.data);
+
+            // limpiar errores anteriores
+            form.errors = {};
+            // si el backend envía errores de validación
+            if (error.response?.status === 422) {
+                const errores = error.response.data.errors;
+
+                // cargar los errores en form.errors como los usa Inertia
+                Object.keys(errores).forEach((campo) => {
+                    form.errors[campo] = errores[campo][0]; // solo el primer mensaje
+                });
+            }
+
+            Swal.fire({
+                icon: "info",
+                title: "Error",
+                html: `<strong>Ocurrió un error en la petición</strong>`,
+                confirmButtonText: `Aceptar`,
+                customClass: {
+                    confirmButton: "btn-error",
+                },
+            });
+        } finally {
+            enviando.value = false;
+        }
+    } else {
+        form.post(url, {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: (response) => {
+                console.log("correcto");
+                const success =
+                    response.props.flash.success ??
+                    "Proceso realizado con éxito";
                 Swal.fire({
-                    icon: "info",
-                    title: "Error",
-                    html: `<strong>${error}</strong>`,
+                    icon: "success",
+                    title: "Correcto",
+                    html: `<strong>${success}</strong>`,
                     confirmButtonText: `Aceptar`,
                     customClass: {
                         confirmButton: "btn-success",
                     },
                 });
-            } else {
-                const error =
-                    "Ocurrió un error inesperado contactese con el Administrador";
-                Swal.fire({
-                    icon: "info",
-                    title: "Error",
-                    html: `<strong>${error}</strong>`,
-                    confirmButtonText: `Aceptar`,
-                    customClass: {
-                        confirmButton: "btn-error",
-                    },
-                });
-            }
-            console.log("error: " + err.error);
-        },
-        onFinish: () => {
-            enviando.value = false;
-        },
-    });
+                limpiarCliente();
+                emits("envio-formulario");
+            },
+            onError: (err, code) => {
+                console.log(code ?? "");
+                console.log(form.errors);
+                if (form.errors) {
+                    const error =
+                        "Existen errores en el formulario, por favor verifique";
+                    Swal.fire({
+                        icon: "info",
+                        title: "Error",
+                        html: `<strong>${error}</strong>`,
+                        confirmButtonText: `Aceptar`,
+                        customClass: {
+                            confirmButton: "btn-success",
+                        },
+                    });
+                } else {
+                    const error =
+                        "Ocurrió un error inesperado contactese con el Administrador";
+                    Swal.fire({
+                        icon: "info",
+                        title: "Error",
+                        html: `<strong>${error}</strong>`,
+                        confirmButtonText: `Aceptar`,
+                        customClass: {
+                            confirmButton: "btn-error",
+                        },
+                    });
+                }
+                console.log("error: " + err.error);
+            },
+            onFinish: () => {
+                enviando.value = false;
+            },
+        });
+    }
 };
 
 const emits = defineEmits(["cerrar-formulario", "envio-formulario"]);
@@ -143,7 +217,9 @@ watch(muestra_form, (newVal) => {
 
 const cerrarFormulario = () => {
     muestra_form.value = false;
-    document.getElementsByTagName("body")[0].classList.remove("modal-open");
+    if (props.disabledBody) {
+        document.getElementsByTagName("body")[0].classList.remove("modal-open");
+    }
 };
 
 const calculaEdad = () => {
@@ -188,6 +264,7 @@ onMounted(() => {
         :size="'modal-xl'"
         :header-class="'bg-dark'"
         :footer-class="'justify-content-end'"
+        :disabled-body="disabledBody"
     >
         <template #header>
             <h4 class="modal-title" v-html="tituloDialog"></h4>
