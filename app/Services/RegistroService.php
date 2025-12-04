@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Habitacion;
 use App\Models\Registro;
+use App\Models\Transferencia;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 class RegistroService
 {
     private $modulo = "REGISTROS";
-    public function __construct(private  CargarArchivoService $cargarArchivoService, private HistorialAccionService $historialAccionService) {}
+    public function __construct(private HistorialAccionService $historialAccionService, private HabitacionService $habitacionService, private MonedaService $monedaService) {}
 
 
     public function listado(string $search): array
@@ -87,15 +90,43 @@ class RegistroService
      */
     public function crear(array $datos): Registro|array
     {
+        // Log::debug($datos);
+        $monedaOficial = $this->monedaService->getMonedaPrincipal();
+        if (!$monedaOficial) {
+            throw new Exception("No se configuro la moneda oficial, contactese con el Administrador");
+        }
+        $registro = Registro::create([
+            "habitacion_id" => $datos["habitacion_id"],
+            "cliente_id" => $datos["cliente_id"],
+            "desayuno" => $datos["desayuno"],
+            "fecha_entrada" => $datos["fecha_entrada"],
+            "hora_entrada" => $datos["hora_entrada"],
+            "dias_estadia" => $datos["dias_estadia"],
+            "fecha_salida" => $datos["fecha_salida"],
+            "hora_salida" => $datos["hora_salida"],
+            "cd" => $datos["cd"],
+            "total" => $datos["total"],
+            "adelanto" => $datos["adelanto"],
+            "saldo" => $datos["saldo"],
+            "garantia" => $datos["garantia"],
+            "moneda_id" => $monedaOficial->id,
+            "cd_tc" => $datos["cd_tc"],
+            "total_tc" => $datos["total_tc"],
+            "adelanto_tc" => $datos["adelanto_tc"],
+            "saldo_tc" => $datos["saldo_tc"],
+            "garantia_tc" => $datos["garantia_tc"],
+            "moneda_id_tc" => $datos["moneda_id_tc"],
+            "tipo" => $datos["tipo"],
+            "user_id" => Auth::user()->id,
+        ]);
 
-        Log::debug($datos);
-        // $registro = Registro::create([]);
+        // habitacion ocupada
+        $this->habitacionService->actualizarEstado($registro->habitacion_id, 1);
 
         // registrar accion
-        // $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UN REGISTRO", $registro);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UN REGISTRO", $registro);
 
-        // return $registro;
-        return [];
+        return $registro;
     }
 
     /**
@@ -107,24 +138,85 @@ class RegistroService
      */
     public function actualizar(array $datos, Registro $registro): Registro
     {
-        $old_user = clone $registro;
-
+        $old_registro = clone $registro;
+        $old_registro->loadMissing(["cliente"]);
+        // Log::debug($datos);
+        $monedaOficial = $this->monedaService->getMonedaPrincipal();
+        if (!$monedaOficial) {
+            throw new Exception("No se configuro la moneda oficial, contactese con el Administrador");
+        }
         $registro->update([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
+            "cliente_id" => $datos["cliente_id"],
+            "desayuno" => $datos["desayuno"],
+            "fecha_entrada" => $datos["fecha_entrada"],
+            "hora_entrada" => $datos["hora_entrada"],
+            "dias_estadia" => $datos["dias_estadia"],
+            "fecha_salida" => $datos["fecha_salida"],
+            "hora_salida" => $datos["hora_salida"],
+            "cd" => $datos["cd"],
+            "total" => $datos["total"],
+            // "adelanto" => $datos["adelanto"],
+            "saldo" => $datos["saldo"],
+            "garantia" => $datos["garantia"],
+            // "moneda_id" => $monedaOficial->id,
+            "cd_tc" => $datos["cd_tc"],
+            "total_tc" => $datos["total_tc"],
+            "adelanto_tc" => $datos["adelanto_tc"],
+            "saldo_tc" => $datos["saldo_tc"],
+            "garantia_tc" => $datos["garantia_tc"],
+            "moneda_id_tc" => $datos["moneda_id_tc"],
+            "tipo" => $datos["tipo"],
+            // "user_id" => Auth::user()->id,
         ]);
 
+        // TODO: VERIFICAR RESERVAS CON FECHAS
+
+        // TODO: registrar el pago adelantado en CAJA
+
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN REGISTRO", $old_user, $registro->withoutRelations());
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN REGISTRO", $old_registro, $registro, ["cliente"]);
+
+        return $registro;
+    }
+
+
+    public function transferencia(Registro $registro, array $datos = [])
+    {
+        Log::debug($datos);
+        if (!isset($datos["habitacion_destino_id"]) || !$datos["habitacion_destino_id"] || $datos["habitacion_destino_id"] == 0) {
+            throw new Exception("Ocurrió un error al actualizar la transferencia");
+        }
+
+        $old_registro = clone $registro;
+        $old_registro->loadMissing(["cliente"]);
+
+        Transferencia::create([
+            "registro_id" => $registro->id,
+            "habitacion_id" => $registro->habitacion_id,
+            "habitacion_destino_id" => $datos["habitacion_destino_id"],
+            "motivo" => mb_strtoupper($datos["motivo"]),
+            "fecha" => date("Y-m-d"),
+        ]);
+
+        // habitacion antes
+        $habitacionAntes = Habitacion::findOrFail($registro->habitacion_id);
+        $habitacionAntes->estado = 0;
+        $habitacionAntes->save();
+
+        $registro->update([
+            "habitacion_id" => $datos["habitacion_destino_id"]
+        ]);
+
+        // TODO: VERIFICAR RESERVAS DE LA HABITACION CON FECHAS
+        // si existe conflicto con la fecha de salida con reservas
+
+        // habitacion unevo
+        $habitacionNuevo = Habitacion::findOrFail($datos["habitacion_destino_id"]);
+        $habitacionNuevo->estado = 1;
+        $habitacionNuevo->save();
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UNA TRANSFERENCIA DE HABITACIÓN", $old_registro, $registro, ["cliente"]);
 
         return $registro;
     }
@@ -137,13 +229,14 @@ class RegistroService
      */
     public function eliminar(Registro $registro): bool
     {
-        // no eliminar users predeterminados para el funcionamiento del sistema
-        $old_user = clone $registro;
+        // TODO: registrar EGRESO en CAJA si existe un adelanto
+
+        $old_registro = clone $registro;
         $registro->status = 0;
         $registro->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO " . $old_user->usuario, $old_user, $registro);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO", $old_registro, $registro);
         return true;
     }
 }

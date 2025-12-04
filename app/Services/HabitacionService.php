@@ -156,6 +156,22 @@ class HabitacionService
     }
 
     /**
+     * Actualizar estado de habitacion
+     *
+     * @param integer $habitacion_id
+     * @param integer $estado  // 0: disponible, 1: ocupado, 2: mantenimiento, 3: en limpieza, 4: saliente
+     * @return Habitacion
+     */
+    public function actualizarEstado(int $habitacion_id, int $estado): Habitacion
+    {
+        $habitacion = Habitacion::findOrFail($habitacion_id);
+        $habitacion->estado = $estado;
+        $habitacion->save();
+
+        return $habitacion;
+    }
+
+    /**
      * Actualizar habitacion
      *
      * @param array $datos

@@ -35,7 +35,9 @@ class ClienteController extends Controller
             $query->where("ci", "LIKE", "%$search%")
                 ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
         });
-        $clientes = $clientes->where("status", 1)->get()->toArray();
+        $clientes = $clientes->where("status", 1)->get();
+        $clientes->each->append(["full_name"]);
+        $clientes = $clientes->toArray();
         return response()->JSON([
             "clientes" => $clientes
         ]);

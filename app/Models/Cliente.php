@@ -26,7 +26,7 @@ class Cliente extends Model
         "status",
     ];
 
-    protected $appends = ["url_foto", "foto_b64", "full_name", "full_ci", "fecha_registro_t"];
+    // protected $appends = ["url_foto", "foto_b64", "full_name", "full_ci", "fecha_registro_t"];
 
     public function getFechaRegistroTAttribute()
     {

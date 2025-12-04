@@ -1,0 +1,165 @@
+<script setup>
+import { computed, onMounted, ref, watch } from "vue";
+import axios from "axios";
+const props = defineProps({
+    habitacion: {
+        type: Object,
+        default: null,
+    },
+});
+
+const oHabitacion = ref(props.habitacion);
+watch(
+    () => props.habitacion,
+    (newVal) => {
+        oHabitacion.value = newVal;
+        verificaRegistro();
+    }
+);
+
+const muestraFormulario = () => {
+    emits("form-registro", oHabitacion.value, oRegistro.value);
+};
+
+const muestraTransferencia = () => {
+    emits("form-transferencia", oHabitacion.value, oRegistro.value);
+};
+
+const oRegistro = ref(null);
+const verificaRegistro = () => {
+    if (oHabitacion.value.estado == 1) {
+        axios
+            .get(route("registros.verificaHabitacion"), {
+                params: {
+                    habitacion_id: oHabitacion.value.id,
+                },
+            })
+            .then((response) => {
+                oRegistro.value = response.data;
+            });
+    }
+};
+
+const esSalidaHoy = computed(() => {
+    if (!oRegistro.value || !oRegistro.value.fecha_salida_t) return false;
+
+    const [d, m, y] = oRegistro.value.fecha_salida_t.split("/");
+
+    // Crear fecha REAL local (sin UTC)
+    const fechaRegistro = new Date(y, m - 1, d);
+
+    const hoy = new Date();
+
+    // Normalizar
+    fechaRegistro.setHours(0, 0, 0, 0);
+    hoy.setHours(0, 0, 0, 0);
+
+    return fechaRegistro.getTime() === hoy.getTime();
+});
+const emits = defineEmits(["form-registro", "form-transferencia"]);
+
+onMounted(() => {
+    verificaRegistro();
+});
+</script>
+<template>
+    <div class="card habitacion cursor-pointer">
+        <div class="card-header p-0">
+            <div class="contenedorBotones">
+                <div class="boton">
+                    <button class="btn btn-info w-100 rounded-0">
+                        <i class="fa fa-info"></i>
+                    </button>
+                </div>
+                <div class="boton" v-if="oHabitacion?.estado == 1">
+                    <!-- todo: crear formulario registro de pagos -->
+                    <button class="btn bg-blue w-100 rounded-0">
+                        <i class="fa fa-cash-register"></i>
+                    </button>
+                </div>
+                <div class="boton" v-if="oHabitacion?.estado == 1">
+                    <button
+                        class="btn btn-warning w-100 rounded-0"
+                        @click="muestraTransferencia()"
+                    >
+                        <i class="fa fa-sync"></i>
+                    </button>
+                </div>
+                <div class="boton" v-if="oHabitacion?.estado == 1">
+                    <button class="btn btn-primary w-100 rounded-0">
+                        <i class="fa fa-shopping-cart"></i>
+                    </button>
+                </div>
+                <div class="boton" v-if="oHabitacion?.estado == 1">
+                    <button class="btn btn-danger w-100 rounded-0">
+                        <i class="fa fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div
+            class="card-body text-center contenedorHabitacion"
+            @click="muestraFormulario()"
+        >
+            <div class="info_habitacion">
+                <h5 class="font-weight-bold">
+                    {{ oHabitacion?.numero_habitacion }}
+                </h5>
+                <div class="row mb-1">
+                    <div class="col-12 text-muted">
+                        {{ oHabitacion?.tipo_habitacion?.nombre }}
+                    </div>
+                </div>
+                <div class="info_badges">
+                    <span class="badge bg-blue">
+                        {{ oHabitacion?.piso }}
+                        <br />
+                        <i class="fa fa-building mt-1"></i>
+                    </span>
+                    <span class="badge badge-success">
+                        {{ oHabitacion?.capacidad }}
+                        <br />
+                        <i class="fa fa-users mt-1"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div
+                class="info_registro"
+                v-if="oRegistro"
+                :class="{ saliente: esSalidaHoy }"
+            >
+                <div class="info_reg">
+                    {{ oRegistro.fecha_salida_t }}
+                    {{ oRegistro.hora_salida }}
+                    <br />
+                    <i class="fa fa-calendar-alt"></i>
+                </div>
+                <div class="info_reg">
+                    {{ oRegistro.cliente.nombre }}
+                    {{ oRegistro.cliente.paterno }}
+                    {{ oRegistro.cliente.materno }}
+                    {{ oRegistro.cliente.ci }} {{ oRegistro.cliente.ci_exp }}
+                    <br />
+                    <i class="fa fa-user"></i>
+                </div>
+            </div>
+        </div>
+        <div
+            class="card-footer"
+            @click="muestraFormulario()"
+            :class="[
+                {
+                    'bg-success': oHabitacion?.estado == 0,
+                    'bg-danger': oHabitacion?.estado == 1,
+                    'bg-primary': oHabitacion?.estado == 2,
+                    'bg-orange': oHabitacion?.estado == 3,
+                },
+            ]"
+        >
+            <h5 class="p-0 m-0 text-center font-weight-bold h6">
+                {{ oHabitacion?.estado_t }}
+            </h5>
+        </div>
+    </div>
+</template>

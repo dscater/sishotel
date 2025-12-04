@@ -47,4 +47,58 @@ class RegistroController extends Controller
             ]);
         }
     }
+
+    /**
+     * Update registro
+     *
+     * @param Registro $registro
+     * @param RegistroUpdateRequest $request
+     * @return RedirectResponse|Response
+     */
+    public function update(Registro $registro, RegistroUpdateRequest $request): RedirectResponse|Response
+    {
+        DB::beginTransaction();
+        try {
+            $registro =  $this->registroService->actualizar($request->validated(), $registro);
+            DB::commit();
+            return redirect()->route("registros.index")->with("bien", "Registro actualizado");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::debug($e->getMessage());
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function transferencia(Registro $registro, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                "habitacion_destino_id" => "required",
+                "motivo" => "required|min:2",
+            ], [
+                "habitacion_destino_id.required" => "Debes seleccionar la habitación de transferencia",
+                "motivo.required" => "Debes indicar el motivo",
+                "motivo.min" => "Debes ingresar al menos :min caracteres"
+            ]);
+            $registro =  $this->registroService->transferencia($registro, $request->only(["motivo", "habitacion_destino_id"]));
+            DB::commit();
+            return redirect()->route("registros.index")->with("bien", "Registro actualizado");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::debug($e->getMessage());
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function verificaHabitacion(Request $request)
+    {
+        $habitacion_id = $request->habitacion_id;
+        $registro = Registro::where("habitacion_id", $habitacion_id)->get()->first();
+        return response()->JSON($registro->load(["cliente:id,nombre,paterno,materno,ci,ci_exp"]));
+    }
 }

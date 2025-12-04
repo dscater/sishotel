@@ -44,6 +44,13 @@ class Registro extends Model
         "user_id",
     ];
 
+    protected $appends = ["fecha_salida_t"];
+
+    public function getFechaSalidaTAttribute()
+    {
+        return date("d/m/Y", strtotime($this->fecha_salida));
+    }
+
     public function habitacion()
     {
         return $this->belongsTo(Habitacion::class);

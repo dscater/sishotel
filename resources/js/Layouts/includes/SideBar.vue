@@ -150,8 +150,8 @@ onUnmounted(() => {});
                             href="#"
                             class="nav-link sub-menu"
                             :class="[
-                                route_current == 'reportes.usuarios' ||
-                                route_current == 'reportes.pagos'
+                                route_current == 'productos.index' ||
+                                route_current == 'tipo_productos.index'
                                     ? 'active menu-is-opening menu-open'
                                     : '',
                             ]"
@@ -166,7 +166,7 @@ onUnmounted(() => {});
                         <ul class="nav nav-treeview">
                             <ItemMenu
                                 :label="'Listado Productos'"
-                                :ruta="'reportes.usuarios'"
+                                :ruta="'productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
@@ -177,6 +177,11 @@ onUnmounted(() => {});
                             <ItemMenu
                                 :label="'Salida de Productos'"
                                 :ruta="'reportes.usuarios'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                :label="'Tipos de Productos'"
+                                :ruta="'tipo_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                         </ul>

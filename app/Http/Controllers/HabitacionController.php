@@ -28,10 +28,14 @@ class HabitacionController extends Controller
 
     public function listado(Request $request): JsonResponse
     {
-        $habitacions = Habitacion::select("habitacions.*");
+        $habitacions = Habitacion::with(["tipo_habitacion"])->select("habitacions.*");
 
-        if (isset($request->tipo) && $request->tipo) {
-            $habitacions->where("tipo", $request->tipo);
+        if (isset($request->disponibles) && $request->disponibles) {
+            $habitacions->where("estado", 0);
+        }
+
+        if (isset($request->habitacion_id) && $request->habitacion_id != "" && $request->habitacion_id != 0) {
+            $habitacions->whereNot("id", $request->habitacion_id);
         }
 
         $habitacions = $habitacions->where("status", 1)->get();

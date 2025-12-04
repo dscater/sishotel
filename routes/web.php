@@ -9,11 +9,13 @@ use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PersonaController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\TipoHabitacionController;
+use App\Http\Controllers\TipoProductoController;
 use App\Http\Controllers\TipoUsuarioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsuarioController;
@@ -159,10 +161,28 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
         ["index", "store", "edit", "show", "update", "destroy"]
     );
 
+    // TIPO DE PRODUCTOS
+    Route::get("tipo_productos/api", [TipoProductoController::class, 'api'])->name("tipo_productos.api");
+    Route::get("tipo_productos/paginado", [TipoProductoController::class, 'paginado'])->name("tipo_productos.paginado");
+    Route::get("tipo_productos/listado", [TipoProductoController::class, 'listado'])->name("tipo_productos.listado");
+    Route::resource("tipo_productos", TipoProductoController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
+    // PRODUCTOS
+    Route::get("productos/api", [ProductoController::class, 'api'])->name("productos.api");
+    Route::get("productos/paginado", [ProductoController::class, 'paginado'])->name("productos.paginado");
+    Route::get("productos/listado", [ProductoController::class, 'listado'])->name("productos.listado");
+    Route::resource("productos", ProductoController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
     // REGISTROS
     Route::get("registros", [RegistroController::class, 'index'])->name("registros.index");
+    Route::get("registros/verificaHabitacion", [RegistroController::class, 'verificaHabitacion'])->name("registros.verificaHabitacion");
     Route::post("registros", [RegistroController::class, 'store'])->name("registros.store");
     Route::put("registros/update/{registro}", [RegistroController::class, 'update'])->name("registros.update");
+    Route::put("registros/transferencia/{registro}", [RegistroController::class, 'transferencia'])->name("registros.transferencia");
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

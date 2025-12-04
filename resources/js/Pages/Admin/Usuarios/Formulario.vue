@@ -114,6 +114,7 @@ const enviarFormulario = () => {
                 },
             });
             limpiarUsuario();
+            foto.value.value = null;
             emits("envio-formulario");
         },
         onError: (err, code) => {

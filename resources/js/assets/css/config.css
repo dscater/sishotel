@@ -40,6 +40,9 @@ label.required::after {
     font-weight: 700;
 }
 /* MIS ESTILOS */
+.text-icon {
+    color: var(--bg4);
+}
 .bg-oficial {
     background-color: var(--principal_hover);
 }
@@ -72,6 +75,14 @@ body .mi-table tr.bg-oficial td .label-responsive {
 }
 .bg2 {
     background-color: var(--bg2);
+    color: white;
+}
+.bg5 {
+    background-color: var(--bg5);
+    color: white;
+}
+.bg6 {
+    background-color: var(--bg6);
     color: white;
 }
 body .sidebar .bg3,
@@ -463,6 +474,15 @@ body.app-blank.login {
     text-align: center;
 }
 
+.modal .modal-dialog {
+    margin: 1.75rem auto;
+}
+
+.modal .modal-dialog.modal_registro,
+.modal .modal-dialog.modal_registro .modal-content {
+    max-width: 90vw;
+}
+
 @media (max-width: 1000px) {
     .el-input__suffix {
         width: 0px !important;
@@ -471,13 +491,12 @@ body.app-blank.login {
 
     .modal .modal-dialog,
     .modal .modal-content {
-        margin: 0;
-        width: 100vw !important;
+        min-width: 100vw;
     }
 }
 
 /* HABITACIONES */
-.contenedorHabiaciones {
+.contenedorHabitaciones {
     border-radius: 6px;
     padding-top: 5px;
     margin-left: 0px;
@@ -488,15 +507,56 @@ body.app-blank.login {
 
 .contenedorHabitacion {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
 }
 
-.contenedorHabiaciones .habitacion {
-    width: 99%;
-    transition: all 0.1s;
+.contenedorHabitaciones .info_badges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 5px;
+}
+.contenedorHabitaciones .info_badges span {
+    font-size: 1em;
+    padding: 1px 15px;
 }
 
-.contenedorHabiaciones .habitacion:hover {
-    transform: scale(1.01);
+.contenedorHabitacion .info_habitacion {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0px -1px 1px black;
+}
+
+.contenedorHabitaciones .info_registro {
+    font-size: 0.87em;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.contenedorHabitaciones .info_registro.saliente {
+    background-color: var(--bg6);
+    color: var(--white);
+}
+
+.contenedorHabitaciones .habitacion {
+    width: 100%;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.contenedorHabitaciones .habitacion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgb(250, 250, 250);
 }
 
 .contenedorBotones {

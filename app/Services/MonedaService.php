@@ -34,6 +34,16 @@ class MonedaService
     }
 
     /**
+     * Obtener moneda oficial
+     *
+     * @return Moneda
+     */
+    public function getMonedaPrincipal(): Moneda
+    {
+        return Moneda::where("oficial", 1)->get()->first();
+    }
+
+    /**
      * Lista de monedas paginado con filtros
      *
      * @param integer $length

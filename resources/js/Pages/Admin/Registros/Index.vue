@@ -3,7 +3,9 @@ import Content from "@/Components/Content.vue";
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import { ref, onMounted, onBeforeMount, onBeforeUnmount } from "vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
-import FormRegistro from "./FormRegistro.vue";
+import Habitacion from "./Habitacion.vue";
+import FormRegistro from "@/Pages/Admin/Registros/FormRegistro.vue";
+import Transferencia from "@/Pages/Admin/Registros/Transferencia.vue";
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -23,8 +25,34 @@ onMounted(async () => {
     appStore.stopLoading();
 });
 
-const muestra_formulario = ref(false);
-const accion_formulario = ref(0);
+const oHabitacion = ref(null);
+const oRegistro = ref(null);
+
+const muestra_formulario_registro = ref(false);
+const accion_formulario_registro = ref(0);
+const abrirFormRegistro = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_registro.value = true;
+    accion_formulario_registro.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_registro.value = 1;
+    } else {
+    }
+};
+
+const muestra_formulario_transferencia = ref(false);
+const accion_formulario_transferencia = ref(0);
+const abrirFormTransferencia = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_transferencia.value = true;
+    accion_formulario_transferencia.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_transferencia.value = 1;
+    } else {
+    }
+};
 
 const listTipoHabitacions = ref([]);
 const listEstadosHabitacions = ref([]);
@@ -44,8 +72,8 @@ const cargarListEstadosHabitacions = () => {
         });
 };
 
-const oHabitacion = ref(null);
 const listHabitacions = ref([]);
+const listHabitacionsFiltro = ref([]);
 const loadingHabitacions = ref(false);
 const paramHabitacions = ref({
     tipo_habitacion_id: [],
@@ -70,6 +98,17 @@ const cargarHabitacions = async () => {
     }
 };
 
+const cargarHabitacionsFiltro = async () => {
+    loadingHabitacions.value = true;
+    try {
+        const response = await axios.get(route("habitacions.listado"));
+        listHabitacionsFiltro.value = response.data.habitacions;
+    } catch (error) {
+        listHabitacionsFiltro.value = [];
+    } finally {
+    }
+};
+
 const cargarHabitacionsTimeout = ref(null);
 const precarCargarHabitacions = () => {
     if (cargarHabitacionsTimeout.value) {
@@ -80,20 +119,15 @@ const precarCargarHabitacions = () => {
     }, 300);
 };
 
-const muestraFormulario = (item) => {
-    oHabitacion.value = item;
-    muestra_formulario.value = true;
-    accion_formulario.value = 0;
-};
-
 const cargarListas = () => {
     cargarTipoHabitacions();
     cargarHabitacions();
+    cargarHabitacionsFiltro();
     cargarListEstadosHabitacions();
 };
 </script>
 <template>
-    <Head title="Recepción-CheckIn"></Head>
+    <Head title="Recepción"></Head>
     <Content>
         <template #header>
             <div class="row mb-2">
@@ -171,14 +205,23 @@ const cargarListas = () => {
                                             class="text-muted font-weight-bold"
                                             >Código/Número Habitación</small
                                         >
-                                        <input
-                                            type="text"
-                                            class="form-control"
+                                        <el-select
+                                            class="w-100"
                                             v-model="
                                                 paramHabitacions.numero_habitacion
                                             "
-                                            @keyup="precarCargarHabitacions"
-                                        />
+                                            placeholder=""
+                                            filterable
+                                            clearable
+                                            @change="precarCargarHabitacions"
+                                        >
+                                            <el-option
+                                                v-for="item in listHabitacionsFiltro"
+                                                :key="item.id"
+                                                :value="item.numero_habitacion"
+                                                :label="item.numero_habitacion"
+                                            ></el-option>
+                                        </el-select>
                                     </div>
                                 </div>
                             </div>
@@ -220,7 +263,9 @@ const cargarListas = () => {
                                             :count="9"
                                         >
                                             <template #template>
-                                                <div class="card col-md-4">
+                                                <div
+                                                    class="card col-lg-2 colm-d3"
+                                                >
                                                     <div
                                                         class="card-body"
                                                         style="padding: 14px"
@@ -231,10 +276,11 @@ const cargarListas = () => {
                                                         />
                                                         <el-skeleton-item
                                                             variant="text"
+                                                            style="height: 90px"
                                                             class="w-100"
                                                         />
                                                         <el-skeleton-item
-                                                            variant="text"
+                                                            variant="h1"
                                                             class="w-100"
                                                         />
                                                     </div>
@@ -242,7 +288,7 @@ const cargarListas = () => {
                                             </template>
                                             <template #default>
                                                 <div
-                                                    class="row contenedorHabiaciones"
+                                                    class="row contenedorHabitaciones"
                                                     v-if="
                                                         listHabitacions.length >
                                                         0
@@ -252,162 +298,18 @@ const cargarListas = () => {
                                                         class="col-md-3 col-lg-2 d-flex justify-content-center"
                                                         v-for="item in listHabitacions"
                                                     >
-                                                        <div
-                                                            href="#"
-                                                            class="card habitacion cursor-pointer"
-                                                        >
-                                                            <div
-                                                                class="card-header p-0"
-                                                            >
-                                                                <div
-                                                                    class="contenedorBotones"
-                                                                >
-                                                                    <div
-                                                                        class="boton"
-                                                                    >
-                                                                        <button
-                                                                            class="btn btn-info w-100 rounded-0"
-                                                                        >
-                                                                            <i
-                                                                                class="fa fa-info"
-                                                                            ></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div
-                                                                        class="boton"
-                                                                        v-if="
-                                                                            item.estado ==
-                                                                            1
-                                                                        "
-                                                                    >
-                                                                        <button
-                                                                            class="btn btn-warning w-100 rounded-0"
-                                                                        >
-                                                                            <i
-                                                                                class="fa fa-sync"
-                                                                            ></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div
-                                                                        class="boton"
-                                                                        v-if="
-                                                                            item.estado ==
-                                                                            1
-                                                                        "
-                                                                    >
-                                                                        <button
-                                                                            class="btn btn-primary w-100 rounded-0"
-                                                                        >
-                                                                            <i
-                                                                                class="fa fa-shopping-cart"
-                                                                            ></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div
-                                                                        class="boton"
-                                                                        v-if="
-                                                                            item.estado ==
-                                                                            1
-                                                                        "
-                                                                    >
-                                                                        <button
-                                                                            class="btn btn-danger w-100 rounded-0"
-                                                                        >
-                                                                            <i
-                                                                                class="fa fa-power-off"
-                                                                            ></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                class="card-body text-center contenedorHabitacion"
-                                                                @click="
-                                                                    muestraFormulario(
-                                                                        item
-                                                                    )
-                                                                "
-                                                            >
-                                                                <h5
-                                                                    class="font-weight-bold"
-                                                                >
-                                                                    {{
-                                                                        item.numero_habitacion
-                                                                    }}
-                                                                </h5>
-                                                                <div
-                                                                    class="row mb-1"
-                                                                >
-                                                                    <div
-                                                                        class="col-12 text-muted"
-                                                                    >
-                                                                        {{
-                                                                            item
-                                                                                ?.tipo_habitacion
-                                                                                ?.nombre
-                                                                        }}
-                                                                    </div>
-                                                                </div>
-                                                                <div
-                                                                    class="row"
-                                                                >
-                                                                    <div
-                                                                        class="col-4 offset-2 text-primary"
-                                                                    >
-                                                                        {{
-                                                                            item.piso
-                                                                        }}
-                                                                        <br />
-                                                                        <i
-                                                                            class="fa fa-building"
-                                                                        ></i>
-                                                                    </div>
-                                                                    <div
-                                                                        class="col-4 text-success"
-                                                                    >
-                                                                        {{
-                                                                            item.capacidad
-                                                                        }}
-                                                                        <br />
-                                                                        <i
-                                                                            class="fa fa-users"
-                                                                        ></i>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                class="card-footer"
-                                                                @click="
-                                                                    muestraFormulario(
-                                                                        item
-                                                                    )
-                                                                "
-                                                                :class="[
-                                                                    {
-                                                                        'bg-success':
-                                                                            item.estado ==
-                                                                            0,
-                                                                        'bg-danger':
-                                                                            item.estado ==
-                                                                            1,
-                                                                        'bg-primary':
-                                                                            item.estado ==
-                                                                            2,
-                                                                        'bg-orange':
-                                                                            item.estado ==
-                                                                            3,
-                                                                    },
-                                                                ]"
-                                                            >
-                                                                <h5
-                                                                    class="p-0 m-0 text-center font-weight-bold h6"
-                                                                >
-                                                                    {{
-                                                                        item.estado_t
-                                                                    }}
-                                                                </h5>
-                                                            </div>
-                                                        </div>
+                                                        <Habitacion
+                                                            @form-registro="
+                                                                abrirFormRegistro
+                                                            "
+                                                            @form-transferencia="
+                                                                abrirFormTransferencia
+                                                            "
+                                                            :habitacion="item"
+                                                            @actualizado="
+                                                                cargarListas
+                                                            "
+                                                        ></Habitacion>
                                                     </div>
                                                 </div>
                                                 <div class="row" v-else>
@@ -430,13 +332,29 @@ const cargarListas = () => {
         </div>
         <FormRegistro
             :o-habitacion="oHabitacion"
-            :muestra_formulario="muestra_formulario"
-            :accion_formulario="accion_formulario"
-            @cerrar-formulario="
-                oHabitacion = null;
-                muestra_formulario = false;
+            :muestra_formulario="muestra_formulario_registro"
+            :accion_formulario="accion_formulario_registro"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_registro = false;
+                accion_formulario_registro = 0;
             "
+            @cerrar-formulario="muestra_formulario_registro = false"
         ></FormRegistro>
+
+        <Transferencia
+            :o-habitacion="oHabitacion"
+            :muestra_formulario="muestra_formulario_transferencia"
+            :accion_formulario="accion_formulario_transferencia"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_transferencia = false;
+                accion_formulario_transferencia = 0;
+            "
+            @cerrar-formulario="muestra_formulario_transferencia = false"
+        ></Transferencia>
     </Content>
 </template>
 
