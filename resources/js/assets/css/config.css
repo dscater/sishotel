@@ -58,6 +58,15 @@ body .mi-table tr.bg-oficial td .mi-celda {
 body .mi-table tr.bg-oficial td .label-responsive {
     color: black;
 }
+.bg-principal {
+    background-color: var(--principal);
+    color: white;
+}
+
+.bg-principal:hover {
+    background-color: var(--principal_hover);
+    color: white;
+}
 
 .bg-secundario {
     background-color: var(--secundario);
@@ -76,6 +85,9 @@ body .mi-table tr.bg-oficial td .label-responsive {
 .bg2 {
     background-color: var(--bg2);
     color: white;
+}
+.bg4 {
+    background-color: var(--bg4);
 }
 .bg5 {
     background-color: var(--bg5);
@@ -551,6 +563,7 @@ body.app-blank.login {
 
 .contenedorHabitaciones .habitacion {
     width: 100%;
+    position: relative;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
@@ -563,6 +576,50 @@ body.app-blank.login {
     display: flex;
     justify-content: end;
 }
+
 .contenedorBotones .boton {
     flex: 1;
+}
+
+.miDropdownMenu {
+    position: relative;
+    flex: 1;
+}
+.miDropdownMenu > button {
+    width: 100%;
+}
+
+.miDropdownMenu .menu {
+    display: none;
+    z-index: -1;
+    height: 0;
+    border: solid 2px var(--bgGrayLight);
+    width: auto;
+    min-width: 150px;
+}
+
+.miDropdownMenu .menu button {
+    padding: 8px 0px;
+    border: none;
+    background-color: white;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.miDropdownMenu .menu button:hover {
+    background-color: var(--bgGrayLight);
+}
+
+.miDropdownMenu.show .menu {
+    position: absolute;
+    height: auto;
+    display: block;
+    top: 35px;
+    right: 0;
+    background-color: blue;
+    z-index: 1000;
 }

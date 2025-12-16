@@ -22,11 +22,19 @@ const headers = [
         label: "NOMBRE",
         key: "nombre",
         sortable: true,
+        fixed: true,
+    },
+    {
+        label: "STOCK",
+        key: "stock",
+        sortable: true,
+        fixed: true,
     },
     {
         label: "PRECIO",
         key: "precio",
         sortable: true,
+        fixed: true,
     },
     {
         label: "TIPO DE PRODUCTO",

@@ -41,8 +41,9 @@ return new class extends Migration
             $table->decimal('garantia_tc', 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();
+            $table->decimal('valor_tc')->nullable();
             $table->text("motivo_salida")->nullable();
-            $table->string("tipo")->default("NORMAL"); // RESERVA, NORMAL
+            $table->string("tipo")->default("NORMAL"); // RESERVA, NORMAL, TEMPORAL
             $table->date("fecha_reserva")->nullable();
             $table->time("hora_reserva")->nullable();
             $table->bigInteger("nro_reserva")->nullable();

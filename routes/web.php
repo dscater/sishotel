@@ -157,6 +157,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("tipo_cambios/api", [TipoCambioController::class, 'api'])->name("tipo_cambios.api");
     Route::get("tipo_cambios/paginado", [TipoCambioController::class, 'paginado'])->name("tipo_cambios.paginado");
     Route::get("tipo_cambios/listado", [TipoCambioController::class, 'listado'])->name("tipo_cambios.listado");
+    Route::get("tipo_cambios/listadoByMonedaId", [TipoCambioController::class, 'listadoByMonedaId'])->name("tipo_cambios.listadoByMonedaId");
     Route::resource("tipo_cambios", TipoCambioController::class)->only(
         ["index", "store", "edit", "show", "update", "destroy"]
     );

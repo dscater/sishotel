@@ -36,6 +36,19 @@ class TipoCambioController extends Controller
         ]);
     }
 
+    public function listadoByMonedaId(Request $request)
+    {
+        $tipo_cambio_id = $request->input("tipo_cambio_id", 0);
+        $tipo_cambios = TipoCambio::select("tipo_cambios.*");
+        $tipo_cambios->where("moneda_id", $tipo_cambio_id);
+        $tipo_cambios = $tipo_cambios
+            ->orderBy("created_at", "desc")
+            ->get()->first();
+        return response()->JSON([
+            "tipo_cambios" => $tipo_cambios
+        ]);
+    }
+
     public function paginado(Request $request)
     {
         $perPage = $request->perPage;

@@ -35,6 +35,7 @@ class RegistroStoreRequest extends FormRequest
             "adelanto" => "required|decimal:0,2",
             "saldo" => "required|decimal:0,2",
             "garantia" => "required|decimal:0,2",
+            "tc" => "boolean",
             "cd_tc" => "nullable|decimal:0,2",
             "total_tc" => "nullable|decimal:0,2",
             "adelanto_tc" => "nullable|decimal:0,2",
@@ -74,6 +75,8 @@ class RegistroStoreRequest extends FormRequest
             "garantia.required" => "No se indico el precio por día",
             "garantia.min" => "Debes ingresar al menos :min",
             "garantia.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",
+
+            "tc.boolean" => "No se pudo detectar el tipo de cambio vuelva a intentar",
 
             "cd_tc.min" => "Debes ingresar al menos :min",
             "cd_tc.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",

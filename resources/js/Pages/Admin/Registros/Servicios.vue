@@ -100,7 +100,7 @@ watch(muestra_form, (newVal) => {
 const tituloDialog = computed(() => {
     return accion_form.value == 0
         ? `<i class="fa fa-plus"></i> `
-        : `<i class="fa fa-sync"></i> Transferencia`;
+        : `<i class="fa fa-shopping-cart"></i> Servicios`;
 });
 
 const textBtn = computed(() => {
@@ -219,7 +219,7 @@ onMounted(() => {});
             :open_modal="muestra_form"
             @close="cerrarFormulario"
             :size="'modal-xl w-100 modal_registro'"
-            :header-class="'bg-warning'"
+            :header-class="'bg-principal'"
             :footer-class="'justify-content-end'"
         >
             <template #header>

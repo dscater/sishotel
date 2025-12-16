@@ -80,6 +80,7 @@ class PermisoService
             "monedas.getMonedaOficial",
 
             "tipo_cambios.listado",
+            "tipo_cambios.listadoByMonedaId",
             "tipo_cambios.paginado",
             "tipo_cambios.index",
             "tipo_cambios.create",

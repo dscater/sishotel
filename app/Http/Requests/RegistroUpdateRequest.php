@@ -32,6 +32,7 @@ class RegistroUpdateRequest extends FormRequest
             "cd" => "required|decimal:0,2|min:0",
             "total" => "required|decimal:0,2",
             // "adelanto" => "required|decimal:0,2",
+            "tc" => "boolean",
             "saldo" => "required|decimal:0,2",
             "garantia" => "required|decimal:0,2",
             "cd_tc" => "nullable|decimal:0,2",

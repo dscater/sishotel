@@ -6,6 +6,7 @@ import { useAppStore } from "@/stores/aplicacion/appStore";
 import Habitacion from "./Habitacion.vue";
 import FormRegistro from "@/Pages/Admin/Registros/FormRegistro.vue";
 import Transferencia from "@/Pages/Admin/Registros/Transferencia.vue";
+import Servicios from "@/Pages/Admin/Registros/Servicios.vue";
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -34,10 +35,10 @@ const abrirFormRegistro = (habitacion, registro) => {
     oHabitacion.value = habitacion;
     muestra_formulario_registro.value = true;
     accion_formulario_registro.value = 0;
+    oRegistro.value = null;
     if (registro) {
-        oRegistro.value = registro ?? null;
+        oRegistro.value = registro;
         accion_formulario_registro.value = 1;
-    } else {
     }
 };
 
@@ -50,7 +51,18 @@ const abrirFormTransferencia = (habitacion, registro) => {
     if (registro) {
         oRegistro.value = registro ?? null;
         accion_formulario_transferencia.value = 1;
-    } else {
+    }
+};
+
+const muestra_formulario_servicios = ref(false);
+const accion_formulario_servicios = ref(0);
+const abrirFormServicios = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_servicios.value = true;
+    accion_formulario_servicios.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_servicios.value = 1;
     }
 };
 
@@ -305,6 +317,9 @@ const cargarListas = () => {
                                                             @form-transferencia="
                                                                 abrirFormTransferencia
                                                             "
+                                                            @form-servicios="
+                                                                abrirFormServicios
+                                                            "
                                                             :habitacion="item"
                                                             @actualizado="
                                                                 cargarListas
@@ -332,9 +347,9 @@ const cargarListas = () => {
         </div>
         <FormRegistro
             :o-habitacion="oHabitacion"
+            :registro="oRegistro"
             :muestra_formulario="muestra_formulario_registro"
             :accion_formulario="accion_formulario_registro"
-            :registro="oRegistro"
             @envio-formulario="
                 cargarHabitacions();
                 muestra_formulario_registro = false;
@@ -355,6 +370,19 @@ const cargarListas = () => {
             "
             @cerrar-formulario="muestra_formulario_transferencia = false"
         ></Transferencia>
+
+        <Servicios
+            :o-habitacion="oHabitacion"
+            :muestra_formulario="muestra_formulario_servicios"
+            :accion_formulario="accion_formulario_servicios"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_servicios = false;
+                accion_formulario_servicios = 0;
+            "
+            @cerrar-formulario="muestra_formulario_servicios = false"
+        ></Servicios>
     </Content>
 </template>
 

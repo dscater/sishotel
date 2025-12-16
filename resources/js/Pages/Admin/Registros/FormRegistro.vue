@@ -4,8 +4,9 @@ import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
 import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
 import Formulario from "../Clientes/Formulario.vue";
+import { useTipoCambio } from "@/composables/useTipoCambio";
 const { monedaOficial } = useMonedaOficial();
-
+const { convertirMonto } = useTipoCambio();
 const props = defineProps({
     oHabitacion: {
         type: Object,
@@ -31,7 +32,7 @@ const muestra_formulario = ref(false);
 const accion_form = ref(props.accion_formulario);
 const muestra_form = ref(props.muestra_formulario);
 const habitacion = ref(props.oHabitacion);
-const oRegistro = ref(null);
+const oRegistro = ref(props.registro);
 const enviando = ref(false);
 
 const getFechaAtual = () => {
@@ -64,6 +65,8 @@ const form = useForm({
     adelanto: 0,
     saldo: 0,
     garantia: 0,
+    tc: 0,
+    valor_tc: 0,
     cd_tc: null,
     total_tc: null,
     adelanto_tc: null,
@@ -106,41 +109,45 @@ watch(
     (newValue) => {
         habitacion.value = newValue;
         form.habitacion_id = habitacion.value?.id;
+        if (oRegistro.value) asignarDatosForm();
     }
 );
 watch(
     () => props.registro,
     (newValue) => {
         oRegistro.value = newValue;
-        asignarDatosForm();
+        if (oRegistro.value) asignarDatosForm();
     }
 );
 
-const asignarDatosForm = () => {
-    if (oRegistro.value) {
-        form.id = oRegistro.value.id;
-        form.habitacion_id = oRegistro.value.habitacion_id;
-        form.cliente_id = oRegistro.value.cliente_id;
-        form.desayuno = oRegistro.value.desayuno;
-        form.fecha_entrada = oRegistro.value.fecha_entrada;
-        form.hora_entrada = oRegistro.value.hora_entrada;
-        form.dias_estadia = oRegistro.value.dias_estadia;
-        form.fecha_salida = oRegistro.value.fecha_salida;
-        form.hora_salida = oRegistro.value.hora_salida;
-        form.cd = oRegistro.value.cd;
-        form.total = oRegistro.value.total;
-        form.adelanto = oRegistro.value.adelanto;
-        form.saldo = oRegistro.value.saldo;
-        form.garantia = oRegistro.value.garantia;
-        form.cd_tc = oRegistro.value.cd_tc;
-        form.total_tc = oRegistro.value.total_tc;
-        form.adelanto_tc = oRegistro.value.adelanto_tc;
-        form.saldo_tc = oRegistro.value.saldo_tc;
-        form.garantia_tc = oRegistro.value.garantia_tc;
-        form.moneda_id_tc = oRegistro.value.moneda_id_tc;
-        form.tipo = oRegistro.value.tipo;
-        form["_method"] = "PUT";
-        agregarClienteASelect(oRegistro.value.cliente);
+const asignarDatosForm = async () => {
+    await agregarClienteASelect(oRegistro.value.cliente);
+    form.id = oRegistro.value.id;
+    form.habitacion_id = oRegistro.value.habitacion_id;
+    form.cliente_id = oRegistro.value.cliente_id;
+    form.desayuno = oRegistro.value.desayuno;
+    form.fecha_entrada = oRegistro.value.fecha_entrada;
+    form.hora_entrada = oRegistro.value.hora_entrada;
+    form.dias_estadia = oRegistro.value.dias_estadia;
+    form.fecha_salida = oRegistro.value.fecha_salida;
+    form.hora_salida = oRegistro.value.hora_salida;
+    form.cd = oRegistro.value.cd;
+    form.total = oRegistro.value.total;
+    form.adelanto = oRegistro.value.adelanto;
+    form.saldo = oRegistro.value.saldo;
+    form.garantia = oRegistro.value.garantia;
+    form.tc = oRegistro.value.tc;
+    form.cd_tc = oRegistro.value.cd_tc;
+    form.total_tc = oRegistro.value.total_tc;
+    form.adelanto_tc = oRegistro.value.adelanto_tc;
+    form.saldo_tc = oRegistro.value.saldo_tc;
+    form.garantia_tc = oRegistro.value.garantia_tc;
+    form.moneda_id_tc = oRegistro.value.moneda_id_tc;
+    form.valor_tc = oRegistro.value.valor_tc;
+    form.tipo = oRegistro.value.tipo;
+    form["_method"] = "PUT";
+    if (form.tc == 1) {
+        await cargarTipoCambios();
     }
 };
 
@@ -159,14 +166,16 @@ const limpiarDatosForm = () => {
     form.adelanto = 0;
     form.saldo = 0;
     form.garantia = 0;
+    form.tc = 0;
     form.cd_tc = null;
     form.total_tc = null;
     form.adelanto_tc = null;
     form.saldo_tc = null;
     form.garantia_tc = null;
     form.moneda_id_tc = null;
+    form.valor_tc = null;
     form.tipo = "NORMAL";
-    form["_method"] = "PUT";
+    form["_method"] = "POST";
 };
 
 watch(
@@ -207,6 +216,7 @@ const enviarFormulario = () => {
             ? route("registros.store")
             : route("registros.update", form.id);
 
+    console.log(form);
     form.post(url, {
         preserveScroll: true,
         forceFormData: true,
@@ -338,11 +348,29 @@ const actualizaPrecioTipo = () => {
 };
 
 const actualizaMontos = () => {
-    form.moneda_id_tc = monedaOficial?.value.id;
+    // form.moneda_id_tc = monedaOficial?.value.id;
     form.total = form.dias_estadia * form.cd;
     form.saldo = form.total - form.adelanto;
     // USAR UNA FUNCION PARA TIPO DE CAMBIO
     // DETECTANDO SI HAY O NO UN TIPO DE CAMBIO
+    if (form.tc == 1) {
+        form.total_tc = convertirMonto(form.total, 1, form.valor_tc);
+        form.saldo_tc = convertirMonto(form.saldo, 1, form.valor_tc);
+    }
+};
+
+// calcular el monto en la moneda principal
+const actualizaMontosCambio = () => {
+    form.saldo_tc = form.total_tc - form.adelanto_tc;
+    form.saldo = convertirMonto(form.saldo_tc, form.valor_tc, 1);
+    form.adelanto = convertirMonto(form.adelanto_tc, form.valor_tc, 1);
+    if (form.saldo_tc == 0) {
+        form.adelanto = form.total;
+    }
+};
+
+const calcularGarantiaCambio = () => {
+    form.garantia = convertirMonto(form.garantia_tc, form.valor_tc, 1);
 };
 
 const listMonedas = ref([]);
@@ -350,6 +378,66 @@ const cargarMonedas = () => {
     axios.get(route("monedas.listado")).then((response) => {
         listMonedas.value = response.data.monedas;
     });
+};
+
+const oTipoCambio = ref(null);
+const cargarTipoCambios = () => {
+    oTipoCambio.value = null;
+    form.tc = 0;
+    axios
+        .get(route("tipo_cambios.listadoByMonedaId"), {
+            params: {
+                tipo_cambio_id: form.moneda_id_tc ?? 0,
+            },
+        })
+        .then((response) => {
+            oTipoCambio.value = response.data.tipo_cambios;
+            if (oTipoCambio.value) {
+                form.adelanto_tc = 0;
+                form.saldo_tc = 0;
+                form.garantia_tc = 0;
+                form.tc = 1;
+                form.tipo_cambio_id = oTipoCambio.value.id;
+                form.valor_tc = oTipoCambio.value.valor;
+                // obtener el el monto diario en dolares
+                form.cd_tc = convertirMonto(form.cd, 1, form.valor_tc);
+                form.adelanto_tc = convertirMonto(
+                    form.adelanto,
+                    1,
+                    form.valor_tc
+                );
+                form.garantia_tc = convertirMonto(
+                    form.garantia,
+                    1,
+                    form.valor_tc
+                );
+            }
+            actualizaMontos();
+        });
+};
+
+const simboloMonedaCambio = computed(() => {
+    if (form.moneda_id_tc) {
+        const moneda = listMonedas.value.filter(
+            (elem) => elem.id === form.moneda_id_tc
+        )[0];
+        return `${moneda?.simbolo}`;
+    }
+    return ``;
+});
+const textMonedaCambio = computed(() => {
+    if (form.moneda_id_tc) {
+        const moneda = listMonedas.value.filter(
+            (elem) => elem.id === form.moneda_id_tc
+        )[0];
+        return `${moneda.nombre} ${moneda.simbolo}`;
+    }
+    return ``;
+});
+
+const recalcularMontoTC = () => {
+    form.cd_tc = convertirMonto(form.cd, 1, form.valor_tc);
+    actualizaMontos();
 };
 
 const cargarListas = () => {
@@ -380,13 +468,6 @@ const agregarClienteASelect = async (cliente) => {
     if (!existe) {
         listClientes.value.push(nuevo);
     }
-
-    form.cliente_id = null;
-    nextTick(() => {
-        setTimeout(() => {
-            form.cliente_id = nuevo.value;
-        }, 200);
-    });
 };
 
 const cierreFormCliente = () => {
@@ -578,7 +659,9 @@ onMounted(() => {});
                                                 >
                                             </h5>
                                         </div>
-                                        <div class="col-md-4 mb-1 offset-md-2">
+                                        <div
+                                            class="col-lg-4 offset-lg-2 col-md-5 mb-1 offset-md-1"
+                                        >
                                             <label> Fecha de Salida </label>
                                             <input
                                                 type="date"
@@ -603,7 +686,7 @@ onMounted(() => {});
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="col-md-4 mb-1">
+                                        <div class="col-lg-4 col-md-5 mb-1">
                                             <label> Hora de Salida </label>
                                             <input
                                                 type="time"
@@ -656,7 +739,7 @@ onMounted(() => {});
                                                             ></i>
                                                         </div>
                                                         <div
-                                                            class="col-3 text-wrap"
+                                                            class="col-3 text-wrap text-sm"
                                                         >
                                                             {{
                                                                 habitacion
@@ -723,8 +806,10 @@ onMounted(() => {});
                                         <div class="col-12 text-center">
                                             <label>Moneda</label>
                                             <select
-                                                class="form-control"
+                                                class="form-control text-center"
                                                 v-model="form.moneda_id_tc"
+                                                @change="cargarTipoCambios"
+                                                :disabled="form.id != 0"
                                             >
                                                 <option
                                                     v-for="item in listMonedas"
@@ -743,22 +828,14 @@ onMounted(() => {});
                                             "
                                         >
                                             <label>Tipo de Cambio:</label>
-                                            <div class="input-group">
-                                                <select class="form-control">
-                                                    <option value="">
-                                                        Moneda por Defecto
-                                                    </option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <button
-                                                        class="btn btn-primary"
-                                                    >
-                                                        <i
-                                                            class="fa fa-plus"
-                                                        ></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                class="form-control text-center"
+                                                v-model="form.valor_tc"
+                                                @keyup="recalcularMontoTC"
+                                                readonly
+                                            />
                                         </div>
                                         <div class="col-12 text-center">
                                             <label
@@ -772,6 +849,29 @@ onMounted(() => {});
                                                 class="form-control text-center"
                                                 v-model="form.cd"
                                                 @change="modificarCD"
+                                                @keyup="recalcularMontoTC"
+                                                :readonly="form.id != 0"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="row bg4 pb-2 mt-1"
+                                        v-if="
+                                            form.moneda_id_tc !=
+                                            monedaOficial?.id
+                                        "
+                                    >
+                                        <div class="col-12 text-center">
+                                            <label
+                                                >Costo/Día
+                                                {{ simboloMonedaCambio }}
+                                            </label>
+                                            <input
+                                                type="number"
+                                                class="form-control text-center"
+                                                v-model="form.cd_tc"
+                                                @change="modificarCD"
+                                                readonly
                                             />
                                         </div>
                                     </div>
@@ -786,6 +886,74 @@ onMounted(() => {});
                                             <h4 class="text-center h5">Pago</h4>
                                         </div>
                                     </div>
+                                    <!-- CON TIPO DE CAMBIO -->
+                                    <!-- SOLO MOSTRAR LOS DATOS SEGÚN MONEDA SELECCIONADA -->
+                                    <div
+                                        class="row border-bottom bg4 pb-2"
+                                        v-if="
+                                            form.moneda_id_tc !=
+                                            monedaOficial?.id
+                                        "
+                                    >
+                                        <div class="col-md-6">
+                                            <label
+                                                >Total
+                                                {{
+                                                    simboloMonedaCambio
+                                                }}:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                readonly
+                                                v-model="form.total_tc"
+                                            />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label
+                                                >Cancelado
+                                                {{
+                                                    simboloMonedaCambio
+                                                }}:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                @keyup="actualizaMontosCambio"
+                                                v-model="form.adelanto_tc"
+                                                :disabled="form.id != 0"
+                                            />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label
+                                                >Saldo
+                                                {{
+                                                    simboloMonedaCambio
+                                                }}:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                readonly
+                                                v-model="form.saldo_tc"
+                                            />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label
+                                                >Garantía
+                                                {{
+                                                    simboloMonedaCambio
+                                                }}:</label
+                                            >
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                v-model="form.garantia_tc"
+                                                @keyup="calcularGarantiaCambio"
+                                            />
+                                        </div>
+                                    </div>
+
                                     <!-- SIN TIPO DE CAMBIO -->
                                     <div class="row">
                                         <div class="col-md-6">
@@ -845,27 +1013,6 @@ onMounted(() => {});
                                             />
                                         </div>
                                     </div>
-                                    <!-- CON TIPO DE CAMBIO -->
-                                    <!-- SOLO MOSTRAR LOS DATOS SEGÚN MONEDA SELECCIONADA -->
-                                    <!-- <div class="row">
-                                    <div class="col-md-6">
-                                        <label
-                                            >Total {{ monedaOficial?.simbolo }}:</label
-                                        >
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            readonly
-                                        />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label
-                                            >Cancelado
-                                            {{ monedaOficial?.simbolo }}:</label
-                                        >
-                                        <input type="number" class="form-control" />
-                                    </div>
-                                </div> -->
                                 </div>
                             </div>
 

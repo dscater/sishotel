@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import axios from "axios";
 const props = defineProps({
     habitacion: {
@@ -25,8 +25,13 @@ const muestraTransferencia = () => {
     emits("form-transferencia", oHabitacion.value, oRegistro.value);
 };
 
+const muestraServicios = () => {
+    emits("form-servicios", oHabitacion.value, oRegistro.value);
+};
+
 const oRegistro = ref(null);
 const verificaRegistro = () => {
+    oRegistro.value = null;
     if (oHabitacion.value.estado == 1) {
         axios
             .get(route("registros.verificaHabitacion"), {
@@ -56,7 +61,19 @@ const esSalidaHoy = computed(() => {
 
     return fechaRegistro.getTime() === hoy.getTime();
 });
-const emits = defineEmits(["form-registro", "form-transferencia"]);
+const emits = defineEmits([
+    "form-registro",
+    "form-transferencia",
+    "form-servicios",
+]);
+
+const menu = ref(false);
+
+const toggleMenu = () => {
+    menu.value = !menu.value;
+};
+
+onUnmounted(() => {});
 
 onMounted(() => {
     verificaRegistro();
@@ -66,34 +83,53 @@ onMounted(() => {
     <div class="card habitacion cursor-pointer">
         <div class="card-header p-0">
             <div class="contenedorBotones">
-                <div class="boton">
-                    <button class="btn btn-info w-100 rounded-0">
-                        <i class="fa fa-info"></i>
-                    </button>
-                </div>
                 <div class="boton" v-if="oHabitacion?.estado == 1">
-                    <!-- todo: crear formulario registro de pagos -->
+                    <!-- TODO: crear formulario registro de pagos -->
                     <button class="btn bg-blue w-100 rounded-0">
                         <i class="fa fa-cash-register"></i>
                     </button>
                 </div>
                 <div class="boton" v-if="oHabitacion?.estado == 1">
                     <button
-                        class="btn btn-warning w-100 rounded-0"
-                        @click="muestraTransferencia()"
+                        class="btn btn-primary w-100 rounded-0"
+                        @click="muestraServicios"
                     >
-                        <i class="fa fa-sync"></i>
-                    </button>
-                </div>
-                <div class="boton" v-if="oHabitacion?.estado == 1">
-                    <button class="btn btn-primary w-100 rounded-0">
                         <i class="fa fa-shopping-cart"></i>
                     </button>
                 </div>
-                <div class="boton" v-if="oHabitacion?.estado == 1">
-                    <button class="btn btn-danger w-100 rounded-0">
-                        <i class="fa fa-power-off"></i>
+                <div
+                    class="miDropdownMenu"
+                    :class="[menu == true ? 'show' : '']"
+                >
+                    <button
+                        type="button"
+                        class="btn bg-white rounded-0"
+                        @click.prevente="toggleMenu"
+                    >
+                        <i class="fa fa-list"></i>
                     </button>
+                    <div class="menu">
+                        <button
+                            class="menu-item"
+                            type="button"
+                            @click.prevent="muestraTransferencia()"
+                            v-if="oHabitacion?.estado == 1"
+                        >
+                            <i class="fa fa-sync text-warning"></i>
+                            Transferencia
+                        </button>
+                        <button class="menu-item" type="button">
+                            <i class="fa fa-info-circle text-info"></i>
+                            Información
+                        </button>
+                        <button
+                            class="menu-item bg-danger"
+                            type="button"
+                            v-if="oHabitacion?.estado == 1"
+                        >
+                            <i class="fa fa-power-off"></i> Finalizar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
