@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('descripcion')->nullable();
             $table->decimal('precio', 24, 2);
             $table->unsignedBigInteger('tipo_producto_id');
-            $table->double("stock")->default(0);
+            $table->double("stock")->default(0)->nullable();
+            $table->integer("control_stock")->default(1);
             $table->string('imagen', 255)->nullable();
             $table->timestamps();
             $table->foreign('tipo_producto_id')->references('id')->on('tipo_productos');

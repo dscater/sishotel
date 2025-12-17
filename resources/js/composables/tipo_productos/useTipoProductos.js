@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 const oTipoProducto = ref({
     id: 0,
     nombre: "",
+    tipo: "PRODUCTO",
     descripcion: "",
     _method: "POST",
 });
@@ -12,6 +13,7 @@ export const useTipoProductos = () => {
         if (item) {
             oTipoProducto.value.id = item.id;
             oTipoProducto.value.nombre = item.nombre;
+            oTipoProducto.value.tipo = item.tipo;
             oTipoProducto.value.descripcion = item.descripcion;
             oTipoProducto.value._method = "PUT";
             return oTipoProducto;
@@ -22,6 +24,7 @@ export const useTipoProductos = () => {
     const limpiarTipoProducto = () => {
         oTipoProducto.value.id = 0;
         oTipoProducto.value.nombre = "";
+        oTipoProducto.value.tipo = "PRODUCTO";
         oTipoProducto.value.descripcion = "";
         oTipoProducto.value._method = "POST";
     };

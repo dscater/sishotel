@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TipoProductoUpdateRequest extends FormRequest
+class RegistroServicioUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,16 +22,7 @@ class TipoProductoUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "nombre" => "required|unique:tipo_productos,nombre," . $this->tipo_producto->id,
-            "tipo" => "required",
-            "descripcion" => "nullable",
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            "nombre.required" => "Debes completar este campo",
-            "nombre.unique" => "Este nombre no esta disponible",
+            //
         ];
     }
 }

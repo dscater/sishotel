@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 16-12-2025 a las 22:16:54
+-- Tiempo de generación: 17-12-2025 a las 21:33:14
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -301,7 +301,24 @@ INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `dato
 (81, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": 0, \"tipo\": \"NORMAL\", \"cd_tc\": null, \"saldo\": \"800.00\", \"total\": \"1600.00\", \"status\": 1, \"cliente\": {\"ci\": \"56565656\", \"id\": 2, \"dir\": \"\", \"edad\": null, \"fono\": \"6767676767\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALEX\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:07:12.000000Z\", \"updated_at\": \"2025-11-28T15:07:12.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"800.00\", \"desayuno\": 1, \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"moneda_id\": 1, \"cliente_id\": 2, \"created_at\": \"2025-12-03T19:06:58.000000Z\", \"updated_at\": \"2025-12-03T23:11:34.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": null, \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": 2, \"fecha_salida\": \"2025-12-05\", \"hora_entrada\": \"14:50:00\", \"hora_reserva\": null, \"moneda_id_tc\": 1, \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-03\", \"fecha_reserva\": null, \"habitacion_id\": 2, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": 0, \"tipo\": \"NORMAL\", \"cd_tc\": null, \"saldo\": \"800\", \"total\": \"1600\", \"status\": 1, \"cliente\": {\"ci\": \"56565656\", \"id\": 2, \"dir\": \"\", \"edad\": null, \"fono\": \"6767676767\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"ALEX\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:07:12.000000Z\", \"updated_at\": \"2025-11-28T15:07:12.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"800.00\", \"desayuno\": \"1\", \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"moneda_id\": 1, \"cliente_id\": \"2\", \"created_at\": \"2025-12-03T19:06:58.000000Z\", \"updated_at\": \"2025-12-16T19:41:00.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": null, \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": \"2\", \"fecha_salida\": \"2025-12-05\", \"hora_entrada\": \"14:50:00\", \"hora_reserva\": null, \"moneda_id_tc\": \"1\", \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-03\", \"fecha_reserva\": null, \"habitacion_id\": 2, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', 'REGISTROS', '2025-12-16', '15:41:00', '2025-12-16 19:41:00', '2025-12-16 19:41:00'),
 (82, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE CAMBIO', '{\"id\": 3, \"fecha\": \"2025-12-16\", \"valor\": \"6.98\", \"moneda_id\": \"2\", \"created_at\": \"2025-12-16T19:59:31.000000Z\", \"updated_at\": \"2025-12-16T19:59:31.000000Z\"}', NULL, 'TIPO DE CAMBIO', '2025-12-16', '15:59:31', '2025-12-16 19:59:31', '2025-12-16 19:59:31'),
 (83, 1, 'CREACIÓN', 'EL USUARIO admin REALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 3, \"tc\": \"1\", \"tipo\": \"NORMAL\", \"cd_tc\": \"114.61\", \"saldo\": \"0\", \"total\": \"2400\", \"user_id\": 1, \"adelanto\": \"2400\", \"desayuno\": \"0\", \"garantia\": \"349\", \"saldo_tc\": \"0\", \"total_tc\": \"343.84\", \"moneda_id\": 1, \"cliente_id\": \"3\", \"created_at\": \"2025-12-16T21:21:51.000000Z\", \"updated_at\": \"2025-12-16T21:21:51.000000Z\", \"adelanto_tc\": \"343.84\", \"garantia_tc\": \"50\", \"hora_salida\": \"12:00\", \"dias_estadia\": \"3\", \"fecha_salida\": \"2025-12-19\", \"hora_entrada\": \"17:21\", \"moneda_id_tc\": \"2\", \"fecha_entrada\": \"2025-12-16\", \"habitacion_id\": \"4\"}', NULL, 'REGISTROS', '2025-12-16', '17:21:51', '2025-12-16 21:21:51', '2025-12-16 21:21:51'),
-(84, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 3, \"tc\": 1, \"tipo\": \"NORMAL\", \"cd_tc\": \"114.61\", \"saldo\": \"0.00\", \"total\": \"2400.00\", \"status\": 1, \"cliente\": {\"ci\": \"345345354\", \"id\": 3, \"dir\": \"\", \"edad\": null, \"fono\": \"676767\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"MARIA\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:10.000000Z\", \"updated_at\": \"2025-11-28T15:09:10.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"2400.00\", \"desayuno\": 0, \"garantia\": \"349.00\", \"saldo_tc\": \"0.00\", \"total_tc\": \"343.84\", \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": 3, \"created_at\": \"2025-12-16T21:21:51.000000Z\", \"updated_at\": \"2025-12-16T21:21:51.000000Z\", \"adelanto_tc\": \"343.84\", \"cod_reserva\": null, \"garantia_tc\": \"50.00\", \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": 3, \"fecha_salida\": \"2025-12-19\", \"hora_entrada\": \"17:21:00\", \"hora_reserva\": null, \"moneda_id_tc\": 2, \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-16\", \"fecha_reserva\": null, \"habitacion_id\": 4, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', '{\"cd\": \"800.00\", \"id\": 3, \"tc\": \"1\", \"tipo\": \"NORMAL\", \"cd_tc\": \"114.61\", \"saldo\": \"0\", \"total\": \"2400\", \"status\": 1, \"cliente\": {\"ci\": \"345345354\", \"id\": 3, \"dir\": \"\", \"edad\": null, \"fono\": \"676767\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"MARIA\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:10.000000Z\", \"updated_at\": \"2025-11-28T15:09:10.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"2400.00\", \"desayuno\": \"1\", \"garantia\": \"349.00\", \"saldo_tc\": \"0\", \"total_tc\": \"343.84\", \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": \"3\", \"created_at\": \"2025-12-16T21:21:51.000000Z\", \"updated_at\": \"2025-12-16T21:25:35.000000Z\", \"adelanto_tc\": \"343.84\", \"cod_reserva\": null, \"garantia_tc\": \"50\", \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": \"3\", \"fecha_salida\": \"2025-12-19\", \"hora_entrada\": \"17:21:00\", \"hora_reserva\": null, \"moneda_id_tc\": \"2\", \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-16\", \"fecha_reserva\": null, \"habitacion_id\": 4, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', 'REGISTROS', '2025-12-16', '17:25:35', '2025-12-16 21:25:35', '2025-12-16 21:25:35');
+(84, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 3, \"tc\": 1, \"tipo\": \"NORMAL\", \"cd_tc\": \"114.61\", \"saldo\": \"0.00\", \"total\": \"2400.00\", \"status\": 1, \"cliente\": {\"ci\": \"345345354\", \"id\": 3, \"dir\": \"\", \"edad\": null, \"fono\": \"676767\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"MARIA\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:10.000000Z\", \"updated_at\": \"2025-11-28T15:09:10.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"2400.00\", \"desayuno\": 0, \"garantia\": \"349.00\", \"saldo_tc\": \"0.00\", \"total_tc\": \"343.84\", \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": 3, \"created_at\": \"2025-12-16T21:21:51.000000Z\", \"updated_at\": \"2025-12-16T21:21:51.000000Z\", \"adelanto_tc\": \"343.84\", \"cod_reserva\": null, \"garantia_tc\": \"50.00\", \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": 3, \"fecha_salida\": \"2025-12-19\", \"hora_entrada\": \"17:21:00\", \"hora_reserva\": null, \"moneda_id_tc\": 2, \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-16\", \"fecha_reserva\": null, \"habitacion_id\": 4, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', '{\"cd\": \"800.00\", \"id\": 3, \"tc\": \"1\", \"tipo\": \"NORMAL\", \"cd_tc\": \"114.61\", \"saldo\": \"0\", \"total\": \"2400\", \"status\": 1, \"cliente\": {\"ci\": \"345345354\", \"id\": 3, \"dir\": \"\", \"edad\": null, \"fono\": \"676767\", \"pais\": \"\", \"ci_exp\": \"LP\", \"correo\": null, \"nombre\": \"MARIA\", \"status\": 1, \"materno\": \"\", \"paterno\": \"MAMANI\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:10.000000Z\", \"updated_at\": \"2025-11-28T15:09:10.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"2400.00\", \"desayuno\": \"1\", \"garantia\": \"349.00\", \"saldo_tc\": \"0\", \"total_tc\": \"343.84\", \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": \"3\", \"created_at\": \"2025-12-16T21:21:51.000000Z\", \"updated_at\": \"2025-12-16T21:25:35.000000Z\", \"adelanto_tc\": \"343.84\", \"cod_reserva\": null, \"garantia_tc\": \"50\", \"hora_salida\": \"12:00:00\", \"nro_reserva\": null, \"dev_garantia\": 0, \"dias_estadia\": \"3\", \"fecha_salida\": \"2025-12-19\", \"hora_entrada\": \"17:21:00\", \"hora_reserva\": null, \"moneda_id_tc\": \"2\", \"tipo_reserva\": null, \"fecha_entrada\": \"2025-12-16\", \"fecha_reserva\": null, \"habitacion_id\": 4, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', 'REGISTROS', '2025-12-16', '17:25:35', '2025-12-16 21:25:35', '2025-12-16 21:25:35'),
+(85, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE PRODUCTO', '{\"id\": 3, \"tipo\": \"SERVICIO\", \"nombre\": \"SERVICIO 1\", \"created_at\": \"2025-12-17T19:26:30.000000Z\", \"updated_at\": \"2025-12-17T19:26:30.000000Z\", \"descripcion\": \"DESC\"}', NULL, 'TIPO DE PRODUCTOS', '2025-12-17', '15:26:30', '2025-12-17 19:26:30', '2025-12-17 19:26:30'),
+(86, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN PRODUCTO', '{\"id\": 3, \"nombre\": \"SERVICIO PROD\", \"precio\": \"190\", \"created_at\": \"2025-12-17T19:33:36.000000Z\", \"updated_at\": \"2025-12-17T19:33:36.000000Z\", \"descripcion\": \"\", \"control_stock\": 0, \"tipo_producto_id\": \"3\"}', NULL, 'PRODUCTOS', '2025-12-17', '15:33:36', '2025-12-17 19:33:36', '2025-12-17 19:33:36'),
+(87, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE PRODUCTO', '{\"id\": 1, \"tipo\": \"PRODUCTO\", \"nombre\": \"TIPO PRODUCTO 1\", \"created_at\": \"2025-12-03T23:33:56.000000Z\", \"updated_at\": \"2025-12-03T23:36:48.000000Z\", \"descripcion\": \"\"}', '{\"id\": 1, \"tipo\": \"PRODUCTO\", \"nombre\": \"BEBIDAS\", \"created_at\": \"2025-12-03T23:33:56.000000Z\", \"updated_at\": \"2025-12-17T19:36:14.000000Z\", \"descripcion\": \"\"}', 'TIPO DE PRODUCTOS', '2025-12-17', '15:36:14', '2025-12-17 19:36:14', '2025-12-17 19:36:14'),
+(88, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE PRODUCTO', '{\"id\": 2, \"tipo\": \"PRODUCTO\", \"nombre\": \"TIPO PRODUCTO 2\", \"created_at\": \"2025-12-03T23:37:37.000000Z\", \"updated_at\": \"2025-12-03T23:37:37.000000Z\", \"descripcion\": \"DESC\"}', '{\"id\": 2, \"tipo\": \"PRODUCTO\", \"nombre\": \"COMIDAS\", \"created_at\": \"2025-12-03T23:37:37.000000Z\", \"updated_at\": \"2025-12-17T19:36:22.000000Z\", \"descripcion\": \"DESC\"}', 'TIPO DE PRODUCTOS', '2025-12-17', '15:36:22', '2025-12-17 19:36:22', '2025-12-17 19:36:22'),
+(89, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE PRODUCTO', '{\"id\": 4, \"tipo\": \"PRODUCTO\", \"nombre\": \"DESAYUNO\", \"created_at\": \"2025-12-17T19:36:34.000000Z\", \"updated_at\": \"2025-12-17T19:36:34.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE PRODUCTOS', '2025-12-17', '15:36:34', '2025-12-17 19:36:34', '2025-12-17 19:36:34'),
+(90, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE PRODUCTO', '{\"id\": 5, \"tipo\": \"SERVICIO\", \"nombre\": \"RUPTURA DE VAJILLAS\", \"created_at\": \"2025-12-17T19:36:49.000000Z\", \"updated_at\": \"2025-12-17T19:36:49.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE PRODUCTOS', '2025-12-17', '15:36:49', '2025-12-17 19:36:49', '2025-12-17 19:36:49'),
+(91, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN TIPO DE PRODUCTO', '{\"id\": 6, \"tipo\": \"SERVICIO\", \"nombre\": \"OTROS SERVICIOS\", \"created_at\": \"2025-12-17T19:37:00.000000Z\", \"updated_at\": \"2025-12-17T19:37:00.000000Z\", \"descripcion\": \"\"}', NULL, 'TIPO DE PRODUCTOS', '2025-12-17', '15:37:00', '2025-12-17 19:37:00', '2025-12-17 19:37:00'),
+(92, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE PRODUCTO', '{\"id\": 5, \"tipo\": \"SERVICIO\", \"nombre\": \"RUPTURA DE VAJILLAS\", \"created_at\": \"2025-12-17T19:36:49.000000Z\", \"updated_at\": \"2025-12-17T19:36:49.000000Z\", \"descripcion\": \"\"}', '{\"id\": 5, \"tipo\": \"SERVICIO\", \"nombre\": \"OTROS\", \"created_at\": \"2025-12-17T19:36:49.000000Z\", \"updated_at\": \"2025-12-17T19:37:41.000000Z\", \"descripcion\": \"\"}', 'TIPO DE PRODUCTOS', '2025-12-17', '15:37:41', '2025-12-17 19:37:41', '2025-12-17 19:37:41'),
+(93, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE PRODUCTO', '{\"id\": 3, \"tipo\": \"SERVICIO\", \"nombre\": \"SERVICIO 1\", \"created_at\": \"2025-12-17T19:26:30.000000Z\", \"updated_at\": \"2025-12-17T19:26:30.000000Z\", \"descripcion\": \"DESC\"}', '{\"id\": 3, \"tipo\": \"SERVICIO\", \"nombre\": \"RUPTURA DE VAJILLAS\", \"created_at\": \"2025-12-17T19:26:30.000000Z\", \"updated_at\": \"2025-12-17T19:37:47.000000Z\", \"descripcion\": \"DESC\"}', 'TIPO DE PRODUCTOS', '2025-12-17', '15:37:47', '2025-12-17 19:37:47', '2025-12-17 19:37:47'),
+(94, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN TIPO DE PRODUCTO', '{\"id\": 6, \"tipo\": \"SERVICIO\", \"nombre\": \"OTROS SERVICIOS\", \"created_at\": \"2025-12-17T19:37:00.000000Z\", \"updated_at\": \"2025-12-17T19:37:00.000000Z\", \"descripcion\": \"\"}', '{\"id\": 6, \"tipo\": \"SERVICIO\", \"nombre\": \"MOMENTANEOS\", \"created_at\": \"2025-12-17T19:37:00.000000Z\", \"updated_at\": \"2025-12-17T19:38:05.000000Z\", \"descripcion\": \"\"}', 'TIPO DE PRODUCTOS', '2025-12-17', '15:38:05', '2025-12-17 19:38:05', '2025-12-17 19:38:05'),
+(95, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN PRODUCTO', '{\"id\": 1, \"stock\": 0, \"imagen\": null, \"nombre\": \"PRODUCTO 1\", \"precio\": \"200.00\", \"created_at\": \"2025-12-03T23:54:15.000000Z\", \"updated_at\": \"2025-12-03T23:54:15.000000Z\", \"descripcion\": \"DESC\", \"control_stock\": 1, \"tipo_producto_id\": 1}', '{\"id\": 1, \"stock\": 0, \"imagen\": null, \"nombre\": \"VINO\", \"precio\": \"200.00\", \"created_at\": \"2025-12-03T23:54:15.000000Z\", \"updated_at\": \"2025-12-17T19:39:25.000000Z\", \"descripcion\": \"DESC\", \"control_stock\": 1, \"tipo_producto_id\": \"1\"}', 'PRODUCTOS', '2025-12-17', '15:39:25', '2025-12-17 19:39:25', '2025-12-17 19:39:25'),
+(96, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN PRODUCTO', '{\"id\": 2, \"stock\": 0, \"imagen\": \"21764806725.jpeg\", \"nombre\": \"PRODUCTO 2\", \"precio\": \"80.50\", \"created_at\": \"2025-12-03T23:55:06.000000Z\", \"updated_at\": \"2025-12-04T00:05:25.000000Z\", \"descripcion\": \"DESC\", \"control_stock\": 1, \"tipo_producto_id\": 2}', '{\"id\": 2, \"stock\": 0, \"imagen\": \"21764806725.jpeg\", \"nombre\": \"POLLO FRITO\", \"precio\": \"80.50\", \"created_at\": \"2025-12-03T23:55:06.000000Z\", \"updated_at\": \"2025-12-17T19:39:35.000000Z\", \"descripcion\": \"DESC\", \"control_stock\": 1, \"tipo_producto_id\": \"2\"}', 'PRODUCTOS', '2025-12-17', '15:39:35', '2025-12-17 19:39:35', '2025-12-17 19:39:35'),
+(97, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN PRODUCTO', '{\"id\": 3, \"stock\": 0, \"imagen\": null, \"nombre\": \"SERVICIO PROD\", \"precio\": \"190.00\", \"created_at\": \"2025-12-17T19:33:36.000000Z\", \"updated_at\": \"2025-12-17T19:33:36.000000Z\", \"descripcion\": \"\", \"control_stock\": 0, \"tipo_producto_id\": 3}', '{\"id\": 3, \"stock\": 0, \"imagen\": null, \"nombre\": \"DAÑOS MUEBLE\", \"precio\": \"190.00\", \"created_at\": \"2025-12-17T19:33:36.000000Z\", \"updated_at\": \"2025-12-17T19:39:50.000000Z\", \"descripcion\": \"\", \"control_stock\": 0, \"tipo_producto_id\": \"3\"}', 'PRODUCTOS', '2025-12-17', '15:39:50', '2025-12-17 19:39:50', '2025-12-17 19:39:50'),
+(98, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN PRODUCTO', '{\"id\": 4, \"nombre\": \"LECHE\", \"precio\": \"20\", \"created_at\": \"2025-12-17T19:40:06.000000Z\", \"updated_at\": \"2025-12-17T19:40:06.000000Z\", \"descripcion\": \"\", \"control_stock\": 1, \"tipo_producto_id\": \"4\"}', NULL, 'PRODUCTOS', '2025-12-17', '15:40:06', '2025-12-17 19:40:06', '2025-12-17 19:40:06'),
+(99, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN PRODUCTO', '{\"id\": 5, \"nombre\": \"CAFE\", \"precio\": \"0\", \"created_at\": \"2025-12-17T19:40:16.000000Z\", \"updated_at\": \"2025-12-17T19:40:16.000000Z\", \"descripcion\": \"\", \"control_stock\": 1, \"tipo_producto_id\": \"4\"}', NULL, 'PRODUCTOS', '2025-12-17', '15:40:16', '2025-12-17 19:40:16', '2025-12-17 19:40:16'),
+(100, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN PRODUCTO', '{\"id\": 5, \"stock\": 0, \"imagen\": null, \"nombre\": \"CAFE\", \"precio\": \"0.00\", \"created_at\": \"2025-12-17T19:40:16.000000Z\", \"updated_at\": \"2025-12-17T19:40:16.000000Z\", \"descripcion\": \"\", \"control_stock\": 1, \"tipo_producto_id\": 4}', '{\"id\": 5, \"stock\": 0, \"imagen\": null, \"nombre\": \"CAFE\", \"precio\": \"45.5\", \"created_at\": \"2025-12-17T19:40:16.000000Z\", \"updated_at\": \"2025-12-17T19:40:26.000000Z\", \"descripcion\": \"\", \"control_stock\": 1, \"tipo_producto_id\": \"4\"}', 'PRODUCTOS', '2025-12-17', '15:40:26', '2025-12-17 19:40:26', '2025-12-17 19:40:26'),
+(101, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 5, \"saldo\": \"0\", \"total\": \"522\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"522\", \"moneda_id\": 1, \"created_at\": \"2025-12-17T21:23:23.000000Z\", \"updated_at\": \"2025-12-17T21:23:23.000000Z\", \"registro_id\": \"3\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-17', '17:23:23', '2025-12-17 21:23:23', '2025-12-17 21:23:23');
 
 -- --------------------------------------------------------
 
@@ -420,7 +437,8 @@ CREATE TABLE `productos` (
   `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `precio` decimal(24,2) NOT NULL,
   `tipo_producto_id` bigint UNSIGNED NOT NULL,
-  `stock` double NOT NULL DEFAULT '0',
+  `stock` double DEFAULT '0',
+  `control_stock` int NOT NULL DEFAULT '1',
   `imagen` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -430,9 +448,12 @@ CREATE TABLE `productos` (
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `tipo_producto_id`, `stock`, `imagen`, `created_at`, `updated_at`) VALUES
-(1, 'PRODUCTO 1', 'DESC', 200.00, 1, 0, NULL, '2025-12-03 23:54:15', '2025-12-03 23:54:15'),
-(2, 'PRODUCTO 2', 'DESC', 80.50, 2, 0, '21764806725.jpeg', '2025-12-03 23:55:06', '2025-12-04 00:05:25');
+INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `tipo_producto_id`, `stock`, `control_stock`, `imagen`, `created_at`, `updated_at`) VALUES
+(1, 'VINO', 'DESC', 200.00, 1, 0, 1, NULL, '2025-12-03 23:54:15', '2025-12-17 19:39:25'),
+(2, 'POLLO FRITO', 'DESC', 80.50, 2, 0, 1, '21764806725.jpeg', '2025-12-03 23:55:06', '2025-12-17 19:39:35'),
+(3, 'DAÑOS MUEBLE', '', 190.00, 3, 0, 0, NULL, '2025-12-17 19:33:36', '2025-12-17 19:39:50'),
+(4, 'LECHE', '', 20.00, 4, 0, 1, NULL, '2025-12-17 19:40:06', '2025-12-17 19:40:06'),
+(5, 'CAFE', '', 45.50, 4, 0, 1, NULL, '2025-12-17 19:40:16', '2025-12-17 19:40:26');
 
 -- --------------------------------------------------------
 
@@ -503,13 +524,21 @@ CREATE TABLE `registro_servicios` (
   `saldo` decimal(24,2) NOT NULL,
   `moneda_id` bigint UNSIGNED NOT NULL,
   `total_tc` decimal(24,2) DEFAULT '0.00',
-  `cancelado_tc` decimal(24,2) NOT NULL DEFAULT '0.00',
-  `saldo_tc` decimal(24,2) NOT NULL,
+  `cancelado_tc` decimal(24,2) DEFAULT '0.00',
+  `saldo_tc` decimal(24,2) DEFAULT NULL,
   `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
   `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `registro_servicios`
+--
+
+INSERT INTO `registro_servicios` (`id`, `registro_id`, `total`, `cancelado`, `saldo`, `moneda_id`, `total_tc`, `cancelado_tc`, `saldo_tc`, `moneda_id_tc`, `tipo_cambio_id`, `user_id`, `created_at`, `updated_at`) VALUES
+(5, 3, 522.00, 522.00, 0.00, 1, NULL, NULL, NULL, NULL, NULL, 1, '2025-12-17 21:23:23', '2025-12-17 21:23:23');
 
 -- --------------------------------------------------------
 
@@ -527,17 +556,17 @@ CREATE TABLE `servicio_detalles` (
   `cantidad` int NOT NULL,
   `precio_unitario` decimal(24,2) NOT NULL,
   `total` decimal(24,2) NOT NULL,
-  `cancelado` decimal(24,2) NOT NULL DEFAULT '0.00',
-  `saldo` decimal(24,2) NOT NULL,
-  `moneda_id` bigint UNSIGNED NOT NULL,
-  `total_tc` decimal(24,2) DEFAULT '0.00',
-  `cancelado_tc` decimal(24,2) NOT NULL DEFAULT '0.00',
-  `saldo_tc` decimal(24,2) NOT NULL,
-  `moneda_id_tc` bigint UNSIGNED DEFAULT NULL,
-  `tipo_cambio_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `servicio_detalles`
+--
+
+INSERT INTO `servicio_detalles` (`id`, `registro_servicio_id`, `registro_id`, `producto_id`, `tipo`, `descripcion_externo`, `cantidad`, `precio_unitario`, `total`, `created_at`, `updated_at`) VALUES
+(1, 5, 3, 2, 'INTERNO', NULL, 4, 80.50, 322.00, '2025-12-17 21:23:23', '2025-12-17 21:23:23'),
+(2, 5, 3, 1, 'INTERNO', NULL, 1, 200.00, 200.00, '2025-12-17 21:23:23', '2025-12-17 21:23:23');
 
 -- --------------------------------------------------------
 
@@ -598,6 +627,7 @@ INSERT INTO `tipo_habitacions` (`id`, `nombre`, `capacidad`, `descripcion`, `cre
 CREATE TABLE `tipo_productos` (
   `id` bigint UNSIGNED NOT NULL,
   `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `descripcion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -607,9 +637,13 @@ CREATE TABLE `tipo_productos` (
 -- Volcado de datos para la tabla `tipo_productos`
 --
 
-INSERT INTO `tipo_productos` (`id`, `nombre`, `descripcion`, `created_at`, `updated_at`) VALUES
-(1, 'TIPO PRODUCTO 1', '', '2025-12-03 23:33:56', '2025-12-03 23:36:48'),
-(2, 'TIPO PRODUCTO 2', 'DESC', '2025-12-03 23:37:37', '2025-12-03 23:37:37');
+INSERT INTO `tipo_productos` (`id`, `nombre`, `tipo`, `descripcion`, `created_at`, `updated_at`) VALUES
+(1, 'BEBIDAS', 'PRODUCTO', '', '2025-12-03 23:33:56', '2025-12-17 19:36:14'),
+(2, 'COMIDAS', 'PRODUCTO', 'DESC', '2025-12-03 23:37:37', '2025-12-17 19:36:22'),
+(3, 'RUPTURA DE VAJILLAS', 'SERVICIO', 'DESC', '2025-12-17 19:26:30', '2025-12-17 19:37:47'),
+(4, 'DESAYUNO', 'PRODUCTO', '', '2025-12-17 19:36:34', '2025-12-17 19:36:34'),
+(5, 'OTROS', 'SERVICIO', '', '2025-12-17 19:36:49', '2025-12-17 19:37:41'),
+(6, 'MOMENTANEOS', 'SERVICIO', '', '2025-12-17 19:37:00', '2025-12-17 19:38:05');
 
 -- --------------------------------------------------------
 
@@ -790,10 +824,7 @@ ALTER TABLE `servicio_detalles`
   ADD PRIMARY KEY (`id`),
   ADD KEY `servicio_detalles_registro_servicio_id_foreign` (`registro_servicio_id`),
   ADD KEY `servicio_detalles_registro_id_foreign` (`registro_id`),
-  ADD KEY `servicio_detalles_producto_id_foreign` (`producto_id`),
-  ADD KEY `servicio_detalles_moneda_id_foreign` (`moneda_id`),
-  ADD KEY `servicio_detalles_moneda_id_tc_foreign` (`moneda_id_tc`),
-  ADD KEY `servicio_detalles_tipo_cambio_id_foreign` (`tipo_cambio_id`);
+  ADD KEY `servicio_detalles_producto_id_foreign` (`producto_id`);
 
 --
 -- Indices de la tabla `tipo_cambios`
@@ -872,7 +903,7 @@ ALTER TABLE `habitacion_fotos`
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
@@ -902,7 +933,7 @@ ALTER TABLE `movimiento_cajas`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `registros`
@@ -914,13 +945,13 @@ ALTER TABLE `registros`
 -- AUTO_INCREMENT de la tabla `registro_servicios`
 --
 ALTER TABLE `registro_servicios`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio_detalles`
 --
 ALTER TABLE `servicio_detalles`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_cambios`
@@ -938,7 +969,7 @@ ALTER TABLE `tipo_habitacions`
 -- AUTO_INCREMENT de la tabla `tipo_productos`
 --
 ALTER TABLE `tipo_productos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `transferencias`
@@ -1038,12 +1069,9 @@ ALTER TABLE `registro_servicios`
 -- Filtros para la tabla `servicio_detalles`
 --
 ALTER TABLE `servicio_detalles`
-  ADD CONSTRAINT `servicio_detalles_moneda_id_foreign` FOREIGN KEY (`moneda_id`) REFERENCES `monedas` (`id`),
-  ADD CONSTRAINT `servicio_detalles_moneda_id_tc_foreign` FOREIGN KEY (`moneda_id_tc`) REFERENCES `monedas` (`id`),
   ADD CONSTRAINT `servicio_detalles_producto_id_foreign` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `servicio_detalles_registro_id_foreign` FOREIGN KEY (`registro_id`) REFERENCES `registros` (`id`),
-  ADD CONSTRAINT `servicio_detalles_registro_servicio_id_foreign` FOREIGN KEY (`registro_servicio_id`) REFERENCES `registro_servicios` (`id`),
-  ADD CONSTRAINT `servicio_detalles_tipo_cambio_id_foreign` FOREIGN KEY (`tipo_cambio_id`) REFERENCES `tipo_cambios` (`id`);
+  ADD CONSTRAINT `servicio_detalles_registro_servicio_id_foreign` FOREIGN KEY (`registro_servicio_id`) REFERENCES `registro_servicios` (`id`);
 
 --
 -- Filtros para la tabla `transferencias`

@@ -207,6 +207,26 @@ onMounted(() => {
                             </li>
                         </ul>
                     </div>
+                    <div class="col-md-6 mt-2">
+                        <label class="required">Tipo</label>
+                        <br />
+                        <el-radio-group v-model="form.tipo">
+                            <el-radio value="PRODUCTO" border
+                                >PRODUCTO</el-radio
+                            >
+                            <el-radio value="SERVICIO" border
+                                >SERVICIO</el-radio
+                            >
+                        </el-radio-group>
+                        <ul
+                            v-if="form.errors?.tipo"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.tipo }}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </form>
         </template>

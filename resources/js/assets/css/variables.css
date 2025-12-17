@@ -2,6 +2,7 @@
     --principal: #5cc72f;
     --principal_hover: #48b619;
     --principal_t: #5dc72fd5;
+    --principal_t2: #5dc72f91;
     --secundario: #0d2649;
     --secundario_hover: #013b92;
     --bg1: #205080;
@@ -10,6 +11,8 @@
     --bg4: #baff9d;
     --bg5: rgb(8, 173, 71);
     --bg6: #17a2b8;
+    --bg7: #fffab5;
+    --bg8: #ffddd9;
     --danger: rgb(236, 122, 122);
     --bgDark: rgb(18, 20, 20);
     --bgDark1: rgb(32.4, 32.7, 33.3);

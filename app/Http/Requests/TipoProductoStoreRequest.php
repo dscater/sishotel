@@ -23,6 +23,7 @@ class TipoProductoStoreRequest extends FormRequest
     {
         return [
             "nombre" => "required|unique:tipo_productos,nombre",
+            "tipo" => "required",
             "descripcion" => "nullable",
         ];
     }

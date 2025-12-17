@@ -101,6 +101,7 @@ class PermisoService
             "tipo_productos.destroy",
 
             "productos.listado",
+            "productos.listadoByTipo",
             "productos.paginado",
             "productos.index",
             "productos.create",
@@ -115,6 +116,9 @@ class PermisoService
             "registros.update",
             "registros.verificaHabitacion",
             "registros.transferencia",
+
+            // servicios
+            "registro_servicios.store",
 
             "configuracions.index",
             "configuracions.create",

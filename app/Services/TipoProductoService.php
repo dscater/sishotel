@@ -29,7 +29,7 @@ class TipoProductoService
         //     ->orderBy("nombre")
         //     ->get()
         //     ->toArray();
-        return TipoProducto::select("tipo_productos.*")
+        return TipoProducto::select("tipo_productos.nombre", "tipo_productos.tipo")
             ->get()
             ->toArray();
     }
@@ -103,6 +103,7 @@ class TipoProductoService
     {
         $tipo_producto = TipoProducto::create([
             "nombre" => mb_strtoupper($datos["nombre"]),
+            "tipo" => mb_strtoupper($datos["tipo"]),
             "descripcion" => mb_strtoupper($datos["descripcion"]),
         ]);
 
@@ -124,6 +125,7 @@ class TipoProductoService
         $old_tipo_producto = clone $tipo_producto;
         $tipo_producto->update([
             "nombre" => mb_strtoupper($datos["nombre"]),
+            "tipo" => mb_strtoupper($datos["tipo"]),
             "descripcion" => mb_strtoupper($datos["descripcion"]),
         ]);
 

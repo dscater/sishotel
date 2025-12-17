@@ -238,7 +238,7 @@ class ClienteService
         $cliente->delete();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN CLIENTE " . $old_cliente->usuario, $old_cliente);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN CLIENTE " . $old_cliente->nombre, $old_cliente);
         return true;
     }
 }

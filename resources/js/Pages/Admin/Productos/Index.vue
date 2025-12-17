@@ -191,6 +191,34 @@ onMounted(async () => {
                             :header-class="'bg__primary'"
                             fixed-header
                         >
+                            <template #stock="{ item }">
+                                <span
+                                    class="badge text-sm mx-auto"
+                                    :class="{
+                                        'bg-principal': item.control_stock == 1,
+                                    }"
+                                    >{{
+                                        item.control_stock ? item.stock : "-"
+                                    }}</span
+                                >
+                            </template>
+                            <template
+                                v-slot:[`tipo_producto.nombre`]="{ item }"
+                            >
+                                <span
+                                    class="badge text-xs"
+                                    :class="{
+                                        'bg-primary':
+                                            item.tipo_producto.tipo ==
+                                            'PRODUCTO',
+                                        'bg-secundario':
+                                            item.tipo_producto.tipo ==
+                                            'SERVICIO',
+                                    }"
+                                    >{{ item.tipo_producto.nombre }}</span
+                                >
+                            </template>
+
                             <template #imagen="{ item }">
                                 <img
                                     class=""

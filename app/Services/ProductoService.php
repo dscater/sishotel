@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Producto;
+use App\Models\TipoProducto;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -44,7 +45,7 @@ class ProductoService
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
         $productos = Producto::select("productos.*")
-            ->with(["tipo_producto:id,nombre"]);
+            ->with(["tipo_producto:id,nombre,tipo"]);
 
         // Filtros exactos
         foreach ($columnsFilter as $key => $value) {
@@ -89,11 +90,14 @@ class ProductoService
      */
     public function crear(array $datos): Producto
     {
+        $tipo_producto = TipoProducto::findOrFail($datos["tipo_producto_id"]);
+
         $producto = Producto::create([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "descripcion" => mb_strtoupper($datos["descripcion"]),
             "precio" => $datos["precio"],
             "tipo_producto_id" => $datos["tipo_producto_id"],
+            "control_stock" => $tipo_producto->tipo == 'PRODUCTO' ? 1 : 0
         ]);
 
         // cargar imagen
@@ -117,12 +121,14 @@ class ProductoService
      */
     public function actualizar(array $datos, Producto $producto): Producto
     {
+        $tipo_producto = TipoProducto::findOrFail($datos["tipo_producto_id"]);
         $old_producto = clone $producto;
         $producto->update([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "descripcion" => mb_strtoupper($datos["descripcion"]),
             "precio" => $datos["precio"],
             "tipo_producto_id" => $datos["tipo_producto_id"],
+            "control_stock" => $tipo_producto->tipo == 'PRODUCTO' ? 1 : 0
         ]);
 
         // cargar imagen

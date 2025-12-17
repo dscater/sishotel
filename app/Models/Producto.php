@@ -15,6 +15,7 @@ class Producto extends Model
         "precio",
         "tipo_producto_id",
         "stock",
+        "control_stock",
         "imagen"
     ];
 

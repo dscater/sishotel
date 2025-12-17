@@ -24,6 +24,11 @@ const headers = [
         sortable: true,
     },
     {
+        label: "TIPO",
+        key: "tipo",
+        sortable: true,
+    },
+    {
         label: "DESCRIPCIÓN",
         key: "descripcion",
         sortable: true,
@@ -170,6 +175,17 @@ onMounted(async () => {
                             :header-class="'bg__primary'"
                             fixed-header
                         >
+                            <template #tipo="{ item }">
+                                <span
+                                    class="badge text-xs"
+                                    :class="{
+                                        'bg-primary': item.tipo == 'PRODUCTO',
+                                        'bg-secundario':
+                                            item.tipo == 'SERVICIO',
+                                    }"
+                                    >{{ item.tipo }}</span
+                                >
+                            </template>
                             <template #accion="{ item }">
                                 <el-tooltip
                                     class="box-item"

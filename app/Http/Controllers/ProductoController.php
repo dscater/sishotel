@@ -30,15 +30,24 @@ class ProductoController extends Controller
     {
         $productos = Producto::select("productos.*");
 
-        if (isset($request->sinOficial) && $request->sinOficial == true) {
-            $productos->where("oficial", 0);
-        }
-
         $productos = $productos->get();
         return response()->JSON([
             "productos" => $productos
         ]);
     }
+
+    public function listadoByTipo(Request $request): JsonResponse
+    {
+        $tipo_producto_id = $request->input("tipo_producto_id", 0);
+        $productos = Producto::select("productos.*");
+        $productos->where("tipo_producto_id", $tipo_producto_id);
+        $productos = $productos->get();
+        return response()->JSON([
+            "productos" => $productos
+        ]);
+    }
+
+
 
     public function paginado(Request $request)
     {
