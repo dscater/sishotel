@@ -221,7 +221,7 @@ const cargarListas = () => {
                         'bg8 text-danger': !oCaja,
                     }"
                     ><i class="fa fa-circle"></i
-                    >{{ oCaja ? "ABIERTO" : "CERRADO" }}</span
+                    >{{ oCaja ? " ABIERTO" : " CERRADO" }}</span
                 >
                 <button
                     class="btn bg-primary btn-sm text-xs ml-1"

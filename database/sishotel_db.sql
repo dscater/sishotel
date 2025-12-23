@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 23-12-2025 a las 01:27:58
+-- Tiempo de generación: 23-12-2025 a las 23:33:16
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -50,7 +50,7 @@ CREATE TABLE `cajas` (
 --
 
 INSERT INTO `cajas` (`id`, `monto_inicial`, `monto_final`, `monto_efectivo_inicial`, `monto_efectivo_final`, `monto_banco_inicial`, `monto_banco_final`, `fecha_apertura`, `hora_apertura`, `fecha_cierre`, `hora_cierre`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 0.00, 1446.00, 0.00, 865.50, 0.00, 580.50, '2025-12-22', '20:42:27', NULL, NULL, 1, 1, '2025-12-23 00:42:27', '2025-12-23 01:07:29');
+(1, 0.00, 4368.00, 0.00, 2965.50, 0.00, 1402.50, '2025-12-22', '20:42:27', NULL, NULL, 1, 1, '2025-12-23 00:42:27', '2025-12-23 21:33:05');
 
 -- --------------------------------------------------------
 
@@ -144,6 +144,13 @@ CREATE TABLE `egreso_productos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `egreso_productos`
+--
+
+INSERT INTO `egreso_productos` (`id`, `producto_id`, `cantidad`, `motivo`, `fecha_egreso`, `created_at`, `updated_at`) VALUES
+(3, 1, 1, 'SALIDA POR ROTURA', '2025-12-23', '2025-12-23 22:47:14', '2025-12-23 22:47:14');
 
 -- --------------------------------------------------------
 
@@ -343,7 +350,23 @@ INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `dato
 (115, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 10, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"0\", \"total\": \"65.5\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"65.5\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T01:01:25.000000Z\", \"updated_at\": \"2025-12-23T01:01:25.000000Z\", \"registro_id\": \"1\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-22', '21:01:25', '2025-12-23 01:01:25', '2025-12-23 01:01:25'),
 (116, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 11, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"200\", \"total\": \"200\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"0\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T01:07:15.000000Z\", \"updated_at\": \"2025-12-23T01:07:15.000000Z\", \"registro_id\": \"7\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-22', '21:07:15', '2025-12-23 01:07:15', '2025-12-23 01:07:15'),
 (117, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 4, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"80.5\", \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 12, \"moneda_id\": 1, \"created_at\": \"2025-12-23T01:07:29.000000Z\", \"updated_at\": \"2025-12-23T01:07:29.000000Z\", \"descripcion\": \"Pago por servicio/producto registrado ID: 12\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"21:07:29\", \"fecha_movimiento\": \"2025-12-22\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-22', '21:07:29', '2025-12-23 01:07:29', '2025-12-23 01:07:29'),
-(118, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 12, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"0\", \"total\": \"80.5\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"80.5\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T01:07:29.000000Z\", \"updated_at\": \"2025-12-23T01:07:29.000000Z\", \"registro_id\": \"8\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-22', '21:07:29', '2025-12-23 01:07:29', '2025-12-23 01:07:29');
+(118, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 12, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"0\", \"total\": \"80.5\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"80.5\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T01:07:29.000000Z\", \"updated_at\": \"2025-12-23T01:07:29.000000Z\", \"registro_id\": \"8\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-22', '21:07:29', '2025-12-23 01:07:29', '2025-12-23 01:07:29'),
+(119, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 5, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"1600.00\", \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 1, \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:47:47.000000Z\", \"updated_at\": \"2025-12-23T20:47:47.000000Z\", \"descripcion\": \"Pago por servicio/producto registrado con nro. de recibo 1\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"16:47:47\", \"fecha_movimiento\": \"2025-12-23\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-23', '16:47:47', '2025-12-23 20:47:47', '2025-12-23 20:47:47'),
+(120, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 6, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"522.00\", \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 9, \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:48:54.000000Z\", \"updated_at\": \"2025-12-23T20:48:54.000000Z\", \"descripcion\": \"Pago por servicio/producto registrado con nro. de recibo 9\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"16:48:54\", \"fecha_movimiento\": \"2025-12-23\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-23', '16:48:54', '2025-12-23 20:48:54', '2025-12-23 20:48:54'),
+(121, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 14, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"400\", \"total\": \"400\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"0\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:49:23.000000Z\", \"updated_at\": \"2025-12-23T20:49:23.000000Z\", \"registro_id\": \"1\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-23', '16:49:23', '2025-12-23 20:49:23', '2025-12-23 20:49:23'),
+(122, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 13, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"400\", \"total\": \"400\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"0\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:49:23.000000Z\", \"updated_at\": \"2025-12-23T20:49:23.000000Z\", \"registro_id\": \"1\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-23', '16:49:23', '2025-12-23 20:49:23', '2025-12-23 20:49:23'),
+(123, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 15, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"146\", \"total\": \"146\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"0\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:49:30.000000Z\", \"updated_at\": \"2025-12-23T20:49:30.000000Z\", \"registro_id\": \"1\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-23', '16:49:30', '2025-12-23 20:49:30', '2025-12-23 20:49:30'),
+(124, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 7, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"400.00\", \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 13, \"moneda_id\": 1, \"created_at\": \"2025-12-23T20:49:55.000000Z\", \"updated_at\": \"2025-12-23T20:49:55.000000Z\", \"descripcion\": \"Pago por servicio/producto registrado con nro. de recibo 13\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"16:49:55\", \"fecha_movimiento\": \"2025-12-23\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-23', '16:49:55', '2025-12-23 20:49:55', '2025-12-23 20:49:55'),
+(125, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 8, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": 100, \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 14, \"moneda_id\": 1, \"created_at\": \"2025-12-23T21:29:31.000000Z\", \"updated_at\": \"2025-12-23T21:29:31.000000Z\", \"descripcion\": \"Pago parcial por servicio/producto registrado con nro. de recibo 14\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"17:29:31\", \"fecha_movimiento\": \"2025-12-23\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-23', '17:29:31', '2025-12-23 21:29:31', '2025-12-23 21:29:31'),
+(126, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 9, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": 300, \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 14, \"moneda_id\": 1, \"created_at\": \"2025-12-23T21:33:05.000000Z\", \"updated_at\": \"2025-12-23T21:33:05.000000Z\", \"descripcion\": \"Pago parcial por servicio/producto registrado con nro. de recibo 14\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"17:33:05\", \"fecha_movimiento\": \"2025-12-23\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-23', '17:33:05', '2025-12-23 21:33:05', '2025-12-23 21:33:05'),
+(127, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 18, \"tc\": 0, \"tipo\": \"PRODUCTO/SERVICIO\", \"saldo\": \"190\", \"total\": \"190\", \"user_id\": 1, \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"0\", \"moneda_id\": 1, \"created_at\": \"2025-12-23T21:53:28.000000Z\", \"updated_at\": \"2025-12-23T21:53:28.000000Z\", \"registro_id\": \"1\", \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-23', '17:53:28', '2025-12-23 21:53:28', '2025-12-23 21:53:28'),
+(128, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN INGRESO DE PRODUCTO', '{\"id\": 3, \"total\": 2700, \"cantidad\": \"30\", \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:21:28.000000Z\", \"producto_id\": \"1\", \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"90\"}', NULL, 'INGRESO DE PRODUCTOS', '2025-12-23', '18:21:28', '2025-12-23 22:21:28', '2025-12-23 22:21:28'),
+(129, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN INGRESO DE PRODUCTO', '{\"id\": 3, \"total\": \"2700.00\", \"cantidad\": 30, \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:21:28.000000Z\", \"producto_id\": 1, \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"90.00\"}', '{\"id\": 3, \"total\": 2850, \"cantidad\": \"30\", \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:23:52.000000Z\", \"producto_id\": \"1\", \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"95\"}', 'INGRESO DE PRODUCTOS', '2025-12-23', '18:23:52', '2025-12-23 22:23:52', '2025-12-23 22:23:52'),
+(130, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ EL REGISTRO DE UN INGRESO DE PRODUCTO', '{\"id\": 3, \"total\": \"2850.00\", \"cantidad\": 30, \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:23:52.000000Z\", \"producto_id\": 1, \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"95.00\"}', '{\"id\": 3, \"total\": 2850, \"cantidad\": \"30\", \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:24:13.000000Z\", \"producto_id\": \"1\", \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"95.00\"}', 'INGRESO DE PRODUCTOS', '2025-12-23', '18:24:13', '2025-12-23 22:24:13', '2025-12-23 22:24:13'),
+(131, 1, 'ELIMINACIÓN', 'EL USUARIO admin ELIMINÓ EL REGISTRO DE UN INGRESO DE PRODUCTO', '{\"id\": 3, \"total\": \"2850.00\", \"cantidad\": 30, \"created_at\": \"2025-12-23T22:21:28.000000Z\", \"updated_at\": \"2025-12-23T22:24:13.000000Z\", \"producto_id\": 1, \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"95.00\"}', NULL, 'INGRESO DE PRODUCTOS', '2025-12-23', '18:25:39', '2025-12-23 22:25:39', '2025-12-23 22:25:39'),
+(132, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN INGRESO DE PRODUCTO', '{\"id\": 4, \"total\": 2835, \"cantidad\": \"30\", \"created_at\": \"2025-12-23T22:27:30.000000Z\", \"updated_at\": \"2025-12-23T22:27:30.000000Z\", \"producto_id\": \"1\", \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"94.5\"}', NULL, 'INGRESO DE PRODUCTOS', '2025-12-23', '18:27:30', '2025-12-23 22:27:30', '2025-12-23 22:27:30'),
+(133, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN INGRESO DE PRODUCTO', '{\"id\": 5, \"total\": 80, \"cantidad\": \"4\", \"created_at\": \"2025-12-23T22:27:55.000000Z\", \"updated_at\": \"2025-12-23T22:27:55.000000Z\", \"producto_id\": \"2\", \"fecha_ingreso\": \"2025-12-23\", \"precio_compra\": \"20\"}', NULL, 'INGRESO DE PRODUCTOS', '2025-12-23', '18:27:55', '2025-12-23 22:27:55', '2025-12-23 22:27:55'),
+(134, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN EGRESO DE PRODUCTO', '{\"id\": 3, \"motivo\": \"SALIDA POR ROTURA\", \"cantidad\": \"1\", \"created_at\": \"2025-12-23T22:47:14.000000Z\", \"updated_at\": \"2025-12-23T22:47:14.000000Z\", \"producto_id\": \"1\", \"fecha_egreso\": \"2025-12-23\"}', NULL, 'EGRESO DE PRODUCTOS', '2025-12-23', '18:47:14', '2025-12-23 22:47:14', '2025-12-23 22:47:14');
 
 -- --------------------------------------------------------
 
@@ -361,6 +384,58 @@ CREATE TABLE `ingreso_productos` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `ingreso_productos`
+--
+
+INSERT INTO `ingreso_productos` (`id`, `producto_id`, `cantidad`, `precio_compra`, `total`, `fecha_ingreso`, `created_at`, `updated_at`) VALUES
+(4, 1, 30, 94.50, 2835.00, '2025-12-23', '2025-12-23 22:27:30', '2025-12-23 22:27:30'),
+(5, 2, 4, 20.00, 80.00, '2025-12-23', '2025-12-23 22:27:55', '2025-12-23 22:27:55');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `kardex_productos`
+--
+
+CREATE TABLE `kardex_productos` (
+  `id` bigint UNSIGNED NOT NULL,
+  `tipo_registro` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `registro_id` bigint UNSIGNED DEFAULT NULL,
+  `modulo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `producto_id` bigint UNSIGNED NOT NULL,
+  `detalle` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `precio` decimal(24,2) DEFAULT NULL,
+  `tipo_is` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cantidad_ingreso` double DEFAULT NULL,
+  `cantidad_salida` double DEFAULT NULL,
+  `cantidad_saldo` double NOT NULL,
+  `cu` decimal(24,2) NOT NULL,
+  `monto_ingreso` decimal(24,2) DEFAULT NULL,
+  `monto_salida` decimal(24,2) DEFAULT NULL,
+  `monto_saldo` decimal(24,2) NOT NULL,
+  `fecha` date NOT NULL,
+  `status` int NOT NULL DEFAULT '1',
+  `user_id` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `kardex_productos`
+--
+
+INSERT INTO `kardex_productos` (`id`, `tipo_registro`, `registro_id`, `modulo`, `producto_id`, `detalle`, `precio`, `tipo_is`, `cantidad_ingreso`, `cantidad_salida`, `cantidad_saldo`, `cu`, `monto_ingreso`, `monto_salida`, `monto_saldo`, `fecha`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'VALOR INICIAL', 90.00, 'INGRESO', 30, NULL, 30, 200.00, 2700.00, NULL, 2700.00, '2025-12-23', 1, 1, '2025-12-23 22:21:28', '2025-12-23 22:21:28'),
+(2, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'SALIDA POR MODIFICACIÓN', 90.00, 'EGRESO', NULL, 30, 0, 200.00, NULL, 2700.00, 0.00, '2025-12-23', 1, 1, '2025-12-23 22:23:52', '2025-12-23 22:23:52'),
+(3, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'INGRESO POR COMPRA', 95.00, 'INGRESO', 30, NULL, 30, 200.00, 2850.00, NULL, 2850.00, '2025-12-23', 1, 1, '2025-12-23 22:23:52', '2025-12-23 22:23:52'),
+(4, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'SALIDA POR MODIFICACIÓN', 95.00, 'EGRESO', NULL, 30, 0, 200.00, NULL, 2850.00, 0.00, '2025-12-23', 1, 1, '2025-12-23 22:24:13', '2025-12-23 22:24:13'),
+(5, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'INGRESO POR COMPRA', 95.00, 'INGRESO', 30, NULL, 30, 200.00, 2850.00, NULL, 2850.00, '2025-12-23', 1, 1, '2025-12-23 22:24:13', '2025-12-23 22:24:13'),
+(6, 'INGRESO DE PRODUCTO', 3, 'IngresoProducto', 1, 'SALIDA POR ELIMINACIÓN DE INGRESO', 95.00, 'EGRESO', NULL, 30, 0, 200.00, NULL, 2850.00, 0.00, '2025-12-23', 1, 1, '2025-12-23 22:25:39', '2025-12-23 22:25:39'),
+(7, 'INGRESO DE PRODUCTO', 4, 'IngresoProducto', 1, 'INGRESO POR COMPRA', 94.50, 'INGRESO', 30, NULL, 30, 200.00, 2835.00, NULL, 2835.00, '2025-12-23', 1, 1, '2025-12-23 22:27:30', '2025-12-23 22:27:30'),
+(8, 'INGRESO DE PRODUCTO', 5, 'IngresoProducto', 2, 'VALOR INICIAL', 20.00, 'INGRESO', 4, NULL, 4, 80.50, 80.00, NULL, 80.00, '2025-12-23', 1, 1, '2025-12-23 22:27:55', '2025-12-23 22:27:55'),
+(9, 'EGRESO DE PRODUCTO', 3, 'EgresoProducto', 1, 'SALIDA POR REGISTRO DE EGRESO', 200.00, 'EGRESO', NULL, 1, 29, 200.00, NULL, 200.00, 2635.00, '2025-12-23', 1, 1, '2025-12-23 22:47:14', '2025-12-23 22:47:14');
 
 -- --------------------------------------------------------
 
@@ -397,7 +472,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (16, '2025_11_21_120947_create_registro_servicios_table', 1),
 (17, '2025_11_22_135016_create_servicio_detalles_table', 1),
 (18, '2025_11_23_105258_create_habitacion_fotos_table', 1),
-(19, '2025_12_03_163556_create_transferencias_table', 2);
+(19, '2025_12_03_163556_create_transferencias_table', 2),
+(20, '2025_12_05_104619_create_kardex_productos_table', 3);
 
 -- --------------------------------------------------------
 
@@ -459,7 +535,12 @@ INSERT INTO `movimiento_cajas` (`id`, `caja_id`, `modelo_id`, `modelo`, `monto`,
 (1, 1, 7, 'RegistroServicio', 800.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'Pago por servicio/producto registrado ID: 7', '2025-12-22', '20:49:51', 1, '2025-12-23 00:49:51', '2025-12-23 00:49:51'),
 (2, 1, 8, 'RegistroServicio', 500.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'Pago por servicio/producto registrado ID: 8', '2025-12-22', '20:52:53', 1, '2025-12-23 00:52:53', '2025-12-23 00:52:53'),
 (3, 1, 10, 'RegistroServicio', 65.50, 1, 0, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'Pago por servicio/producto registrado ID: 10', '2025-12-22', '21:01:25', 1, '2025-12-23 01:01:25', '2025-12-23 01:01:25'),
-(4, 1, 12, 'RegistroServicio', 80.50, 1, 0, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'Pago por servicio/producto registrado ID: 12', '2025-12-22', '21:07:29', 1, '2025-12-23 01:07:29', '2025-12-23 01:07:29');
+(4, 1, 12, 'RegistroServicio', 80.50, 1, 0, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'Pago por servicio/producto registrado ID: 12', '2025-12-22', '21:07:29', 1, '2025-12-23 01:07:29', '2025-12-23 01:07:29'),
+(5, 1, 1, 'RegistroServicio', 1600.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'Pago por servicio/producto registrado con nro. de recibo 1', '2025-12-23', '16:47:47', 1, '2025-12-23 20:47:47', '2025-12-23 20:47:47'),
+(6, 1, 9, 'RegistroServicio', 522.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'Pago por servicio/producto registrado con nro. de recibo 9', '2025-12-23', '16:48:54', 1, '2025-12-23 20:48:54', '2025-12-23 20:48:54'),
+(7, 1, 13, 'RegistroServicio', 400.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'Pago por servicio/producto registrado con nro. de recibo 13', '2025-12-23', '16:49:55', 1, '2025-12-23 20:49:55', '2025-12-23 20:49:55'),
+(8, 1, 14, 'RegistroServicio', 100.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'Pago parcial por servicio/producto registrado con nro. de recibo 14', '2025-12-23', '17:29:31', 1, '2025-12-23 21:29:31', '2025-12-23 21:29:31'),
+(9, 1, 14, 'RegistroServicio', 300.00, 1, 0, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'Pago parcial por servicio/producto registrado con nro. de recibo 14', '2025-12-23', '17:33:05', 1, '2025-12-23 21:33:05', '2025-12-23 21:33:05');
 
 -- --------------------------------------------------------
 
@@ -485,8 +566,8 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `tipo_producto_id`, `stock`, `control_stock`, `imagen`, `created_at`, `updated_at`) VALUES
-(1, 'VINO', 'DESC', 200.00, 1, 0, 1, NULL, '2025-12-03 23:54:15', '2025-12-17 19:39:25'),
-(2, 'POLLO FRITO', 'DESC', 80.50, 2, 0, 1, '21764806725.jpeg', '2025-12-03 23:55:06', '2025-12-17 19:39:35'),
+(1, 'VINO', 'DESC', 200.00, 1, 29, 1, NULL, '2025-12-03 23:54:15', '2025-12-23 22:47:14'),
+(2, 'POLLO FRITO', 'DESC', 80.50, 2, 4, 1, '21764806725.jpeg', '2025-12-03 23:55:06', '2025-12-23 22:27:55'),
 (3, 'DAÑOS MUEBLE', '', 190.00, 3, 0, 0, NULL, '2025-12-17 19:33:36', '2025-12-17 19:39:50'),
 (4, 'LECHE', '', 20.00, 4, 0, 1, NULL, '2025-12-17 19:40:06', '2025-12-17 19:40:06'),
 (5, 'CAFE', '', 45.50, 4, 0, 1, NULL, '2025-12-17 19:40:16', '2025-12-17 19:40:26');
@@ -577,13 +658,17 @@ CREATE TABLE `registro_servicios` (
 --
 
 INSERT INTO `registro_servicios` (`id`, `registro_id`, `tipo`, `total`, `cancelado`, `saldo`, `moneda_id`, `tc`, `total_tc`, `cancelado_tc`, `saldo_tc`, `moneda_id_tc`, `tipo_cambio_id`, `efectivo_banco`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 'HOSPEDAJE', 1600.00, 0.00, 1600.00, 1, 0, NULL, NULL, NULL, 1, NULL, '', 1, '2025-12-22 23:26:34', '2025-12-22 23:26:34'),
+(1, 1, 'HOSPEDAJE', 1600.00, 1600.00, 0.00, 1, 0, NULL, NULL, NULL, 1, NULL, '', 1, '2025-12-22 23:26:34', '2025-12-23 20:47:47'),
 (7, 7, 'HOSPEDAJE', 800.00, 800.00, 0.00, 1, 0, NULL, NULL, NULL, 1, NULL, 'EFECTIVO', 1, '2025-12-23 00:49:51', '2025-12-23 00:49:51'),
 (8, 8, 'HOSPEDAJE', 500.00, 250.00, 250.00, 1, 0, NULL, NULL, NULL, 1, NULL, 'BANCO', 1, '2025-12-23 00:52:53', '2025-12-23 00:52:53'),
-(9, 1, 'PRODUCTO/SERVICIO', 522.00, 0.00, 522.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 00:59:10', '2025-12-23 00:59:10'),
+(9, 1, 'PRODUCTO/SERVICIO', 522.00, 522.00, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 00:59:10', '2025-12-23 20:48:54'),
 (10, 1, 'PRODUCTO/SERVICIO', 65.50, 65.50, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, 'EFECTIVO', 1, '2025-12-23 01:01:25', '2025-12-23 01:01:25'),
 (11, 7, 'PRODUCTO/SERVICIO', 200.00, 0.00, 200.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 01:07:15', '2025-12-23 01:07:15'),
-(12, 8, 'PRODUCTO/SERVICIO', 80.50, 80.50, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, 'BANCO', 1, '2025-12-23 01:07:29', '2025-12-23 01:07:29');
+(12, 8, 'PRODUCTO/SERVICIO', 80.50, 80.50, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, 'BANCO', 1, '2025-12-23 01:07:29', '2025-12-23 01:07:29'),
+(13, 1, 'PRODUCTO/SERVICIO', 400.00, 400.00, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 20:49:23', '2025-12-23 20:49:55'),
+(14, 1, 'PRODUCTO/SERVICIO', 400.00, 400.00, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 20:49:23', '2025-12-23 21:33:05'),
+(15, 1, 'PRODUCTO/SERVICIO', 146.00, 0.00, 146.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 20:49:30', '2025-12-23 20:49:30'),
+(18, 1, 'PRODUCTO/SERVICIO', 190.00, 0.00, 190.00, 1, 0, NULL, NULL, NULL, NULL, NULL, '', 1, '2025-12-23 21:53:28', '2025-12-23 21:53:28');
 
 -- --------------------------------------------------------
 
@@ -615,7 +700,13 @@ INSERT INTO `servicio_detalles` (`id`, `registro_servicio_id`, `registro_id`, `p
 (3, 10, 1, 4, 'INTERNO', NULL, 1, 20.00, 20.00, '2025-12-23 01:01:25', '2025-12-23 01:01:25'),
 (4, 10, 1, 5, 'INTERNO', NULL, 1, 45.50, 45.50, '2025-12-23 01:01:25', '2025-12-23 01:01:25'),
 (5, 11, 7, 1, 'INTERNO', NULL, 1, 200.00, 200.00, '2025-12-23 01:07:15', '2025-12-23 01:07:15'),
-(6, 12, 8, 2, 'INTERNO', NULL, 1, 80.50, 80.50, '2025-12-23 01:07:29', '2025-12-23 01:07:29');
+(6, 12, 8, 2, 'INTERNO', NULL, 1, 80.50, 80.50, '2025-12-23 01:07:29', '2025-12-23 01:07:29'),
+(7, 13, 1, 1, 'INTERNO', NULL, 2, 200.00, 400.00, '2025-12-23 20:49:23', '2025-12-23 20:49:23'),
+(8, 14, 1, 1, 'INTERNO', NULL, 2, 200.00, 400.00, '2025-12-23 20:49:23', '2025-12-23 20:49:23'),
+(9, 15, 1, 5, 'INTERNO', NULL, 1, 45.50, 45.50, '2025-12-23 20:49:30', '2025-12-23 20:49:30'),
+(10, 15, 1, 4, 'INTERNO', NULL, 1, 20.00, 20.00, '2025-12-23 20:49:30', '2025-12-23 20:49:30'),
+(11, 15, 1, 2, 'INTERNO', NULL, 1, 80.50, 80.50, '2025-12-23 20:49:30', '2025-12-23 20:49:30'),
+(12, 18, 1, 3, 'INTERNO', NULL, 1, 190.00, 190.00, '2025-12-23 21:53:28', '2025-12-23 21:53:28');
 
 -- --------------------------------------------------------
 
@@ -807,6 +898,13 @@ ALTER TABLE `ingreso_productos`
   ADD KEY `ingreso_productos_producto_id_foreign` (`producto_id`);
 
 --
+-- Indices de la tabla `kardex_productos`
+--
+ALTER TABLE `kardex_productos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kardex_productos_producto_id_foreign` (`producto_id`);
+
+--
 -- Indices de la tabla `migrations`
 --
 ALTER TABLE `migrations`
@@ -926,7 +1024,7 @@ ALTER TABLE `configuracions`
 -- AUTO_INCREMENT de la tabla `egreso_productos`
 --
 ALTER TABLE `egreso_productos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacions`
@@ -944,19 +1042,25 @@ ALTER TABLE `habitacion_fotos`
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
 --
 ALTER TABLE `ingreso_productos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `kardex_productos`
+--
+ALTER TABLE `kardex_productos`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `monedas`
@@ -968,7 +1072,7 @@ ALTER TABLE `monedas`
 -- AUTO_INCREMENT de la tabla `movimiento_cajas`
 --
 ALTER TABLE `movimiento_cajas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -986,13 +1090,13 @@ ALTER TABLE `registros`
 -- AUTO_INCREMENT de la tabla `registro_servicios`
 --
 ALTER TABLE `registro_servicios`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio_detalles`
 --
 ALTER TABLE `servicio_detalles`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_cambios`
@@ -1069,6 +1173,12 @@ ALTER TABLE `historial_accions`
 --
 ALTER TABLE `ingreso_productos`
   ADD CONSTRAINT `ingreso_productos_producto_id_foreign` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
+
+--
+-- Filtros para la tabla `kardex_productos`
+--
+ALTER TABLE `kardex_productos`
+  ADD CONSTRAINT `kardex_productos_producto_id_foreign` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 --
 -- Filtros para la tabla `movimiento_cajas`

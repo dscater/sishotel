@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Producto;
 use App\Models\RegistroServicio;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class RegistroServicioService
 {
     private $modulo = "REGISTRO SERVICIOS";
-    public function __construct(private HistorialAccionService $historialAccionService, private MonedaService $monedaService, private MovimientoCajaService $movimientoCajaService) {}
+    public function __construct(private HistorialAccionService $historialAccionService, private MonedaService $monedaService, private MovimientoCajaService $movimientoCajaService, private KardexProductoService $kardexProductoService) {}
 
 
     public function listado(string $search): array
@@ -72,7 +73,7 @@ class RegistroServicioService
                 "moneda_id" => $monedaOficial->id,
                 "tipo" => "INGRESO",
                 "efectivo_banco" => $datos["efectivo_banco"],
-                "descripcion" => "Pago por servicio/producto registrado ID: " . $registro_servicio->id,
+                "descripcion" => "Pago por servicio/producto registrado con nro. de recibo " . $registro_servicio->id,
                 "fecha_movimiento" => date("Y-m-d"),
                 "hora_movimiento" => date("H:i:s"),
             ]);
@@ -81,6 +82,14 @@ class RegistroServicioService
         // detalles del servicio
         if ($datos["tipo"] === 'PRODUCTO/SERVICIO')
             foreach ($datos["servicio_detalles"] as $item) {
+                // verificar stock segun tipo de producto
+                $producto = Producto::findOrFail($item["producto_id"]);
+                if ($producto->tipo_producto->tipo === 'PRODUCTO') {
+                    if ($producto->stock < $item["cantidad"]) {
+                        throw new \Exception("No hay stock suficiente del producto: " . $producto->nombre);
+                    }
+                }
+
                 $registro_servicio->servicio_detalles()->create([
                     "registro_id" => $datos["registro_id"],
                     "producto_id" => $item["producto_id"],
@@ -90,6 +99,11 @@ class RegistroServicioService
                     "precio_unitario" => $item["precio_unitario"],
                     "total" => $item["total"],
                 ]);
+
+                // descontar stock si es producto
+                if ($producto->tipo_producto->tipo === 'PRODUCTO') {
+                    $this->kardexProductoService->registroEgreso("REGISTRO SERVICIO", $producto, $item["cantidad"], $item["precio_unitario"], "VENTA DE PRODUCTO", $registro_servicio->id);
+                }
             }
 
         // registrar accion

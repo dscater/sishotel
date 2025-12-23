@@ -134,7 +134,7 @@ onUnmounted(() => {});
                     ></ItemMenu>
                     <ItemMenu
                         :label="'Cierre de caja'"
-                        :ruta="'clientes.index'"
+                        :ruta="'cajas.cierre_caja'"
                         :icon="'fa fa-cash-register'"
                     ></ItemMenu>
                     <ItemMenu
@@ -151,6 +151,8 @@ onUnmounted(() => {});
                             class="nav-link sub-menu"
                             :class="[
                                 route_current == 'productos.index' ||
+                                route_current == 'ingreso_productos.index' ||
+                                route_current == 'egreso_productos.index' ||
                                 route_current == 'tipo_productos.index'
                                     ? 'active menu-is-opening menu-open'
                                     : '',
@@ -171,12 +173,12 @@ onUnmounted(() => {});
                             ></ItemMenu>
                             <ItemMenu
                                 :label="'Ingreso de Productos'"
-                                :ruta="'reportes.usuarios'"
+                                :ruta="'ingreso_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
                                 :label="'Salida de Productos'"
-                                :ruta="'reportes.usuarios'"
+                                :ruta="'egreso_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu

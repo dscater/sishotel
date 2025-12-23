@@ -182,4 +182,55 @@ class ProductoService
         $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN PRODUCTO", $old_producto);
         return true;
     }
+
+
+    /**
+     * Incrementar el stock del producto sucursal
+     *
+     * @param Producto $producto
+     * @param float $cantidad
+     * @return App\Models\Producto
+     */
+    public function incrementarStock(Producto $producto, float $cantidad): Producto
+    {
+        $producto->stock = (float)$producto->stock + $cantidad;
+        $producto->save();
+        return $producto;
+    }
+
+    /**
+     * Decrementar el stock de un producto sucursal
+     *
+     * @param Producto $producto
+     * @param float $cantidad
+     * @return App\Models\Producto
+     */
+    public function decrementarStock(Producto $producto, float $cantidad): Producto|null
+    {
+        $producto->stock = (float)$producto->stock - $cantidad;
+        $producto->save();
+        return $producto;
+    }
+
+    /**
+     * Verificar el stock del producto
+     *
+     * @param integer $producto_id
+     * @param float $cantidad
+     * @return array[bool,float]
+     */
+    public function verificaStockProducto(int $producto_id, float $cantidad): array
+    {
+        $resultado = [false, 0];
+        $producto = Producto::findOrFail($producto_id);
+        if ($producto) {
+            $stock = (float)$producto->stock;
+            $resultado[1] = $stock;
+            if ($stock >= $cantidad) {
+                $resultado[0] = true;
+            }
+        }
+
+        return $resultado;
+    }
 }

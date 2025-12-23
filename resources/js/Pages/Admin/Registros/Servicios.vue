@@ -338,7 +338,7 @@ onMounted(() => {});
             <template #body>
                 <form @submit.prevent="enviarFormulario()">
                     <div class="row">
-                        <div class="col-md-6 col-lg-7 pt-2">
+                        <div class="col-md-6 bg2 col-lg-7 pt-2">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="menu_servicios">
@@ -379,6 +379,15 @@ onMounted(() => {});
                                                 <div class="precio">
                                                     {{ item.precio }}
                                                 </div>
+                                                <div
+                                                    class="stock"
+                                                    v-if="
+                                                        item.tipo_producto
+                                                            .tipo == 'PRODUCTO'
+                                                    "
+                                                >
+                                                    {{ item.stock }}
+                                                </div>
                                             </div>
                                             <button
                                                 class="btn bg-principal btn-sm w-100 rounded-0 text-sm"
@@ -391,14 +400,14 @@ onMounted(() => {});
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <h5 class="text-muted text-center">
+                                        <h5 class="text-muted text-center mt-3">
                                             NO SE ENCONTRÓ NINGÚN REGISTRO
                                         </h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-6 bg3 pt-2 pb-3">
+                        <div class="col-md-6 col-lg-5 bg3 pt-2 pb-3">
                             <label class="h5 text-center w-100"
                                 >Habitación</label
                             >
@@ -647,16 +656,17 @@ onMounted(() => {});
     cursor: pointer;
     padding: 10px;
     text-align: center;
-    border: solid 1px var(--bgGrayDark);
+    border: solid 1px white;
     font-weight: 500;
 }
 
 .menu_servicios .item_menu:hover {
     background-color: var(--bgGrayLight);
+    color: black;
 }
 
 .menu_servicios .item_menu.active {
-    background-color: var(--secundario);
+    background-color: var(--bg5);
     color: white;
 }
 
@@ -716,6 +726,17 @@ onMounted(() => {});
     font-weight: 700;
     padding: 4px;
     border-radius: 10px 0px 0px 0px;
+}
+
+.producto .stock {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--bg1);
+    color: white;
+    font-weight: 700;
+    padding: 5px;
+    border-radius: 0px 10px 0px 0px;
 }
 
 .producto .accion button {

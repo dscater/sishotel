@@ -24,8 +24,41 @@ class Caja extends Model
         "user_id",
     ];
 
+    protected $appends = ["fecha_apertura_t", "fecha_cierre_t", "fecha_hora_apertura", "fecha_hora_cierre"];
+
+    public function getFechaHoraAperturaAttribute()
+    {
+        return date("d/m/Y H:i:s", strtotime($this->fecha_apertura . ' ' . $this->hora_apertura));
+    }
+
+    public function getFechaHoraCierreAttribute()
+    {
+        if ($this->fecha_cierre && $this->hora_cierre) {
+            return date("d/m/Y H:i:s", strtotime($this->fecha_cierre . ' ' . $this->hora_cierre));
+        }
+        return null;
+    }
+
+    public function getFechaAperturaTAttribute()
+    {
+        return date("d/m/Y", strtotime($this->fecha_apertura));
+    }
+
+    public function getFechaCierreTAttribute()
+    {
+        if ($this->fecha_cierre) {
+            return date("d/m/Y", strtotime($this->fecha_cierre));
+        }
+        return null;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function movimiento_cajas()
+    {
+        return $this->hasMany(MovimientoCaja::class);
     }
 }

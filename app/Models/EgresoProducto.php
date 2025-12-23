@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class EgresoProducto extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "producto_id",
+        "cantidad",
+        "motivo",
+        "fecha_egreso",
+    ];
+
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, "producto_id");
+    }
 }

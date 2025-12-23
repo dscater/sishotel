@@ -30,6 +30,12 @@ class ProductoController extends Controller
     {
         $productos = Producto::select("productos.*");
 
+        if (isset($request->productos)) {
+            $productos->whereHas("tipo_producto", function ($query) {
+                $query->where("tipo", "PRODUCTO");
+            });
+        }
+
         $productos = $productos->get();
         return response()->JSON([
             "productos" => $productos
@@ -39,7 +45,8 @@ class ProductoController extends Controller
     public function listadoByTipo(Request $request): JsonResponse
     {
         $tipo_producto_id = $request->input("tipo_producto_id", 0);
-        $productos = Producto::select("productos.*");
+        $productos = Producto::select("productos.*")
+            ->with("tipo_producto:id,nombre,tipo");
         $productos->where("tipo_producto_id", $tipo_producto_id);
         $productos = $productos->get();
         return response()->JSON([
@@ -54,16 +61,16 @@ class ProductoController extends Controller
         $perPage = $request->perPage;
         $page = (int)($request->input("page", 1));
         $search = (string)$request->input("search", "");
-        $orderByCol = $request->orderByCol;
-        $desc = $request->desc;
+        $orderBy = $request->orderBy;
+        $orderAsc = $request->orderAsc;
 
         $columnsSerachLike = ["nombre", "codigo", "simbolo"];
         $columnsFilter = [];
         $columnsBetweenFilter = [];
         $arrayOrderBy = [];
-        if ($orderByCol && $desc) {
+        if ($orderBy && $orderAsc) {
             $arrayOrderBy = [
-                [$orderByCol, $desc]
+                [$orderBy, $orderAsc]
             ];
         }
 

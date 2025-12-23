@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MovimientoCaja;
 use App\Services\CajaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 use League\Config\Exception\ValidationException;
 
 class CajaController extends Controller
 {
 
     public function __construct(private CajaService $cajaService) {}
+
+    public function cierre_caja()
+    {
+        return Inertia::render("Admin/Cajas/CierreCaja");
+    }
 
     public function verificaCajaAbierta()
     {
@@ -29,5 +36,10 @@ class CajaController extends Controller
                 'error' =>  $e->getMessage(),
             ]);
         }
+    }
+
+    public function movimiento_cajas(Request $request)
+    {
+        return response()->JSON(MovimientoCaja::where("caja_id", $request->caja_id)->get());
     }
 }

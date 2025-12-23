@@ -111,6 +111,26 @@ class PermisoService
             "productos.update",
             "productos.destroy",
 
+            "ingreso_productos.listado",
+            "ingreso_productos.paginado",
+            "ingreso_productos.index",
+            "ingreso_productos.create",
+            "ingreso_productos.store",
+            "ingreso_productos.edit",
+            "ingreso_productos.show",
+            "ingreso_productos.update",
+            "ingreso_productos.destroy",
+
+            "egreso_productos.listado",
+            "egreso_productos.paginado",
+            "egreso_productos.index",
+            "egreso_productos.create",
+            "egreso_productos.store",
+            "egreso_productos.edit",
+            "egreso_productos.show",
+            "egreso_productos.update",
+            "egreso_productos.destroy",
+
             "registros.index",
             "registros.store",
             "registros.update",
@@ -124,6 +144,13 @@ class PermisoService
             // cajas
             "cajas.verificaCajaAbierta",
             "cajas.aperturarCaja",
+
+            "cajas.cierre_caja",
+            "cajas.movimiento_cajas",
+
+            // servicio-pagos
+            "servicio_pagos.pagoTotal",
+            "servicio_pagos.pagoPorPartes",
 
             "configuracions.index",
             "configuracions.create",

@@ -5,8 +5,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\EgresoProductoController;
 use App\Http\Controllers\EstadoHabitacionController;
 use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\IngresoProductoController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MonedaController;
 use App\Http\Controllers\PersonaController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RegistroServicioController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\ServicioPagoController;
 use App\Http\Controllers\TipoCambioController;
 use App\Http\Controllers\TipoHabitacionController;
 use App\Http\Controllers\TipoProductoController;
@@ -193,8 +196,30 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::post("registro_servicios", [RegistroServicioController::class, 'store'])->name("registro_servicios.store");
 
     // CAJAS
+    Route::get("cajas/cierre_caja", [CajaController::class, 'cierre_caja'])->name("cajas.cierre_caja");
     Route::get("cajas/verificaCajaAbierta", [CajaController::class, 'verificaCajaAbierta'])->name("cajas.verificaCajaAbierta");
+    Route::get("cajas/movimiento_cajas", [CajaController::class, 'movimiento_cajas'])->name("cajas.movimiento_cajas");
     Route::post("cajas/aperturarCaja", [CajaController::class, 'aperturarCaja'])->name("cajas.aperturarCaja");
+
+    // PAGOS SERVICIOS
+    Route::post("servicio_pagos/pagoTotal/{registro_servicio}", [ServicioPagoController::class, 'pagoTotal'])->name("servicio_pagos.pagoTotal");
+    Route::post("servicio_pagos/pagoPorPartes/{registro_servicio}", [ServicioPagoController::class, 'pagoPorPartes'])->name("servicio_pagos.pagoPorPartes");
+
+    // INGRESO DE PRODUCTOS
+    Route::get("ingreso_productos/api", [IngresoProductoController::class, 'api'])->name("ingreso_productos.api");
+    Route::get("ingreso_productos/paginado", [IngresoProductoController::class, 'paginado'])->name("ingreso_productos.paginado");
+    Route::get("ingreso_productos/listado", [IngresoProductoController::class, 'listado'])->name("ingreso_productos.listado");
+    Route::resource("ingreso_productos", IngresoProductoController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
+
+    // SALIDA DE PRODUCTOS
+    Route::get("egreso_productos/api", [EgresoProductoController::class, 'api'])->name("egreso_productos.api");
+    Route::get("egreso_productos/paginado", [EgresoProductoController::class, 'paginado'])->name("egreso_productos.paginado");
+    Route::get("egreso_productos/listado", [EgresoProductoController::class, 'listado'])->name("egreso_productos.listado");
+    Route::resource("egreso_productos", EgresoProductoController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

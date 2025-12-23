@@ -3,6 +3,8 @@ import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
 import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+import Pagos from "@/Components/Pagos.vue";
+import axios from "axios";
 const { monedaOficial } = useMonedaOficial();
 
 const props = defineProps({
@@ -201,10 +203,6 @@ const cerrarFormulario = () => {
 
 const cargarListas = () => {};
 
-const toggleDetalles = (index, sw) => {
-    form.registro_servicios[index].muestra_detalles = !sw;
-};
-
 onMounted(() => {});
 </script>
 
@@ -270,116 +268,24 @@ onMounted(() => {});
                             </template>
                         </div>
                         <div class="col-12">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>N° Registro</th>
-                                        <th>Descripción</th>
-                                        <th>P/U Bs</th>
-                                        <th>Cantidad</th>
-                                        <th>Total Bs</th>
-                                        <th>Cancelado Bs</th>
-                                        <th>Saldo Bs</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template
-                                        v-for="(
-                                            item, index
-                                        ) in form.registro_servicios"
-                                    >
-                                        <tr>
-                                            <td>{{ item.id }}</td>
-                                            <td>
-                                                {{ item.tipo }}
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-sm bg4 text-xs py-1 px-2"
-                                                    v-if="
-                                                        item.tipo ==
-                                                        'PRODUCTO/SERVICIO'
-                                                    "
-                                                    @click="
-                                                        toggleDetalles(
-                                                            index,
-                                                            item.muestra_detalles
-                                                        )
-                                                    "
-                                                >
-                                                    +
-                                                </button>
-                                            </td>
-                                            <td
-                                                :class="{
-                                                    'bg-gray':
-                                                        item.tipo !=
-                                                        'HOSPEDAJE',
-                                                }"
-                                            >
-                                                {{
-                                                    item.tipo == "HOSPEDAJE"
-                                                        ? item.registro.cd
-                                                        : ""
-                                                }}
-                                            </td>
-                                            <td
-                                                :class="{
-                                                    'bg-gray':
-                                                        item.tipo !=
-                                                        'HOSPEDAJE',
-                                                }"
-                                            >
-                                                {{
-                                                    item.tipo == "HOSPEDAJE"
-                                                        ? item.registro
-                                                              .dias_estadia
-                                                        : ""
-                                                }}
-                                            </td>
-                                            <td>{{ item.total }}</td>
-                                            <td>{{ item.cancelado }}</td>
-                                            <td>{{ item.saldo }}</td>
-                                        </tr>
-                                        <template
-                                            v-if="
-                                                item.tipo == 'PRODUCTO/SERVICIO'
-                                            "
-                                        >
-                                            <tr
-                                                v-show="
-                                                    item.muestra_detalles ==
-                                                    true
-                                                "
-                                                v-for="item_detalle in item.servicio_detalles"
-                                            >
-                                                <td class="border-0"></td>
-                                                <td>
-                                                    {{
-                                                        item_detalle.producto
-                                                            .nombre
-                                                    }}
-                                                </td>
-                                                <td>
-                                                    {{
-                                                        item_detalle.precio_unitario
-                                                    }}
-                                                </td>
-                                                <td>
-                                                    {{ item_detalle.cantidad }}
-                                                </td>
-                                                <td>
-                                                    {{ item_detalle.total }}
-                                                </td>
-                                                <td class="border-0"></td>
-                                                <td class="border-0"></td>
-                                            </tr>
-                                        </template>
-                                    </template>
-                                </tbody>
-                            </table>
+                            <Pagos
+                                :registro_servicios="form.registro_servicios"
+                            />
                         </div>
                     </div>
                 </form>
+            </template>
+            <template #footer>
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <button
+                            class="btn btn-default"
+                            @click="cerrarFormulario"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
             </template>
         </MiModal>
     </div>

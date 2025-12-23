@@ -2,7 +2,7 @@
 import Content from "@/Components/Content.vue";
 import MiTable from "@/Components/MiTable.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import { useProductos } from "@/composables/productos/useProductos";
+import { useIngresoProductos } from "@/composables/ingreso_productos/useIngresoProductos";
 import { ref, onMounted, onBeforeMount } from "vue";
 import Formulario from "./Formulario.vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
@@ -13,42 +13,43 @@ const { axiosDelete } = useAxios();
 
 onBeforeMount(() => {});
 
-const { setProducto, limpiarProducto } = useProductos();
+const { setIngresoProducto, limpiarIngresoProducto } = useIngresoProductos();
 
 const miTable = ref(null);
 
 const headers = [
     {
-        label: "NOMBRE",
-        key: "nombre",
+        label: "",
+        key: "id",
+        width: "1%",
+        sortable: true,
+    },
+    {
+        label: "PRODUCTO",
+        key: "producto.nombre",
         sortable: true,
         fixed: true,
     },
     {
-        label: "STOCK",
-        key: "stock",
+        label: "CANTIDAD",
+        key: "cantidad",
         sortable: true,
         fixed: true,
     },
     {
-        label: "PRECIO",
-        key: "precio",
+        label: "P/U COMPRA",
+        key: "precio_compra",
         sortable: true,
         fixed: true,
     },
     {
-        label: "TIPO DE PRODUCTO",
-        key: "tipo_producto.nombre",
+        label: "TOTAL",
+        key: "total",
         sortable: true,
     },
     {
-        label: "DESCRIPCIÓN",
-        key: "descripcion",
-        sortable: true,
-    },
-    {
-        label: "IMAGEN",
-        key: "imagen",
+        label: "FECHA",
+        key: "fecha_ingreso",
         sortable: true,
     },
     {
@@ -68,7 +69,7 @@ const accion_formulario = ref(0);
 const muestra_formulario = ref(false);
 
 const agregarRegistro = () => {
-    limpiarProducto();
+    limpiarIngresoProducto();
     accion_formulario.value = 0;
     muestra_formulario.value = true;
 };
@@ -80,10 +81,10 @@ const updateDatatable = async () => {
     }
 };
 
-const eliminarProducto = (item) => {
+const eliminarIngresoProducto = (item) => {
     Swal.fire({
         title: "¿Quierés eliminar este registro?",
-        html: `<strong>${item.nombre}</strong>`,
+        html: `<strong>${item.id} | ${item.producto.nombre}</strong>`,
         showCancelButton: true,
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "No, cancelar",
@@ -95,7 +96,7 @@ const eliminarProducto = (item) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             let respuesta = await axiosDelete(
-                route("productos.destroy", item.id)
+                route("ingreso_productos.destroy", item.id)
             );
             if (respuesta && respuesta.sw) {
                 updateDatatable();
@@ -109,13 +110,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <Head title="Productos"></Head>
+    <Head title="Ingreso de Productos"></Head>
 
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Productos/Servicios</h1>
+                    <h1 class="m-0">Ingreso de Productos</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -124,7 +125,7 @@ onMounted(async () => {
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
                         <li class="breadcrumb-item active">
-                            Productos/Servicios
+                            Ingreso de Productos
                         </li>
                     </ol>
                 </div>
@@ -141,14 +142,14 @@ onMounted(async () => {
                             v-if="
                                 props_page.auth?.user.permisos == '*' ||
                                 props_page.auth?.user.permisos.includes(
-                                    'productos.create'
+                                    'ingreso_productos.create'
                                 )
                             "
                             type="button"
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nuevo Producto / Servicio
+                            <i class="fa fa-plus"></i> Nuevo Ingreso de Producto
                         </button>
                     </div>
                     <div class="col-md-8 my-1">
@@ -184,7 +185,7 @@ onMounted(async () => {
                             ref="miTable"
                             :cols="headers"
                             :api="true"
-                            :url="route('productos.paginado')"
+                            :url="route('ingreso_productos.paginado')"
                             :numPages="5"
                             :multiSearch="multiSearch"
                             :syncOrderBy="'id'"
@@ -198,39 +199,11 @@ onMounted(async () => {
                                     class="badge text-sm mx-auto"
                                     :class="{
                                         'bg-principal': item.control_stock == 1,
-                                        'bg-danger':
-                                            item.stock == 0 &&
-                                            item.control_stock == 1,
                                     }"
                                     >{{
                                         item.control_stock ? item.stock : "-"
                                     }}</span
                                 >
-                            </template>
-                            <template
-                                v-slot:[`tipo_producto.nombre`]="{ item }"
-                            >
-                                <span
-                                    class="badge text-xs"
-                                    :class="{
-                                        'bg-primary':
-                                            item.tipo_producto.tipo ==
-                                            'PRODUCTO',
-                                        'bg-secundario':
-                                            item.tipo_producto.tipo ==
-                                            'SERVICIO',
-                                    }"
-                                    >{{ item.tipo_producto.nombre }}</span
-                                >
-                            </template>
-
-                            <template #imagen="{ item }">
-                                <img
-                                    class=""
-                                    height="55px"
-                                    :src="item.url_imagen"
-                                    alt="Foto"
-                                />
                             </template>
 
                             <template #accion="{ item }">
@@ -238,7 +211,7 @@ onMounted(async () => {
                                     v-if="
                                         props_page.auth?.user.permisos == '*' ||
                                         props_page.auth?.user.permisos.includes(
-                                            'productos.edit'
+                                            'ingreso_productos.edit'
                                         )
                                     "
                                     class="box-item"
@@ -249,7 +222,7 @@ onMounted(async () => {
                                     <button
                                         class="btn btn-warning"
                                         @click="
-                                            setProducto(item);
+                                            setIngresoProducto(item);
                                             accion_formulario = 1;
                                             muestra_formulario = true;
                                         "
@@ -260,7 +233,7 @@ onMounted(async () => {
                                     v-if="
                                         props_page.auth?.user.permisos == '*' ||
                                         props_page.auth?.user.permisos.includes(
-                                            'productos.destroy'
+                                            'ingreso_productos.destroy'
                                         )
                                     "
                                 >
@@ -272,7 +245,9 @@ onMounted(async () => {
                                     >
                                         <button
                                             class="btn btn-danger"
-                                            @click="eliminarProducto(item)"
+                                            @click="
+                                                eliminarIngresoProducto(item)
+                                            "
                                         >
                                             <i
                                                 class="fa fa-trash-alt"
