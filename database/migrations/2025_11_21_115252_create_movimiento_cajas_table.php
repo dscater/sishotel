@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('modelo')->nullable();
             $table->decimal('monto', 24, 2);
             $table->unsignedBigInteger('moneda_id');
+            $table->integer('tc')->default(0);
             $table->decimal("monto_tc", 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();

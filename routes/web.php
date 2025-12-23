@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\EstadoHabitacionController;
@@ -188,8 +189,12 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::put("registros/transferencia/{registro}", [RegistroController::class, 'transferencia'])->name("registros.transferencia");
 
     // REGISTROS-SERVICIOS
+    Route::get("registro_servicios/listadoByRegistroId", [RegistroServicioController::class, 'listadoByRegistroId'])->name("registro_servicios.listadoByRegistroId");
     Route::post("registro_servicios", [RegistroServicioController::class, 'store'])->name("registro_servicios.store");
 
+    // CAJAS
+    Route::get("cajas/verificaCajaAbierta", [CajaController::class, 'verificaCajaAbierta'])->name("cajas.verificaCajaAbierta");
+    Route::post("cajas/aperturarCaja", [CajaController::class, 'aperturarCaja'])->name("cajas.aperturarCaja");
 
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");

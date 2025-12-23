@@ -42,6 +42,7 @@ class RegistroUpdateRequest extends FormRequest
             "garantia_tc" => "nullable|decimal:0,2",
             "moneda_id_tc" => "required",
             "tipo" => "required",
+            "efectivo_banco" => "nullable",
         ];
     }
 

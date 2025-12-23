@@ -119,6 +119,11 @@ class PermisoService
 
             // servicios
             "registro_servicios.store",
+            "registro_servicios.listadoByRegistroId",
+
+            // cajas
+            "cajas.verificaCajaAbierta",
+            "cajas.aperturarCaja",
 
             "configuracions.index",
             "configuracions.create",

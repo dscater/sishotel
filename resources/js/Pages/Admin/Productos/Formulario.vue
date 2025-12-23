@@ -53,8 +53,8 @@ function cargaArchivo(e, key) {
 
 const tituloDialog = computed(() => {
     return accion_form.value == 0
-        ? `<i class="fa fa-plus"></i> Nuevo Producto`
-        : `<i class="fa fa-edit"></i> Editar Producto`;
+        ? `<i class="fa fa-plus"></i> Nuevo Producto / Servicio`
+        : `<i class="fa fa-edit"></i> Editar Producto / Servicio`;
 });
 
 const textBtn = computed(() => {

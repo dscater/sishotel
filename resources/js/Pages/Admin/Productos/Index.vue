@@ -115,7 +115,7 @@ onMounted(async () => {
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Productos</h1>
+                    <h1 class="m-0">Productos/Servicios</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -123,7 +123,9 @@ onMounted(async () => {
                         <li class="breadcrumb-item">
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
-                        <li class="breadcrumb-item active">Productos</li>
+                        <li class="breadcrumb-item active">
+                            Productos/Servicios
+                        </li>
                     </ol>
                 </div>
                 <!-- /.col -->
@@ -146,7 +148,7 @@ onMounted(async () => {
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nuevo Producto
+                            <i class="fa fa-plus"></i> Nuevo Producto / Servicio
                         </button>
                     </div>
                     <div class="col-md-8 my-1">

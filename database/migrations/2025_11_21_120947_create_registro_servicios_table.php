@@ -14,15 +14,18 @@ return new class extends Migration
         Schema::create('registro_servicios', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('registro_id');
+            $table->string("tipo"); // PRODUCTO/SERVICIO, HOSPEDAJE
             $table->decimal('total', 24, 2);
             $table->decimal("cancelado", 24, 2)->default(0);
             $table->decimal("saldo", 24, 2);
             $table->unsignedBigInteger('moneda_id');
+            $table->integer("tc")->default(0);
             $table->decimal('total_tc', 24, 2)->default(0)->nullable();
             $table->decimal("cancelado_tc", 24, 2)->default(0)->nullable();
             $table->decimal("saldo_tc", 24, 2)->nullable();
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();
+            $table->string("efectivo_banco");
             $table->unsignedBigInteger("user_id");
             $table->timestamps();
 

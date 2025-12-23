@@ -76,8 +76,8 @@ class Registro extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function servicios()
+    public function registro_servicios()
     {
-        return $this->hasMany(Servicio::class);
+        return $this->hasMany(RegistroServicio::class);
     }
 }

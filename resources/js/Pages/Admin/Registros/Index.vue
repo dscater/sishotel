@@ -7,6 +7,7 @@ import Habitacion from "./Habitacion.vue";
 import FormRegistro from "@/Pages/Admin/Registros/FormRegistro.vue";
 import Transferencia from "@/Pages/Admin/Registros/Transferencia.vue";
 import Servicios from "@/Pages/Admin/Registros/Servicios.vue";
+import Pagos from "./Pagos.vue";
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -63,6 +64,18 @@ const abrirFormServicios = (habitacion, registro) => {
     if (registro) {
         oRegistro.value = registro ?? null;
         accion_formulario_servicios.value = 1;
+    }
+};
+
+const muestra_formulario_pagos = ref(false);
+const accion_formulario_pagos = ref(0);
+const abrirFormPagos = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_pagos.value = true;
+    accion_formulario_pagos.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_pagos.value = 1;
     }
 };
 
@@ -131,11 +144,49 @@ const precarCargarHabitacions = () => {
     }, 300);
 };
 
+const oCaja = ref(null);
+const verificaCaja = () => {
+    axios.get(route("cajas.verificaCajaAbierta")).then((response) => {
+        oCaja.value = response.data;
+    });
+};
+
+const abrirCaja = () => {
+    Swal.fire({
+        title: "¿Realizar apertura de caja?",
+        html: `Se abrirá la caja para el día de hoy.`,
+        showCancelButton: true,
+        confirmButtonText: "Si, aperturar",
+        cancelButtonText: "No, cancelar",
+        denyButtonText: `No, cancelar`,
+        customClass: {
+            confirmButton: "btn-primary",
+        },
+    }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            axios.post(route("cajas.aperturarCaja")).then((response) => {
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Aperturada!",
+                    html: `La caja ha sido aperturada con éxito.`,
+                    confirmButtonText: `Aceptar`,
+                    customClass: {
+                        confirmButton: "btn-success",
+                    },
+                });
+                verificaCaja();
+            });
+        }
+    });
+};
+
 const cargarListas = () => {
     cargarTipoHabitacions();
     cargarHabitacions();
     cargarHabitacionsFiltro();
     cargarListEstadosHabitacions();
+    verificaCaja();
 };
 </script>
 <template>
@@ -161,6 +212,26 @@ const cargarListas = () => {
         </template>
 
         <div class="row">
+            <div class="col-12 font-weight-bold mb-2">
+                CAJA:
+                <span
+                    class="badge text-sm"
+                    :class="{
+                        'bg4 text-success': oCaja,
+                        'bg8 text-danger': !oCaja,
+                    }"
+                    ><i class="fa fa-circle"></i
+                    >{{ oCaja ? "ABIERTO" : "CERRADO" }}</span
+                >
+                <button
+                    class="btn bg-primary btn-sm text-xs ml-1"
+                    title="Aperturar Caja"
+                    @click.prevent="abrirCaja"
+                    v-if="!oCaja"
+                >
+                    <i class="fa fa-external-link-alt"></i>
+                </button>
+            </div>
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
@@ -320,6 +391,9 @@ const cargarListas = () => {
                                                             @form-servicios="
                                                                 abrirFormServicios
                                                             "
+                                                            @form-pagos="
+                                                                abrirFormPagos
+                                                            "
                                                             :habitacion="item"
                                                             @actualizado="
                                                                 cargarListas
@@ -354,6 +428,7 @@ const cargarListas = () => {
                 cargarHabitacions();
                 muestra_formulario_registro = false;
                 accion_formulario_registro = 0;
+                oHabitacion = null;
             "
             @cerrar-formulario="muestra_formulario_registro = false"
         ></FormRegistro>
@@ -367,6 +442,7 @@ const cargarListas = () => {
                 cargarHabitacions();
                 muestra_formulario_transferencia = false;
                 accion_formulario_transferencia = 0;
+                oHabitacion = null;
             "
             @cerrar-formulario="muestra_formulario_transferencia = false"
         ></Transferencia>
@@ -380,9 +456,25 @@ const cargarListas = () => {
                 cargarHabitacions();
                 muestra_formulario_servicios = false;
                 accion_formulario_servicios = 0;
+                oHabitacion = null;
             "
             @cerrar-formulario="muestra_formulario_servicios = false"
         ></Servicios>
+
+        <Pagos
+            :o-habitacion="oHabitacion"
+            :muestra_formulario="muestra_formulario_pagos"
+            :accion_formulario="accion_formulario_pagos"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_pagos = false;
+                accion_formulario_pagos = 0;
+                oHabitacion = null;
+            "
+            @cerrar-formulario="muestra_formulario_pagos = false"
+        >
+        </Pagos>
     </Content>
 </template>
 

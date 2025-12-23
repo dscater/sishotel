@@ -43,6 +43,7 @@ class RegistroStoreRequest extends FormRequest
             "garantia_tc" => "nullable|decimal:0,2",
             "moneda_id_tc" => "required",
             "tipo" => "required",
+            "efectivo_banco" => "nullable",
         ];
     }
 
@@ -93,6 +94,8 @@ class RegistroStoreRequest extends FormRequest
             "garantia_tc.required" => "No se indico el precio por día",
             "garantia_tc.min" => "Debes ingresar al menos :min",
             "garantia_tc.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",
+
+            "efectivo_banco.required" => "Debes seleccionar la forma de pago",
         ];
     }
 }

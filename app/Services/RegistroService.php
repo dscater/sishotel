@@ -15,7 +15,12 @@ use Illuminate\Support\Facades\Log;
 class RegistroService
 {
     private $modulo = "REGISTROS";
-    public function __construct(private HistorialAccionService $historialAccionService, private HabitacionService $habitacionService, private MonedaService $monedaService) {}
+    public function __construct(
+        private HistorialAccionService $historialAccionService,
+        private HabitacionService $habitacionService,
+        private MonedaService $monedaService,
+        private RegistroServicioService $registroServicioService
+    ) {}
 
 
     public function listado(string $search): array
@@ -116,10 +121,33 @@ class RegistroService
             "adelanto_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["adelanto_tc"] : NULL,
             "saldo_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["saldo_tc"] : NULL,
             "garantia_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["garantia_tc"] : NULL,
-            "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : NULL,
+            "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : $monedaOficial->id,
             "tipo" => $datos["tipo"],
             "user_id" => Auth::user()->id,
         ]);
+
+
+        // verificar si es tipo NORMAL, registrar servicio de hospedaje
+        if ($datos["tipo"] == "NORMAL") {
+            $this->registroServicioService->crear([
+                "registro_id" => $registro->id,
+                "tipo" => "HOSPEDAJE",
+                "total" => $datos["total"],
+                "cancelado" => $datos["adelanto"],
+                "saldo" => $datos["saldo"],
+                "tc" => $datos["tc"] ?? 0,
+                "total_tc" => $datos["total_tc"] ?? null,
+                "cancelado_tc" => $datos["adelanto_tc"] ?? null,
+                "saldo_tc" => $datos["saldo_tc"] ?? null,
+                "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
+                "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+                "efectivo_banco" => $datos["efectivo_banco"] ?? null,
+            ]);
+        }
+
+
+        // TODO: VERIFICAR RESERVAS CON FECHAS
+
 
         // habitacion ocupada
         $this->habitacionService->actualizarEstado($registro->habitacion_id, 1);
@@ -166,14 +194,30 @@ class RegistroService
             "adelanto_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["adelanto_tc"] : NULL,
             "saldo_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["saldo_tc"] : NULL,
             "garantia_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["garantia_tc"] : NULL,
-            "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : NULL,
+            "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : $monedaOficial->id,
             "tipo" => $datos["tipo"],
             // "user_id" => Auth::user()->id,
         ]);
 
         // TODO: VERIFICAR RESERVAS CON FECHAS
 
-        // TODO: registrar el pago adelantado en CAJA
+        // verificar si es tipo NORMAL, registrar servicio de hospedaje
+        if ($old_registro->tipo == 'RESERVA' &&  $datos["tipo"] == "NORMAL") {
+            $this->registroServicioService->crear([
+                "registro_id" => $registro->id,
+                "tipo" => "HOSPEDAJE",
+                "total" => $datos["total"],
+                "cancelado" => $datos["adelanto"],
+                "saldo" => $datos["saldo"],
+                "tc" => $datos["tc"] ?? 0,
+                "total_tc" => $datos["total_tc"] ?? null,
+                "cancelado_tc" => $datos["adelanto_tc"] ?? null,
+                "saldo_tc" => $datos["saldo_tc"] ?? null,
+                "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
+                "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+            ]);
+        }
+
 
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN REGISTRO", $old_registro, $registro, ["cliente"]);

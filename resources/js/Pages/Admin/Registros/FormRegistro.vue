@@ -74,6 +74,7 @@ const form = useForm({
     garantia_tc: null,
     moneda_id_tc: null,
     tipo: "NORMAL",
+    efectivo_banco: "EFECTIVO",
     _method: "POST",
 });
 
@@ -145,6 +146,7 @@ const asignarDatosForm = async () => {
     form.moneda_id_tc = oRegistro.value.moneda_id_tc;
     form.valor_tc = oRegistro.value.valor_tc;
     form.tipo = oRegistro.value.tipo;
+    form.efectivo_banco = oRegistro.value.efectivo_banco;
     form["_method"] = "PUT";
     if (form.tc == 1) {
         await cargarTipoCambios();
@@ -175,6 +177,7 @@ const limpiarDatosForm = () => {
     form.moneda_id_tc = null;
     form.valor_tc = null;
     form.tipo = "NORMAL";
+    form.efectivo_banco = "EFECTIVO";
     form["_method"] = "POST";
 };
 
@@ -822,10 +825,7 @@ onMounted(() => {});
                                         </div>
                                         <div
                                             class="col-12 text-center"
-                                            v-if="
-                                                form.moneda_id_tc !=
-                                                monedaOficial?.id
-                                            "
+                                            v-if="form.tc == 1"
                                         >
                                             <label>Tipo de Cambio:</label>
                                             <input
@@ -856,10 +856,7 @@ onMounted(() => {});
                                     </div>
                                     <div
                                         class="row bg4 pb-2 mt-1"
-                                        v-if="
-                                            form.moneda_id_tc !=
-                                            monedaOficial?.id
-                                        "
+                                        v-if="form.tc == 1"
                                     >
                                         <div class="col-12 text-center">
                                             <label
@@ -1011,6 +1008,37 @@ onMounted(() => {});
                                                 class="form-control"
                                                 v-model="form.garantia"
                                             />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="row mt-2"
+                                        v-if="form.adelanto > 0"
+                                    >
+                                        <div class="col-12">
+                                            <label>Forma de Pago</label>
+                                            <br />
+                                            <el-radio-group
+                                                v-model="form.efectivo_banco"
+                                            >
+                                                <el-radio-button
+                                                    :value="'EFECTIVO'"
+                                                    ><span
+                                                        ><i
+                                                            class="fa fa-money-bill text-md"
+                                                        ></i>
+                                                        Efectivo</span
+                                                    ></el-radio-button
+                                                >
+                                                <el-radio-button
+                                                    :value="'BANCO'"
+                                                    ><span
+                                                        ><i
+                                                            class="fa fa-credit-card text-md"
+                                                        ></i>
+                                                        Banco</span
+                                                    ></el-radio-button
+                                                >
+                                            </el-radio-group>
                                         </div>
                                     </div>
                                 </div>

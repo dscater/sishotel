@@ -159,13 +159,13 @@ onUnmounted(() => {});
                         >
                             <i class="nav-icon fas fa-box"></i>
                             <p>
-                                Productos
+                                Productos/Servicios
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <ItemMenu
-                                :label="'Listado Productos'"
+                                :label="'Listado Productos/Servicios'"
                                 :ruta="'productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>

@@ -11,17 +11,27 @@ class RegistroServicio extends Model
 
     protected $fillable = [
         "registro_id",
+        "tipo", // PRODUCTO/SERVICIO, HOSPEDAJE
         "total",
         "cancelado",
         "saldo",
         "moneda_id",
+        "tc",
         "total_tc",
         "cancelado_tc",
         "saldo_tc",
         "moneda_id_tc",
         "tipo_cambio_id",
-        "user_id"
+        "user_id",
+        "efectivo_banco",
     ];
+
+
+    protected $appends = ["muestra_detalles"];
+    public function getMuestraDetallesAttribute()
+    {
+        return false;
+    }
 
     public function registro()
     {

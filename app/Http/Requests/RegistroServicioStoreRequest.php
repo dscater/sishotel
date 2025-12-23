@@ -24,6 +24,8 @@ class RegistroServicioStoreRequest extends FormRequest
     {
         return [
             "registro_id" => "required",
+            "tipo" => "required",
+            "efectivo_banco" => "required",
             "total" => "required",
             "cancelado" => "required|decimal:0,2",
             "saldo" => "required",

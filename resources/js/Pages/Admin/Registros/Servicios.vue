@@ -42,13 +42,13 @@ const form = useForm({
     saldo_tc: 0,
     moneda_id_tc: 0,
     tipo_cambio_id: "",
+    tipo: "PRODUCTO/SERVICIO",
+    efectivo_banco: "EFECTIVO",
     servicio_detalles: [],
 });
 const cambio = ref(0);
 
 const tipo_producto_id = ref("");
-
-const listDetalles = ref([]);
 
 watch(
     () => props.muestra_formulario,
@@ -90,6 +90,10 @@ const asignarDatosForm = () => {
 
 const limpiarDatosForm = () => {
     form.registro_id = "";
+    form.total = 0;
+    form.cancelado = 0;
+    form.saldo = 0;
+    form.servicio_detalles = [];
 };
 
 watch(
@@ -334,7 +338,7 @@ onMounted(() => {});
             <template #body>
                 <form @submit.prevent="enviarFormulario()">
                     <div class="row">
-                        <div class="col-md-7 col-lg-8 pt-2">
+                        <div class="col-md-6 col-lg-7 pt-2">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="menu_servicios">
@@ -394,7 +398,7 @@ onMounted(() => {});
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 col-lg-4 bg3 pt-2 pb-3">
+                        <div class="col-md-6 col-lg-6 bg3 pt-2 pb-3">
                             <label class="h5 text-center w-100"
                                 >Habitación</label
                             >
@@ -430,69 +434,110 @@ onMounted(() => {});
                                     </div>
                                 </div>
                             </template>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>N°</th>
-                                        <th>Producto/Servicio</th>
-                                        <th>P/U</th>
-                                        <th width="100px">Cantidad</th>
-                                        <th>Subtotal</th>
-                                        <th width="1%"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template
-                                        v-if="form.servicio_detalles.length > 0"
+                            <div class="row">
+                                <div class="col-12 overflow-auto">
+                                    <table
+                                        class="table table-bordered tabla_servicios"
                                     >
-                                        <tr
-                                            v-for="(
-                                                item, index
-                                            ) in form.servicio_detalles"
-                                        >
-                                            <td>
-                                                {{ index + 1 }}
-                                            </td>
-                                            <td>{{ item.producto.nombre }}</td>
-                                            <td>{{ item.precio_unitario }}</td>
-                                            <td class="p-0">
-                                                <input
-                                                    type="number"
-                                                    class="form-control text-center"
-                                                    v-model="item.cantidad"
-                                                    @change="
-                                                        calcularNuevaCantidad(
-                                                            $event,
-                                                            index
-                                                        )
-                                                    "
-                                                />
-                                            </td>
-                                            <td>{{ item.total }}</td>
-                                            <td>
-                                                <button
-                                                    class="btn btn-sm bg-danger"
-                                                    @click.prevent="
-                                                        eliminarDetalle(index)
-                                                    "
-                                                >
-                                                    X
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                    <template v-else>
-                                        <tr>
-                                            <td
-                                                colspan="5"
-                                                class="text-center text-muted"
+                                        <thead>
+                                            <tr>
+                                                <th width="1%">N°</th>
+                                                <th>Producto/Servicio</th>
+                                                <th>Tipo</th>
+                                                <th>P/U Bs</th>
+                                                <th width="100px">Cantidad</th>
+                                                <th>Subtotal Bs</th>
+                                                <th width="1%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template
+                                                v-if="
+                                                    form.servicio_detalles
+                                                        .length > 0
+                                                "
                                             >
-                                                NO SE AGREGARON PRODUCTOS
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
+                                                <tr
+                                                    v-for="(
+                                                        item, index
+                                                    ) in form.servicio_detalles"
+                                                >
+                                                    <td class="text-center">
+                                                        {{ index + 1 }}
+                                                    </td>
+                                                    <td>
+                                                        {{
+                                                            item.producto.nombre
+                                                        }}
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            type="button"
+                                                            :class="{
+                                                                bg5:
+                                                                    item.tipo ==
+                                                                    'INTERNO',
+                                                                bg6:
+                                                                    item.tipo ==
+                                                                    'EXTERNO',
+                                                            }"
+                                                        >
+                                                            {{ item.tipo }}
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-right pr-1">
+                                                        {{
+                                                            item.precio_unitario
+                                                        }}
+                                                    </td>
+                                                    <td class="p-0">
+                                                        <input
+                                                            type="number"
+                                                            class="form-control text-center"
+                                                            v-model="
+                                                                item.cantidad
+                                                            "
+                                                            @change="
+                                                                calcularNuevaCantidad(
+                                                                    $event,
+                                                                    index
+                                                                )
+                                                            "
+                                                        />
+                                                    </td>
+                                                    <td class="text-right pr-1">
+                                                        {{ item.total }}
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            class="btn btn-sm bg-danger"
+                                                            @click.prevent="
+                                                                eliminarDetalle(
+                                                                    index
+                                                                )
+                                                            "
+                                                        >
+                                                            X
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template v-else>
+                                                <tr>
+                                                    <td
+                                                        colspan="5"
+                                                        class="text-center text-muted"
+                                                    >
+                                                        NO SE AGREGARON
+                                                        PRODUCTOS
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-12">
                                     <small class="font-weight-bold"
@@ -515,6 +560,33 @@ onMounted(() => {});
                                         v-model="form.cancelado"
                                         @keyup="calcularSaldoCambio"
                                     />
+                                </div>
+                                <div
+                                    class="col-12 mt-2"
+                                    v-if="form.cancelado > 0"
+                                >
+                                    <label>Forma de Pago</label>
+                                    <br />
+                                    <el-radio-group
+                                        v-model="form.efectivo_banco"
+                                    >
+                                        <el-radio-button :value="'EFECTIVO'"
+                                            ><span
+                                                ><i
+                                                    class="fa fa-money-bill text-md"
+                                                ></i>
+                                                Efectivo</span
+                                            ></el-radio-button
+                                        >
+                                        <el-radio-button :value="'BANCO'"
+                                            ><span
+                                                ><i
+                                                    class="fa fa-credit-card text-md"
+                                                ></i>
+                                                Banco</span
+                                            ></el-radio-button
+                                        >
+                                    </el-radio-group>
                                 </div>
                                 <div class="col-12">
                                     <small class="font-weight-bold"
@@ -649,6 +721,14 @@ onMounted(() => {});
 .producto .accion button {
     max-height: 100%;
     border: none;
+    border-radius: 0;
+}
+
+.tabla_servicios td {
+    padding: 0;
+}
+
+.tabla_servicios input {
     border-radius: 0;
 }
 </style>

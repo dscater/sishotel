@@ -29,6 +29,10 @@ const muestraServicios = () => {
     emits("form-servicios", oHabitacion.value, oRegistro.value);
 };
 
+const muestraPagos = () => {
+    emits("form-pagos", oHabitacion.value, oRegistro.value);
+};
+
 const oRegistro = ref(null);
 const verificaRegistro = () => {
     oRegistro.value = null;
@@ -65,6 +69,7 @@ const emits = defineEmits([
     "form-registro",
     "form-transferencia",
     "form-servicios",
+    "form-pagos",
 ]);
 
 const menu = ref(false);
@@ -84,17 +89,24 @@ onMounted(() => {
         <div class="card-header p-0">
             <div class="contenedorBotones">
                 <div class="boton" v-if="oHabitacion?.estado == 1">
-                    <!-- TODO: crear formulario registro de pagos -->
-                    <button class="btn bg-blue w-100 rounded-0">
+                    <button
+                        class="btn bg-blue w-100 rounded-0"
+                        title="Registrar Pagos"
+                        @click="muestraPagos"
+                    >
                         <i class="fa fa-cash-register"></i>
                     </button>
                 </div>
-                <div class="boton" v-if="oHabitacion?.estado == 1">
+                <div
+                    class="boton"
+                    v-if="oHabitacion?.estado == 1"
+                    title="Agregar sevicios"
+                >
                     <button
                         class="btn btn-primary w-100 rounded-0"
                         @click="muestraServicios"
                     >
-                        <i class="fa fa-shopping-cart"></i>
+                        <i class="fa fa-cart-plus"></i>
                     </button>
                 </div>
                 <div
@@ -105,6 +117,7 @@ onMounted(() => {
                         type="button"
                         class="btn bg-white rounded-0"
                         @click.prevente="toggleMenu"
+                        title="Opciones"
                     >
                         <i class="fa fa-list"></i>
                     </button>
@@ -193,7 +206,7 @@ onMounted(() => {
                 },
             ]"
         >
-            <h5 class="p-0 m-0 text-center font-weight-bold h6">
+            <h5 class="p-0 m-0 text-center font-weight-bold text-xs">
                 {{ oHabitacion?.estado_t }}
             </h5>
         </div>

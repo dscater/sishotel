@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistroServicioStoreRequest;
+use App\Models\Registro;
 use App\Models\RegistroServicio;
 use App\Services\RegistroServicioService;
 use Illuminate\Http\JsonResponse;
@@ -19,6 +20,15 @@ use Inertia\Response as InertiaResponse;
 class RegistroServicioController extends Controller
 {
     public function __construct(private RegistroServicioService $registro_servicio_service) {}
+
+
+    public function listadoByRegistroId(Request $request)
+    {
+        return response()->JSON([
+            "registro" => Registro::findOrFail($request->get("registro_id")),
+            "registro_servicios" => $this->registro_servicio_service->listadoByRegistroId($request->get("registro_id")),
+        ]);
+    }
 
     /**
      * Store registro_servicio
