@@ -343,7 +343,7 @@ const cargarListas = () => {
                                             :loading="loadingHabitacions"
                                             animated
                                             class="w-100 row"
-                                            :count="9"
+                                            :count="12"
                                         >
                                             <template #template>
                                                 <div
@@ -430,7 +430,11 @@ const cargarListas = () => {
                 accion_formulario_registro = 0;
                 oHabitacion = null;
             "
-            @cerrar-formulario="muestra_formulario_registro = false"
+            @cerrar-formulario="
+                muestra_formulario_registro = false;
+                oRegistro = null;
+                oHabitacion = null;
+            "
         ></FormRegistro>
 
         <Transferencia

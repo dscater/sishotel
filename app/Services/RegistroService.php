@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Habitacion;
 use App\Models\Registro;
+use App\Models\RegistroServicio;
 use App\Models\Transferencia;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
@@ -267,6 +269,23 @@ class RegistroService
         return $registro;
     }
 
+    public function finalizar_registro(Registro $registro)
+    {
+        $saldo = RegistroServicio::where("registro_id", $registro->id)
+            ->sum("saldo");
+
+        if ($saldo > 0) {
+            throw new Exception("No se pudo finalizar el registro porque existen saldos pendientes");
+        }
+
+        $registro->habitacion->estado = 3;
+        $registro->habitacion->save();
+        $registro->estado = 0;
+        $registro->save();
+
+        return $registro;
+    }
+
     /**
      * Eliminar registro
      *
@@ -284,5 +303,29 @@ class RegistroService
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO", $old_registro, $registro);
         return true;
+    }
+
+
+    public function verificarDiasAdicionales(Registro $registro)
+    {
+        $fechaSalida = Carbon::parse($registro->fecha_salida);
+        $ahora = Carbon::now('America/La_Paz');
+        $hora = $ahora->hour;
+        $fecha_txt = $ahora->toDateString();
+        $hora_txt = $ahora->toTimeString();
+
+        // Si no se pasó la fecha, no hay días adicionales
+        if ($ahora->lte($fechaSalida)) {
+            return [0, $fecha_txt, $hora_txt];
+        }
+
+        // Días completos de diferencia
+        $diasAdicionales = $fechaSalida->startOfDay()->diffInDays($ahora->startOfDay());
+
+        // Si ya pasó el mediodía, suma 1 día más
+        if ($hora >= 12) {
+            $diasAdicionales++;
+        }
+        return [$diasAdicionales, $fecha_txt, $hora_txt]; // dias, fecha, hora
     }
 }

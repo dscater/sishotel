@@ -59,6 +59,8 @@ class RegistroServicioService
             "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
             "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
             "efectivo_banco" => (float)$datos["cancelado"] > 0 ? $datos["efectivo_banco"] : "",
+            "fecha" => date("Y-m-d"),
+            "hora" => date("H:i:s"),
             "user_id" => Auth::user()->id,
         ]);
 

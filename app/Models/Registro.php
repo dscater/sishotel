@@ -40,12 +40,26 @@ class Registro extends Model
         "cod_reserva",
         "tipo_reserva",
         "dev_garantia",
+        "estado", // 0:FINALIZADO, 1:ACTIVO
         "status",
         "user_id",
     ];
 
-    protected $appends = ["fecha_salida_t"];
+    protected $appends = ["fecha_entrada_t", "fecha_salida_t", "fecha_hora_entrada", "fecha_hora_salida"];
+    public function getFechaHoraSalidaAttribute()
+    {
+        return date("d/m/Y H:i:s", strtotime($this->fecha_salida . ' ' . $this->hora_salida));
+    }
 
+    public function getFechaHoraEntradaAttribute()
+    {
+        return date("d/m/Y H:i:s", strtotime($this->fecha_entrada . ' ' . $this->hora_entrada));
+    }
+
+    public function getFechaEntradaTAttribute()
+    {
+        return date("d/m/Y", strtotime($this->fecha_salida));
+    }
     public function getFechaSalidaTAttribute()
     {
         return date("d/m/Y", strtotime($this->fecha_salida));

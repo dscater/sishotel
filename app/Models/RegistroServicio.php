@@ -24,10 +24,22 @@ class RegistroServicio extends Model
         "tipo_cambio_id",
         "user_id",
         "efectivo_banco",
+        "fecha",
+        "hora"
     ];
 
+    protected $appends = ["muestra_detalles", "fecha_t", "fecha_hora"];
 
-    protected $appends = ["muestra_detalles"];
+    public function getFechaTAttribute()
+    {
+        return date("d/m/Y", strtotime($this->fecha));
+    }
+
+    public function getFechaHoraAttribute()
+    {
+        return date("d/m/Y H:i:s", strtotime($this->fecha . ' ' . $this->hora));
+    }
+
     public function getMuestraDetallesAttribute()
     {
         return false;

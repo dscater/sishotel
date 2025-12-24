@@ -136,6 +136,9 @@ class PermisoService
             "registros.update",
             "registros.verificaHabitacion",
             "registros.transferencia",
+            "registros.finalizar",
+            "registros.finalizar_registro",
+            "registros.actualizaGarantia",
 
             // servicios
             "registro_servicios.store",

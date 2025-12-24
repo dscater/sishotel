@@ -236,6 +236,7 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
+            // TODO: IMPRIMIR PDF DE REGISTRO
             emits("envio-formulario");
         },
         onError: (err, code) => {

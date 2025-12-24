@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { usePage, router, Link } from "@inertiajs/vue3";
 import axios from "axios";
 const props = defineProps({
     habitacion: {
@@ -36,7 +37,7 @@ const muestraPagos = () => {
 const oRegistro = ref(null);
 const verificaRegistro = () => {
     oRegistro.value = null;
-    if (oHabitacion.value.estado == 1) {
+    if (oHabitacion.value.estado == 1 || oHabitacion.value.estado == 4) {
         axios
             .get(route("registros.verificaHabitacion"), {
                 params: {
@@ -78,6 +79,12 @@ const toggleMenu = () => {
     menu.value = !menu.value;
 };
 
+const finalizar = () => {
+    if (oRegistro.value) {
+        router.get(route("registros.finalizar", oRegistro.value.id));
+    }
+};
+
 onUnmounted(() => {});
 
 onMounted(() => {
@@ -88,7 +95,10 @@ onMounted(() => {
     <div class="card habitacion cursor-pointer">
         <div class="card-header p-0">
             <div class="contenedorBotones">
-                <div class="boton" v-if="oHabitacion?.estado == 1">
+                <div
+                    class="boton"
+                    v-if="oHabitacion?.estado == 1 || oHabitacion?.estado == 4"
+                >
                     <button
                         class="btn bg-blue w-100 rounded-0"
                         title="Registrar Pagos"
@@ -99,7 +109,7 @@ onMounted(() => {
                 </div>
                 <div
                     class="boton"
-                    v-if="oHabitacion?.estado == 1"
+                    v-if="oHabitacion?.estado == 1 || oHabitacion?.estado == 4"
                     title="Agregar sevicios"
                 >
                     <button
@@ -135,10 +145,18 @@ onMounted(() => {
                             <i class="fa fa-info-circle text-info"></i>
                             Información
                         </button>
+                        <button class="menu-item" type="button">
+                            <i class="fa fa-cog text-orange"></i>
+                            Configurar
+                        </button>
                         <button
                             class="menu-item bg-danger"
                             type="button"
-                            v-if="oHabitacion?.estado == 1"
+                            v-if="
+                                oHabitacion?.estado == 1 ||
+                                oHabitacion?.estado == 4
+                            "
+                            @click="finalizar"
                         >
                             <i class="fa fa-power-off"></i> Finalizar
                         </button>
@@ -203,6 +221,7 @@ onMounted(() => {
                     'bg-danger': oHabitacion?.estado == 1,
                     'bg-primary': oHabitacion?.estado == 2,
                     'bg-orange': oHabitacion?.estado == 3,
+                    'bg-info': oHabitacion?.estado == 4,
                 },
             ]"
         >

@@ -6,6 +6,7 @@ use App\Http\Requests\RegistroStoreRequest;
 use App\Http\Requests\RegistroUpdateRequest;
 use App\Models\Registro;
 use App\Services\RegistroService;
+use App\Services\RegistroServicioService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use Inertia\Response as InertiaResponse;
 
 class RegistroController extends Controller
 {
-    public function __construct(private RegistroService $registroService) {}
+    public function __construct(private RegistroService $registroService, private RegistroServicioService $registro_servicio_service) {}
 
     public function index(): InertiaResponse
     {
@@ -71,6 +72,51 @@ class RegistroController extends Controller
         }
     }
 
+    public function finalizar(Registro $registro)
+    {
+        // registrar dias adicionales
+        $array_verifica = $this->registroService->verificarDiasAdicionales($registro);
+
+        if ($array_verifica[0] > 0) {
+            $dias_adicionales = $array_verifica[0];
+            // registrar servicio
+            $this->registro_servicio_service->crear([
+                "registro_id" => $registro->id,
+                "tipo" => "HOSPEDAJE",
+                "total" => $registro->cd * $dias_adicionales,
+                "cancelado" => 0,
+                "saldo" => $registro->cd * $dias_adicionales,
+                "tc" => 0,
+                "efectivo_banco" => "",
+            ]);
+
+            $registro->dias_estadia = (int)$registro->dias_estadia + $dias_adicionales;
+            $registro->fecha_salida = $array_verifica[1];
+            $registro->hora_salida = $array_verifica[2];
+            $registro->save();
+        }
+
+        $registro = $registro->load(["habitacion.tipo_habitacion", "cliente", "registro_servicios"]);
+
+        return Inertia::render("Admin/Registros/Finalizar", compact("registro"));
+    }
+
+    public function finalizar_registro(Registro $registro)
+    {
+        DB::beginTransaction();
+        try {
+            $registro =  $this->registroService->finalizar_registro($registro);
+            DB::commit();
+            return response()->JSON($registro);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::debug($e->getMessage());
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
+    }
+
     public function transferencia(Registro $registro, Request $request)
     {
         DB::beginTransaction();
@@ -98,7 +144,26 @@ class RegistroController extends Controller
     public function verificaHabitacion(Request $request)
     {
         $habitacion_id = $request->habitacion_id;
-        $registro = Registro::where("habitacion_id", $habitacion_id)->get()->first();
+        $registro = Registro::where("habitacion_id", $habitacion_id)->get()->last();
+
+        $array_verifica = $this->registroService->verificarDiasAdicionales($registro);
+
+        if ($array_verifica[1] == $registro->fecha_salida) {
+            $registro->habitacion->estado = 4;
+        }
+        if ($array_verifica[0] > 0) {
+            $registro->habitacion->estado = 1;
+        }
+        $registro->habitacion->save();
+
         return response()->JSON($registro->load(["cliente:id,nombre,paterno,materno,ci,ci_exp"]));
+    }
+
+    public function actualizaGarantia(Registro $registro, Request $request)
+    {
+        $registro->dev_garantia = $request->dev_garantia;
+
+        $registro->save();
+        return response()->JSON(true);
     }
 }

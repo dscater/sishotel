@@ -26,6 +26,8 @@ return new class extends Migration
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();
             $table->string("efectivo_banco");
+            $table->date("fecha")->nullable();
+            $table->time("hora")->nullable();
             $table->unsignedBigInteger("user_id");
             $table->timestamps();
 

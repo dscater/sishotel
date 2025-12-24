@@ -69,7 +69,6 @@ class HabitacionController extends Controller
             $habitacions->whereIn('estado', $estados);
         }
 
-
         $habitacions = $habitacions->where("status", 1)
             ->orderBy("piso", "desc")
             ->orderBy("numero_habitacion", "desc")

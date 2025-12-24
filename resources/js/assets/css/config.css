@@ -566,8 +566,7 @@ body.app-blank.login {
 }
 
 .contenedorHabitaciones .info_registro.saliente {
-    background-color: var(--bg6);
-    color: var(--white);
+    background-color: var(--bg10);
 }
 
 .contenedorHabitaciones .habitacion {

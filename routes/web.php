@@ -190,6 +190,9 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::post("registros", [RegistroController::class, 'store'])->name("registros.store");
     Route::put("registros/update/{registro}", [RegistroController::class, 'update'])->name("registros.update");
     Route::put("registros/transferencia/{registro}", [RegistroController::class, 'transferencia'])->name("registros.transferencia");
+    Route::put("registros/actualizaGarantia/{registro}", [RegistroController::class, 'actualizaGarantia'])->name("registros.actualizaGarantia");
+    Route::get("registros/finalizar/{registro}", [RegistroController::class, 'finalizar'])->name("registros.finalizar");
+    Route::post("registros/finalizar_registro/{registro}", [RegistroController::class, 'finalizar_registro'])->name("registros.finalizar_registro");
 
     // REGISTROS-SERVICIOS
     Route::get("registro_servicios/listadoByRegistroId", [RegistroServicioController::class, 'listadoByRegistroId'])->name("registro_servicios.listadoByRegistroId");

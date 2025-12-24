@@ -19,6 +19,12 @@ watch(
     () => props.registro_servicios,
     (newValue) => {
         oRegistroServicios.value = newValue;
+        emits(
+            "nuevo-pago",
+            totalTotal.value,
+            totalCancelado.value,
+            totalSaldo.value
+        );
     }
 );
 
@@ -48,6 +54,8 @@ const totalSaldo = computed(() => {
     return total.toFixed(2);
 });
 
+const emits = defineEmits(["nuevo-pago"]);
+
 const pagarTotalEfectivo = (index) => {
     const item = oRegistroServicios.value[index];
     Swal.fire({
@@ -72,6 +80,12 @@ const pagarTotalEfectivo = (index) => {
                         response.data.cancelado;
                     oRegistroServicios.value[index].saldo = response.data.saldo;
                     toast.success("Operación completada correctamente!");
+                    emits(
+                        "nuevo-pago",
+                        totalTotal.value,
+                        totalCancelado.value,
+                        totalSaldo.value
+                    );
                 })
                 .catch((error) => {
                     console.log(error);
@@ -113,6 +127,12 @@ const pagarTotalBanco = (index) => {
                         response.data.cancelado;
                     oRegistroServicios.value[index].saldo = response.data.saldo;
                     toast.success("Operación completada correctamente!");
+                    emits(
+                        "nuevo-pago",
+                        totalTotal.value,
+                        totalCancelado.value,
+                        totalSaldo.value
+                    );
                 })
                 .catch((error) => {
                     console.log(error);
@@ -147,6 +167,12 @@ const actualizarMontoFila = (data, index) => {
     muestra_form_pago_partes.value = false;
     itemRegistroServicio.value = null;
     indexRegistro.value = -1;
+    emits(
+        "nuevo-pago",
+        totalTotal.value,
+        totalCancelado.value,
+        totalSaldo.value
+    );
 };
 </script>
 <template>
@@ -154,20 +180,22 @@ const actualizarMontoFila = (data, index) => {
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th>N° Registro</th>
+                    <th width="1%">N° Registro</th>
+                    <th>Fecha</th>
                     <th>Descripción</th>
                     <th>P/U Bs</th>
                     <th>Cantidad</th>
                     <th>Total Bs</th>
                     <th>Cancelado Bs</th>
                     <th>Saldo Bs</th>
-                    <th>Acción</th>
+                    <th width="1%">Acción</th>
                 </tr>
             </thead>
             <tbody>
                 <template v-for="(item, index) in oRegistroServicios">
                     <tr>
                         <td>{{ item.id }}</td>
+                        <td>{{ item.fecha_t }}</td>
                         <td>
                             {{ item.tipo }}
                             <button
@@ -218,7 +246,10 @@ const actualizarMontoFila = (data, index) => {
                             {{ item.saldo }}
                         </td>
                         <td>
-                            <div class="dropdown" v-if="item.saldo > 0">
+                            <div
+                                class="dropdown dropleft"
+                                v-if="item.saldo > 0"
+                            >
                                 <button
                                     class="btn dropdown-toggle btn-sm text-xs bg-principal"
                                     type="button"
@@ -261,6 +292,7 @@ const actualizarMontoFila = (data, index) => {
                             v-for="item_detalle in item.servicio_detalles"
                         >
                             <td class="border-0"></td>
+                            <td class="border-0"></td>
                             <td>
                                 {{ item_detalle.producto.nombre }}
                             </td>
@@ -282,14 +314,20 @@ const actualizarMontoFila = (data, index) => {
             </tbody>
             <tfoot>
                 <tr class="bg1">
-                    <td class="text-right h6" colspan="4">TOTAL</td>
+                    <td class="text-right h6" colspan="5">TOTAL</td>
                     <td class="text-right h6">
                         {{ totalTotal }}
                     </td>
                     <td class="text-right h6">
                         {{ totalCancelado }}
                     </td>
-                    <td class="text-right h6 text-lg">
+                    <td
+                        class="text-right h6 text-lg"
+                        :class="{
+                            'bg4 text-success': parseFloat(totalSaldo) == 0,
+                            'bg8 text-danger': parseFloat(totalSaldo) > 0,
+                        }"
+                    >
                         {{ totalSaldo }}
                     </td>
                     <td></td>
