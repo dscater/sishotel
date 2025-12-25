@@ -18,6 +18,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
+use Carbon\Carbon;
 
 class RegistroController extends Controller
 {
@@ -79,21 +80,30 @@ class RegistroController extends Controller
 
         if ($array_verifica[0] > 0) {
             $dias_adicionales = $array_verifica[0];
-            // registrar servicio
-            $this->registro_servicio_service->crear([
-                "registro_id" => $registro->id,
-                "tipo" => "HOSPEDAJE",
-                "total" => $registro->cd * $dias_adicionales,
-                "cancelado" => 0,
-                "saldo" => $registro->cd * $dias_adicionales,
-                "tc" => 0,
-                "efectivo_banco" => "",
-            ]);
+            $ahora = Carbon::now('America/La_Paz');
+            $existe = $registro->registro_servicios()
+                ->where('tipo', 'HOSPEDAJE')
+                ->whereDate('created_at', $ahora->toDateString())
+                ->whereTime('created_at', '>=', '12:00:00')
+                ->exists();
+            if (!$existe) {
+                // registrar servicio
+                $this->registro_servicio_service->crear([
+                    "registro_id" => $registro->id,
+                    "tipo" => "HOSPEDAJE",
+                    "cantidad" => $dias_adicionales,
+                    "total" => (float)$registro->cd * (float)$dias_adicionales,
+                    "cancelado" => 0,
+                    "saldo" => $registro->cd * $dias_adicionales,
+                    "tc" => 0,
+                    "efectivo_banco" => "",
+                ]);
 
-            $registro->dias_estadia = (int)$registro->dias_estadia + $dias_adicionales;
-            $registro->fecha_salida = $array_verifica[1];
-            $registro->hora_salida = $array_verifica[2];
-            $registro->save();
+                $registro->dias_estadia = (int)$registro->dias_estadia + $dias_adicionales;
+                $registro->fecha_salida = $array_verifica[1];
+                $registro->hora_salida = $array_verifica[2];
+                $registro->save();
+            }
         }
 
         $registro = $registro->load(["habitacion.tipo_habitacion", "cliente", "registro_servicios"]);

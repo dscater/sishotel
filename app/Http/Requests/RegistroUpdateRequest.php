@@ -21,8 +21,8 @@ class RegistroUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            "cliente_id" => "required",
+
+        $validacion = [
             "desayuno" => "required",
             "fecha_entrada" => "required",
             "hora_entrada" => "required",
@@ -35,15 +35,24 @@ class RegistroUpdateRequest extends FormRequest
             "tc" => "boolean",
             "saldo" => "required|decimal:0,2",
             "garantia" => "required|decimal:0,2",
+            "desc_garantia" => "nullable",
             "cd_tc" => "nullable|decimal:0,2",
             "total_tc" => "nullable|decimal:0,2",
             "adelanto_tc" => "nullable|decimal:0,2",
             "saldo_tc" => "nullable|decimal:0,2",
             "garantia_tc" => "nullable|decimal:0,2",
             "moneda_id_tc" => "required",
+            "tipo_cambio_id" => "nullable",
+            "valor_tc" => "nullable",
             "tipo" => "required",
             "efectivo_banco" => "nullable",
         ];
+
+        if ((float)request()->garantia > 0) {
+            $validacion["desc_garantia"] = "required";
+        }
+
+        return $validacion;
     }
 
     public function messages(): array
@@ -75,6 +84,8 @@ class RegistroUpdateRequest extends FormRequest
             "garantia.required" => "No se indico el precio por día",
             "garantia.min" => "Debes ingresar al menos :min",
             "garantia.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",
+
+            "desc_garantia.required" => "Debes indicar una descripción de garantía",
 
             "cd_tc.min" => "Debes ingresar al menos :min",
             "cd_tc.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",

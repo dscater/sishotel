@@ -65,6 +65,7 @@ const form = useForm({
     adelanto: 0,
     saldo: 0,
     garantia: 0,
+    desc_garantia: "",
     tc: 0,
     valor_tc: 0,
     cd_tc: null,
@@ -137,6 +138,7 @@ const asignarDatosForm = async () => {
     form.adelanto = oRegistro.value.adelanto;
     form.saldo = oRegistro.value.saldo;
     form.garantia = oRegistro.value.garantia;
+    form.desc_garantia = oRegistro.value.desc_garantia;
     form.tc = oRegistro.value.tc;
     form.cd_tc = oRegistro.value.cd_tc;
     form.total_tc = oRegistro.value.total_tc;
@@ -154,7 +156,7 @@ const asignarDatosForm = async () => {
 };
 
 const limpiarDatosForm = () => {
-    form.id = 0;
+    form.id = "";
     form.habitacion_id = null;
     form.cliente_id = null;
     form.desayuno = 0;
@@ -168,6 +170,7 @@ const limpiarDatosForm = () => {
     form.adelanto = 0;
     form.saldo = 0;
     form.garantia = 0;
+    form.desc_garantia = "";
     form.tc = 0;
     form.cd_tc = null;
     form.total_tc = null;
@@ -1009,6 +1012,20 @@ onMounted(() => {});
                                                 class="form-control"
                                                 v-model="form.garantia"
                                             />
+                                        </div>
+                                        <div
+                                            class="col-12"
+                                            v-if="form.garantia > 0"
+                                        >
+                                            <label
+                                                >Descripción de Garantía:</label
+                                            >
+                                            <el-input
+                                                type="textarea"
+                                                rows="1"
+                                                v-model="form.desc_garantia"
+                                                autosize
+                                            ></el-input>
                                         </div>
                                     </div>
                                     <div

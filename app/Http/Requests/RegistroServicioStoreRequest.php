@@ -26,15 +26,17 @@ class RegistroServicioStoreRequest extends FormRequest
             "registro_id" => "required",
             "tipo" => "required",
             "efectivo_banco" => "required",
+            "cantidad" => "required",
             "total" => "required",
             "cancelado" => "required|decimal:0,2",
             "saldo" => "required",
-            // "moneda_id" => "required",
-            // "total_tc" => "required",
-            // "cancelado_tc" => "required",
-            // "saldo_tc" => "required",
-            // "moneda_id_tc" => "required",
-            // "tipo_cambio_id" => "required",
+            "moneda_id" => "nullable",
+            "total_tc" => "nullable",
+            "cancelado_tc" => "nullable",
+            "saldo_tc" => "nullable",
+            "moneda_id_tc" => "nullable",
+            "tipo_cambio_id" => "nullable",
+            "valor_tc" => "nullable",
             "servicio_detalles" => ["required", new RegistroServicioDetalleRule()]
         ];
     }
@@ -45,12 +47,12 @@ class RegistroServicioStoreRequest extends FormRequest
             "total.required" => "No se detecto el total",
             "cancelado.required" => "No se detecto el monto cancelado",
             "saldo.required" => "No se detecto el saldo",
-            // "moneda_id.required" => "Debes completar este campo",
-            // "total_tc.required" => "Debes completar este campo",
-            // "cancelado_tc.required" => "Debes completar este campo",
-            // "saldo_tc.required" => "Debes completar este campo",
-            // "moneda_id_tc.required" => "Debes completar este campo",
-            // "tipo_cambio_id.required" => "Debes completar este campo",
+            "moneda_id.required" => "Debes completar este campo",
+            "total_tc.required" => "Debes completar este campo",
+            "cancelado_tc.required" => "Debes completar este campo",
+            "saldo_tc.required" => "Debes completar este campo",
+            "moneda_id_tc.required" => "Debes completar este campo",
+            "tipo_cambio_id.required" => "Debes completar este campo",
             "servicio_detalles.required" => "Debes ingresar al menos 1 producto"
         ];
     }

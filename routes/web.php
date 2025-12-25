@@ -137,6 +137,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // HABITACIONES
+    Route::patch("habitacions/actualizar_estado/{habitacion}", [HabitacionController::class, 'actualizar_estado'])->name("habitacions.actualizar_estado");
+    Route::get("habitacions/imagenes/{habitacion}", [HabitacionController::class, 'imagenes'])->name("habitacions.imagenes");
     Route::get("habitacions/listadoRecepcion", [HabitacionController::class, 'listadoRecepcion'])->name("habitacions.listadoRecepcion");
     Route::get("habitacions/eliminados", [HabitacionController::class, 'eliminados'])->name("habitacions.eliminados");
     Route::get("habitacions/paginado_eliminados", [HabitacionController::class, 'paginado_eliminados'])->name("habitacions.paginado_eliminados");
@@ -203,6 +205,12 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("cajas/verificaCajaAbierta", [CajaController::class, 'verificaCajaAbierta'])->name("cajas.verificaCajaAbierta");
     Route::get("cajas/movimiento_cajas", [CajaController::class, 'movimiento_cajas'])->name("cajas.movimiento_cajas");
     Route::post("cajas/aperturarCaja", [CajaController::class, 'aperturarCaja'])->name("cajas.aperturarCaja");
+    Route::get("cajas/api", [CajaController::class, 'api'])->name("cajas.api");
+    Route::get("cajas/paginado", [CajaController::class, 'paginado'])->name("cajas.paginado");
+    Route::get("cajas/listado", [CajaController::class, 'listado'])->name("cajas.listado");
+    Route::resource("cajas", CajaController::class)->only(
+        ["index", "store", "edit", "show", "update", "destroy"]
+    );
 
     // PAGOS SERVICIOS
     Route::post("servicio_pagos/pagoTotal/{registro_servicio}", [ServicioPagoController::class, 'pagoTotal'])->name("servicio_pagos.pagoTotal");

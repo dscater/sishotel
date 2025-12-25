@@ -68,4 +68,232 @@ class CajaService
 
         return $caja;
     }
+
+
+    public function listado(string $search): array
+    {
+        return Caja::where("status", 1)
+            ->where(function ($query) use ($search) {
+                $query->where("ci", "LIKE", "%$search%")
+                    ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
+            })
+            ->orderBy("nombre")
+            ->get()
+            ->toArray();
+    }
+
+    /**
+     * Lista de cajas paginado con filtros
+     *
+     * @param integer $length
+     * @param integer $page
+     * @param string $search
+     * @param array $columnsSerachLike
+     * @param array $columnsFilter
+     * @return LengthAwarePaginator
+     */
+    public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
+    {
+        $cajas = Caja::select("cajas.*");
+
+        $cajas->where("status", 1);
+
+        // Filtros exactos
+        foreach ($columnsFilter as $key => $value) {
+            if (!is_null($value)) {
+                $cajas->where("cajas.$key", $value);
+            }
+        }
+
+        // Filtros por rango
+        foreach ($columnsBetweenFilter as $key => $value) {
+            if (isset($value[0], $value[1])) {
+                $cajas->whereBetween("cajas.$key", $value);
+            }
+        }
+
+        // Búsqueda en múltiples columnas con LIKE
+        if (!empty($search) && !empty($columnsSerachLike)) {
+            $cajas->where(function ($query) use ($search, $columnsSerachLike) {
+                foreach ($columnsSerachLike as $col) {
+                    $query->orWhere("cajas.$col", "LIKE", "%$search%");
+                }
+            });
+        }
+
+        // Ordenamiento
+        foreach ($orderBy as $value) {
+            if (isset($value[0], $value[1])) {
+                $cajas->orderBy($value[0], $value[1]);
+            }
+        }
+
+
+        $cajas = $cajas->paginate($length, ['*'], 'page', $page);
+        return $cajas;
+    }
+
+
+    /**
+     * Lista de cajas paginado con filtros (eliminados)
+     *
+     * @param integer $length
+     * @param integer $page
+     * @param string $search
+     * @param array $columnsSerachLike
+     * @param array $columnsFilter
+     * @return LengthAwarePaginator
+     */
+    public function listadoPaginadoEliminados(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
+    {
+        $cajas = Caja::select("cajas.*");
+
+        $cajas->where("status", 0);
+
+        // Filtros exactos
+        foreach ($columnsFilter as $key => $value) {
+            if (!is_null($value)) {
+                $cajas->where("cajas.$key", $value);
+            }
+        }
+
+        // Filtros por rango
+        foreach ($columnsBetweenFilter as $key => $value) {
+            if (isset($value[0], $value[1])) {
+                $cajas->whereBetween("cajas.$key", $value);
+            }
+        }
+
+        // Búsqueda en múltiples columnas con LIKE
+        if (!empty($search) && !empty($columnsSerachLike)) {
+            $cajas->where(function ($query) use ($search, $columnsSerachLike) {
+                foreach ($columnsSerachLike as $col) {
+                    $query->orWhere("cajas.$col", "LIKE", "%$search%");
+                }
+            });
+        }
+
+        // Ordenamiento
+        foreach ($orderBy as $value) {
+            if (isset($value[0], $value[1])) {
+                $cajas->orderBy($value[0], $value[1]);
+            }
+        }
+
+
+        $cajas = $cajas->paginate($length, ['*'], 'page', $page);
+        return $cajas;
+    }
+
+    /**
+     * Crear caja
+     *
+     * @param array $datos
+     * @return Caja
+     */
+    public function crear(array $datos): Caja
+    {
+        $caja = Caja::create([
+            "nombre" => mb_strtoupper($datos["nombre"]),
+            "paterno" => mb_strtoupper($datos["paterno"]),
+            "materno" => mb_strtoupper($datos["materno"]),
+            "dir" => mb_strtoupper($datos["dir"]),
+            "ci" => $datos["ci"],
+            "ci_exp" => $datos["ci_exp"],
+            "fono" => $datos["fono"],
+            "correo" => $datos["correo"],
+            "edad" => $datos["edad"],
+            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
+            "pais" => mb_strtoupper($datos["pais"]),
+            "fecha_registro" => date("Y-m-d"),
+            "user_id" => Auth::user()->id,
+        ]);
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN CLIENTE", $caja);
+
+        return $caja;
+    }
+
+    /**
+     * Actualizar caja
+     *
+     * @param array $datos
+     * @param Caja $caja
+     * @return Caja
+     */
+    public function actualizar(array $datos, Caja $caja): Caja
+    {
+        $old_user = clone $caja;
+
+        $caja->update([
+            "nombre" => mb_strtoupper($datos["nombre"]),
+            "paterno" => mb_strtoupper($datos["paterno"]),
+            "materno" => mb_strtoupper($datos["materno"]),
+            "dir" => mb_strtoupper($datos["dir"]),
+            "ci" => $datos["ci"],
+            "ci_exp" => $datos["ci_exp"],
+            "fono" => $datos["fono"],
+            "correo" => $datos["correo"],
+            "edad" => $datos["edad"],
+            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
+            "pais" => mb_strtoupper($datos["pais"]),
+        ]);
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ EL REGISTRO DE UN CLIENTE", $old_user, $caja->withoutRelations());
+
+        return $caja;
+    }
+
+    /**
+     * Eliminar caja
+     *
+     * @param Caja $caja
+     * @return boolean
+     */
+    public function eliminar(Caja $caja): bool
+    {
+        // no eliminar users predeterminados para el funcionamiento del sistema
+        $old_user = clone $caja;
+        $caja->status = 0;
+        $caja->save();
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN CLIENTE " . $old_user->usuario, $old_user, $caja);
+        return true;
+    }
+
+    /**
+     * Reestablecer caja
+     *
+     * @param Caja $caja
+     * @return boolean
+     */
+    public function reestablecer(Caja $caja): bool
+    {
+        $old_caja = clone $caja;
+        $caja->status = 1;
+        $caja->save();
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "REESTABLECER", "REESTABLECIÓ EL REGISTRO DE UN CLIENTE " . $old_caja->usuario, $old_caja, $caja);
+        return true;
+    }
+
+    /**
+     * Eliminación permanente de caja
+     *
+     * @param Caja $caja
+     * @return boolean
+     */
+    public function eliminacion_permanente(Caja $caja): bool
+    {
+        $old_caja = clone $caja;
+        $caja->delete();
+
+        // registrar accion
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN PERMANENTE", "ELIMINÓ PERMANENTEMENTE EL REGISTRO DE UN CLIENTE " . $old_caja->nombre, $old_caja);
+        return true;
+    }
 }

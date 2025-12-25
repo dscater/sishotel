@@ -32,6 +32,7 @@ return new class extends Migration
             $table->decimal('adelanto', 24, 2)->nullable()->default(0);
             $table->decimal("saldo", 24, 2)->nullable()->default(0);
             $table->decimal('garantia', 24, 2)->nullable()->default(0);
+            $table->string("desc_garantia", 900)->nullable();
             $table->unsignedBigInteger('moneda_id');
             $table->integer('tc')->default(0);  //0: SIN TIPO DE CAMBIO, 1: CON TIPO DE CAMBIO
             $table->decimal('cd_tc', 24, 2)->nullable();  //COSTO DIARIO CON TIPO DE CAMBIO

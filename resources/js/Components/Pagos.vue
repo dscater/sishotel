@@ -224,17 +224,20 @@ const actualizarMontoFila = (data, index) => {
                                 'bg-gray': item.tipo != 'HOSPEDAJE',
                             }"
                         >
-                            {{
-                                item.tipo == "HOSPEDAJE"
-                                    ? item.registro.dias_estadia
-                                    : ""
-                            }}
+                            {{ item.tipo == "HOSPEDAJE" ? item.cantidad : "" }}
                         </td>
                         <td class="text-right">
                             {{ item.total }}
                         </td>
                         <td class="text-right">
                             {{ item.cancelado }}
+                            <span
+                                v-if="item.tc == 1"
+                                class="d-block text-muted text-xs"
+                            >
+                                ({{ item.cancelado_tc }}
+                                {{ item.moneda_tc.simbolo }})
+                            </span>
                         </td>
                         <td
                             class="text-right"
@@ -290,6 +293,7 @@ const actualizarMontoFila = (data, index) => {
                         <tr
                             v-show="item.muestra_detalles == true"
                             v-for="item_detalle in item.servicio_detalles"
+                            class="bg7 no-hover"
                         >
                             <td class="border-0"></td>
                             <td class="border-0"></td>

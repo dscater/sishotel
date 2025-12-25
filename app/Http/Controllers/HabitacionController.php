@@ -130,6 +130,19 @@ class HabitacionController extends Controller
         return response()->JSON($habitacion->load("habitacion_fotos"));
     }
 
+    public function actualizar_estado(Habitacion $habitacion, Request $request)
+    {
+        $habitacion->estado = $request->estado;
+        $habitacion->save();
+
+        return response()->JSON($habitacion);
+    }
+
+    public function imagenes(Habitacion $habitacion)
+    {
+        return response()->JSON($habitacion->habitacion_fotos);
+    }
+
     /**
      * Update habitacion
      *

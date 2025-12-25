@@ -15,7 +15,7 @@ class HabitacionFoto extends Model
         "foto",
     ];
 
-    protected $appends = ["url_archivo", "url_file", "name", "ext"];
+    protected $appends = ["url_archivo", "url_imagen", "url_file", "name", "ext"];
 
     public function getExtAttribute()
     {
@@ -36,6 +36,14 @@ class HabitacionFoto extends Model
             return asset("/imgs/habitacions/" . $this->foto);
         }
         return asset("/imgs/attach.png");
+    }
+
+    public function getUrlImagenAttribute()
+    {
+        if ($this->foto) {
+            return asset("imgs/habitacions/" . $this->foto);
+        }
+        return asset("imgs/habitacions/roomDefault.webp");
     }
 
     public function getUrlArchivoAttribute()

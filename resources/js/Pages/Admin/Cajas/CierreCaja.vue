@@ -152,6 +152,7 @@ onMounted(async () => {
                         <table class="table table-bordered">
                             <thead>
                                 <th>N°</th>
+                                <th>Fecha</th>
                                 <th>Descripción</th>
                                 <th v-for="item_moneda in listMonedas">
                                     {{ item_moneda.simbolo }}
@@ -162,6 +163,7 @@ onMounted(async () => {
                                     v-for="(item, index) in listMovimientoCajas"
                                 >
                                     <td>{{ index + 1 }}</td>
+                                    <td>{{ item.fecha_hora }}</td>
                                     <td>{{ item.descripcion }}</td>
 
                                     <td v-for="item_moneda in listMonedas">
@@ -178,7 +180,7 @@ onMounted(async () => {
                                                 item_moneda.id ==
                                                     item.moneda_id_tc
                                             "
-                                            >{{ item.monto }}</span
+                                            >{{ item.monto_tc }}</span
                                         >
                                     </td>
                                 </tr>

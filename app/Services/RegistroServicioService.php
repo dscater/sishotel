@@ -25,7 +25,7 @@ class RegistroServicioService
     public function listadoByRegistroId(int $registro_id): array
     {
         return RegistroServicio::select("registro_servicios.*")
-            ->with(["registro", "servicio_detalles.producto"])
+            ->with(["registro", "servicio_detalles.producto", "moneda_tc"])
             ->where("registro_id", $registro_id)
             ->get()
             ->toArray();
@@ -48,6 +48,7 @@ class RegistroServicioService
         $registro_servicio = RegistroServicio::create([
             "registro_id" => $datos["registro_id"],
             "tipo" => $datos["tipo"],
+            "cantidad" => $datos["cantidad"],
             "total" => $datos["total"],
             "cancelado" => $datos["cancelado"],
             "saldo" => $datos["saldo"],
@@ -69,12 +70,15 @@ class RegistroServicioService
             // registrar cancelado en caja
             // registrar movimiento
 
-            // TODO: verificar el tipo de cambio (probar con el registro inicial de habitaciones)
             $this->movimientoCajaService->crear([
                 "modelo_id" => $registro_servicio->id,
                 "modelo" => "RegistroServicio",
                 "monto" => $datos["total"],
                 "moneda_id" => $monedaOficial->id,
+                "tc" => $datos["tc"] ?? 0,
+                "monto_tc" => $datos["total_tc"] ?? null,
+                "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
+                "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
                 "tipo" => "INGRESO",
                 "efectivo_banco" => $datos["efectivo_banco"],
                 "descripcion" => "Pago por servicio/producto registrado con nro. de recibo " . $registro_servicio->id,

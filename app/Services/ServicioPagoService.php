@@ -56,12 +56,15 @@ class ServicioPagoService
         }
 
         // registrar movimiento en caja
-        $this->movimiento_caja_service->crear([
+        $movimiento_caja = $this->movimiento_caja_service->crear([
             "modelo_id" => $registro_servicio->id,
             "modelo" => "RegistroServicio",
             "monto" => $data["monto"],
             "moneda_id" => $monedaOficial->id,
-            "tipo" => "INGRESO",
+            "tc" => $data["tc"] ?? 0,
+            "monto_tc" => $data["monto_tc"] ?? null,
+            "moneda_id_tc" => $data["moneda_id_tc"] ?? null,
+            "tipo_cambio_id" => $data["tipo_cambio_id"] ?? null,
             "efectivo_banco" => $data["efectivo_banco"],
             "descripcion" => "Pago parcial por servicio/producto registrado con nro. de recibo " . $registro_servicio->id,
             "fecha_movimiento" => date("Y-m-d"),
@@ -71,6 +74,12 @@ class ServicioPagoService
         // actualizar datos
         $registro_servicio->cancelado += (float)$data["monto"];
         $registro_servicio->saldo -= (float)$data["monto"];
+
+        if ($movimiento_caja->tc == 1) {
+            $registro_servicio->cancelado_tc += (float)$data["monto_tc"];
+            $registro_servicio->saldo_tc -= (float)$data["monto_tc"];
+        }
+
         $registro_servicio->save();
 
         return $registro_servicio;

@@ -8,6 +8,8 @@ import FormRegistro from "@/Pages/Admin/Registros/FormRegistro.vue";
 import Transferencia from "@/Pages/Admin/Registros/Transferencia.vue";
 import Servicios from "@/Pages/Admin/Registros/Servicios.vue";
 import Pagos from "./Pagos.vue";
+import Configuracion from "./Configuracion.vue";
+import Informacion from "./Informacion.vue";
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -76,6 +78,30 @@ const abrirFormPagos = (habitacion, registro) => {
     if (registro) {
         oRegistro.value = registro ?? null;
         accion_formulario_pagos.value = 1;
+    }
+};
+
+const muestra_formulario_informacion = ref(false);
+const accion_formulario_informacion = ref(0);
+const abrirInformacion = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_informacion.value = true;
+    accion_formulario_informacion.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_informacion.value = 1;
+    }
+};
+
+const muestra_formulario_configuracion = ref(false);
+const accion_formulario_configuracion = ref(0);
+const abrirConfiguracion = (habitacion, registro) => {
+    oHabitacion.value = habitacion;
+    muestra_formulario_configuracion.value = true;
+    accion_formulario_configuracion.value = 0;
+    if (registro) {
+        oRegistro.value = registro ?? null;
+        accion_formulario_configuracion.value = 1;
     }
 };
 
@@ -394,6 +420,12 @@ const cargarListas = () => {
                                                             @form-pagos="
                                                                 abrirFormPagos
                                                             "
+                                                            @form-informacion="
+                                                                abrirInformacion
+                                                            "
+                                                            @form-configuracion="
+                                                                abrirConfiguracion
+                                                            "
                                                             :habitacion="item"
                                                             @actualizado="
                                                                 cargarListas
@@ -479,6 +511,36 @@ const cargarListas = () => {
             @cerrar-formulario="muestra_formulario_pagos = false"
         >
         </Pagos>
+
+        <Configuracion
+            :o-habitacion="oHabitacion"
+            :muestra_formulario="muestra_formulario_configuracion"
+            :accion_formulario="accion_formulario_configuracion"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_configuracion = false;
+                accion_formulario_configuracion = 0;
+                oHabitacion = null;
+            "
+            @cerrar-formulario="muestra_formulario_configuracion = false"
+        >
+        </Configuracion>
+
+        <Informacion
+            :o-habitacion="oHabitacion"
+            :muestra_formulario="muestra_formulario_informacion"
+            :accion_formulario="accion_formulario_informacion"
+            :registro="oRegistro"
+            @envio-formulario="
+                cargarHabitacions();
+                muestra_formulario_informacion = false;
+                accion_formulario_informacion = 0;
+                oHabitacion = null;
+            "
+            @cerrar-formulario="muestra_formulario_informacion = false"
+        >
+        </Informacion>
     </Content>
 </template>
 

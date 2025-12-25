@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal("monto_tc", 24, 2)->nullable()->default(0);
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();
+            $table->decimal('valor_tc')->nullable();
             $table->string('tipo'); // INGRESO, EGRESO
             $table->string("efectivo_banco"); // EFECTIVO, BANCO
             $table->string('descripcion')->nullable();

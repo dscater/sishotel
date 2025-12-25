@@ -21,7 +21,8 @@ class RegistroStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+
+        $validacion = [
             "habitacion_id" => "required",
             "cliente_id" => "required",
             "desayuno" => "required",
@@ -35,6 +36,7 @@ class RegistroStoreRequest extends FormRequest
             "adelanto" => "required|decimal:0,2",
             "saldo" => "required|decimal:0,2",
             "garantia" => "required|decimal:0,2",
+            "desc_garantia" => "nullable",
             "tc" => "boolean",
             "cd_tc" => "nullable|decimal:0,2",
             "total_tc" => "nullable|decimal:0,2",
@@ -42,9 +44,17 @@ class RegistroStoreRequest extends FormRequest
             "saldo_tc" => "nullable|decimal:0,2",
             "garantia_tc" => "nullable|decimal:0,2",
             "moneda_id_tc" => "required",
+            "tipo_cambio_id" => "nullable",
+            "valor_tc" => "nullable",
             "tipo" => "required",
             "efectivo_banco" => "nullable",
         ];
+
+        if ((float)request()->garantia > 0) {
+            $validacion["desc_garantia"] = "required";
+        }
+
+        return $validacion;
     }
 
     public function messages(): array
@@ -76,6 +86,8 @@ class RegistroStoreRequest extends FormRequest
             "garantia.required" => "No se indico el precio por día",
             "garantia.min" => "Debes ingresar al menos :min",
             "garantia.decimal" => "Debes ingresar un valor númerico con hasta 2 decimales",
+
+            "desc_garantia.required" => "Debes indicar una descripción de garantía",
 
             "tc.boolean" => "No se pudo detectar el tipo de cambio vuelva a intentar",
 

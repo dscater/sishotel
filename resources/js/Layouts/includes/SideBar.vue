@@ -252,7 +252,7 @@ onUnmounted(() => {});
                     </li>
                     <ItemMenu
                         :label="'Caja'"
-                        :ruta="'clientes.index'"
+                        :ruta="'cajas.index'"
                         :icon="'fa fa-cash-register'"
                     ></ItemMenu>
                     <ItemMenu

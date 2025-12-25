@@ -292,6 +292,7 @@ onMounted(async () => {
                                             v-model="registro.dev_garantia"
                                             @change="actualizaGarantia"
                                         />
+                                        <p>{{ registro.desc_garantia }}</p>
                                     </div>
                                 </div>
                             </div>

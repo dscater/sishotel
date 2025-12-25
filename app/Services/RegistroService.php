@@ -116,6 +116,7 @@ class RegistroService
             "adelanto" => $datos["adelanto"],
             "saldo" => $datos["saldo"],
             "garantia" => $datos["garantia"],
+            "desc_garantia" => $datos["desc_garantia"],
             "moneda_id" => $monedaOficial->id,
             "tc" => $datos["tc"] ?? 0,
             "cd_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["cd_tc"] : NULL,
@@ -124,6 +125,8 @@ class RegistroService
             "saldo_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["saldo_tc"] : NULL,
             "garantia_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["garantia_tc"] : NULL,
             "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : $monedaOficial->id,
+            "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+            "valor_tc" => $datos["valor_tc"] ?? null,
             "tipo" => $datos["tipo"],
             "user_id" => Auth::user()->id,
         ]);
@@ -134,6 +137,7 @@ class RegistroService
             $this->registroServicioService->crear([
                 "registro_id" => $registro->id,
                 "tipo" => "HOSPEDAJE",
+                "cantidad" => $datos["dias_estadia"],
                 "total" => $datos["total"],
                 "cancelado" => $datos["adelanto"],
                 "saldo" => $datos["saldo"],
@@ -143,6 +147,7 @@ class RegistroService
                 "saldo_tc" => $datos["saldo_tc"] ?? null,
                 "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
                 "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+                "valor_tc" => $datos["valor_tc"] ?? null,
                 "efectivo_banco" => $datos["efectivo_banco"] ?? null,
             ]);
         }
@@ -189,6 +194,7 @@ class RegistroService
             // "adelanto" => $datos["adelanto"],
             "saldo" => $datos["saldo"],
             "garantia" => $datos["garantia"],
+            "desc_garantia" => $datos["desc_garantia"],
             // "moneda_id" => $monedaOficial->id,
             "tc" => $datos["tc"] ?? 0,
             "cd_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["cd_tc"] : NULL,
@@ -197,6 +203,8 @@ class RegistroService
             "saldo_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["saldo_tc"] : NULL,
             "garantia_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["garantia_tc"] : NULL,
             "moneda_id_tc" => $datos["tc"] && $datos["tc"] == 1 ? $datos["moneda_id_tc"] : $monedaOficial->id,
+            "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+            "valor_tc" => $datos["valor_tc"] ?? null,
             "tipo" => $datos["tipo"],
             // "user_id" => Auth::user()->id,
         ]);
@@ -208,6 +216,7 @@ class RegistroService
             $this->registroServicioService->crear([
                 "registro_id" => $registro->id,
                 "tipo" => "HOSPEDAJE",
+                "cantidad" => $datos["dias_estadia"],
                 "total" => $datos["total"],
                 "cancelado" => $datos["adelanto"],
                 "saldo" => $datos["saldo"],
@@ -217,9 +226,10 @@ class RegistroService
                 "saldo_tc" => $datos["saldo_tc"] ?? null,
                 "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
                 "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+                "valor_tc" => $datos["valor_tc"] ?? null,
+                "efectivo_banco" => $datos["efectivo_banco"] ?? null,
             ]);
         }
-
 
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "MODIFICACIÓN", "ACTUALIZÓ UN REGISTRO", $old_registro, $registro, ["cliente"]);
@@ -309,6 +319,10 @@ class RegistroService
     public function verificarDiasAdicionales(Registro $registro)
     {
         $fechaSalida = Carbon::parse($registro->fecha_salida);
+        $hora_salida = null;
+        if ($registro->hora_salida) {
+            $fechaSalida = Carbon::parse($registro->fecha_salida . ' ' . $registro->hora_salida);
+        }
         $ahora = Carbon::now('America/La_Paz');
         $hora = $ahora->hour;
         $fecha_txt = $ahora->toDateString();

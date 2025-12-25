@@ -12,6 +12,7 @@ class RegistroServicio extends Model
     protected $fillable = [
         "registro_id",
         "tipo", // PRODUCTO/SERVICIO, HOSPEDAJE
+        "cantidad",
         "total",
         "cancelado",
         "saldo",

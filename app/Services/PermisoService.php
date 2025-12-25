@@ -57,6 +57,8 @@ class PermisoService
             "habitacions.paginado_eliminados",
             "habitacions.reestablecer",
             "habitacions.eliminacion_permanente",
+            "habitacions.actualizar_estado",
+            "habitacions.imagenes",
 
             "tipo_habitacions.listado",
             "tipo_habitacions.paginado",
@@ -145,6 +147,15 @@ class PermisoService
             "registro_servicios.listadoByRegistroId",
 
             // cajas
+            "cajas.listado",
+            "cajas.paginado",
+            "cajas.index",
+            "cajas.create",
+            "cajas.store",
+            "cajas.edit",
+            "cajas.show",
+            "cajas.update",
+            "cajas.destroy",
             "cajas.verificaCajaAbierta",
             "cajas.aperturarCaja",
 

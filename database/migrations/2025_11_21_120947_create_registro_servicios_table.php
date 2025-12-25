@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('registro_id');
             $table->string("tipo"); // PRODUCTO/SERVICIO, HOSPEDAJE
+            $table->double('cantidad', 8, 2);
             $table->decimal('total', 24, 2);
             $table->decimal("cancelado", 24, 2)->default(0);
             $table->decimal("saldo", 24, 2);
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->decimal("saldo_tc", 24, 2)->nullable();
             $table->unsignedBigInteger('moneda_id_tc')->nullable();
             $table->unsignedBigInteger('tipo_cambio_id')->nullable();
+            $table->decimal('valor_tc')->nullable();
             $table->string("efectivo_banco");
             $table->date("fecha")->nullable();
             $table->time("hora")->nullable();

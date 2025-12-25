@@ -23,6 +23,10 @@ body {
     min-height: 100vh;
 }
 
+.bg7.no-hover:hover {
+    background-color: var(--bg7);
+}
+
 .cursor-pointer {
     cursor: pointer;
 }

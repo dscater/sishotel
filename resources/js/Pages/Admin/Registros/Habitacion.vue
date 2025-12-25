@@ -2,6 +2,9 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import axios from "axios";
+// TOAST
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 const props = defineProps({
     habitacion: {
         type: Object,
@@ -19,10 +22,19 @@ watch(
 );
 
 const muestraFormulario = () => {
+    if (oHabitacion.value.estado == 2) {
+        toast.info("Habitación en mantenimiento");
+        return;
+    }
+    if (oHabitacion.value.estado == 3) {
+        toast.info("Habitación en limpieza");
+        return;
+    }
     emits("form-registro", oHabitacion.value, oRegistro.value);
 };
 
 const muestraTransferencia = () => {
+    menu.value = false;
     emits("form-transferencia", oHabitacion.value, oRegistro.value);
 };
 
@@ -31,7 +43,18 @@ const muestraServicios = () => {
 };
 
 const muestraPagos = () => {
+    menu.value = false;
     emits("form-pagos", oHabitacion.value, oRegistro.value);
+};
+
+const muestraInformacion = () => {
+    menu.value = false;
+    emits("form-informacion", oHabitacion.value, oRegistro.value);
+};
+
+const muestraConfiguracion = () => {
+    menu.value = false;
+    emits("form-configuracion", oHabitacion.value, oRegistro.value);
 };
 
 const oRegistro = ref(null);
@@ -71,6 +94,8 @@ const emits = defineEmits([
     "form-transferencia",
     "form-servicios",
     "form-pagos",
+    "form-informacion",
+    "form-configuracion",
 ]);
 
 const menu = ref(false);
@@ -141,11 +166,19 @@ onMounted(() => {
                             <i class="fa fa-sync text-warning"></i>
                             Transferencia
                         </button>
-                        <button class="menu-item" type="button">
+                        <button
+                            class="menu-item"
+                            type="button"
+                            @click.prevent="muestraInformacion"
+                        >
                             <i class="fa fa-info-circle text-info"></i>
                             Información
                         </button>
-                        <button class="menu-item" type="button">
+                        <button
+                            class="menu-item"
+                            type="button"
+                            @click.prevent="muestraConfiguracion"
+                        >
                             <i class="fa fa-cog text-orange"></i>
                             Configurar
                         </button>
@@ -219,7 +252,7 @@ onMounted(() => {
                 {
                     'bg-success': oHabitacion?.estado == 0,
                     'bg-danger': oHabitacion?.estado == 1,
-                    'bg-primary': oHabitacion?.estado == 2,
+                    'bg-blue': oHabitacion?.estado == 2,
                     'bg-orange': oHabitacion?.estado == 3,
                     'bg-info': oHabitacion?.estado == 4,
                 },

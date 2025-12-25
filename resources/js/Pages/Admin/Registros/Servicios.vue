@@ -3,7 +3,13 @@ import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
 import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+import { useTipoCambio } from "@/composables/useTipoCambio";
+// TOAST
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
 const { monedaOficial } = useMonedaOficial();
+const { convertirMonto } = useTipoCambio();
 
 const props = defineProps({
     oHabitacion: {
@@ -33,15 +39,18 @@ const enviando = ref(false);
 
 const form = useForm({
     registro_id: "",
+    cantidad: 0,
     total: 0,
     cancelado: 0,
     saldo: 0,
     moneda_id: "",
+    tc: 0,
     total_tc: "",
     cancelado_tc: "",
     saldo_tc: 0,
     moneda_id_tc: 0,
     tipo_cambio_id: "",
+    valor_tc: "",
     tipo: "PRODUCTO/SERVICIO",
     efectivo_banco: "EFECTIVO",
     servicio_detalles: [],
@@ -57,6 +66,8 @@ watch(
         if (muestra_form.value) {
             cargarListas();
             asignarDatosForm();
+
+            form.moneda_id_tc = monedaOficial?.value.id;
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
@@ -90,9 +101,13 @@ const asignarDatosForm = () => {
 
 const limpiarDatosForm = () => {
     form.registro_id = "";
+    form.cantidad = 0;
     form.total = 0;
     form.cancelado = 0;
     form.saldo = 0;
+    form.tc = 0;
+    form.total_tc = 0;
+    form.cancelado_tc = 0;
     form.servicio_detalles = [];
 };
 
@@ -146,6 +161,7 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
+            cargarProductosByTipo();
             // TODO: IMPRIMIR PDF DE COMANDA
             emits("envio-formulario");
         },
@@ -227,6 +243,7 @@ const cargarProductosByTipo = () => {
 
 const cargarListas = () => {
     cargarTipoProductos();
+    cargarMonedas();
 };
 
 const detectarTipoProducto = (value) => {
@@ -243,6 +260,14 @@ const agregarDetalle = (producto) => {
     const existe = form.servicio_detalles.filter(
         (elem) => elem.producto_id == producto.id
     )[0];
+
+    if (producto.tipo_producto.tipo == "PRODUCTO") {
+        if (producto.stock <= 0) {
+            toast.error(`Stock insuficiente ${producto.nombre}`);
+            return;
+        }
+    }
+
     if (existe) {
         // EXISTE INCREMENTAR EN 1 LA CANTIDAD
         const index = form.servicio_detalles.findIndex(
@@ -289,11 +314,14 @@ const calcularNuevaCantidad = (e, index) => {
 
 const calcularTotal = () => {
     let total = 0;
+    let total_cantidad = 0;
 
     form.servicio_detalles.forEach((elem) => {
         total += parseFloat(elem.total);
+        total_cantidad += parseFloat(elem.cantidad);
     });
     form.total = total;
+    form.cantidad = total_cantidad;
 
     calcularSaldoCambio();
 };
@@ -310,6 +338,69 @@ const calcularSaldoCambio = () => {
         return;
     }
     form.saldo = saldo;
+};
+
+const listMonedas = ref([]);
+const cargarMonedas = () => {
+    axios.get(route("monedas.listado")).then((response) => {
+        listMonedas.value = response.data.monedas;
+    });
+};
+
+const oTipoCambio = ref(null);
+const cargarTipoCambios = () => {
+    oTipoCambio.value = null;
+    form.tc = 0;
+    axios
+        .get(route("tipo_cambios.listadoByMonedaId"), {
+            params: {
+                tipo_cambio_id: form.moneda_id_tc ?? 0,
+            },
+        })
+        .then((response) => {
+            oTipoCambio.value = response.data.tipo_cambios;
+            if (oTipoCambio.value) {
+                form.total_tc = 0;
+                form.cancelado_tc = 0;
+                form.tc = 1;
+                form.tipo_cambio_id = oTipoCambio.value.id;
+                form.valor_tc = oTipoCambio.value.valor;
+                // obtener el el monto diario en dolares
+                form.cd_tc = convertirMonto(form.cd, 1, form.valor_tc);
+            }
+            actualizaMontos();
+        });
+};
+
+const simboloMonedaCambio = computed(() => {
+    if (form.moneda_id_tc) {
+        const moneda = listMonedas.value.filter(
+            (elem) => elem.id === form.moneda_id_tc
+        )[0];
+        return `${moneda?.simbolo}`;
+    }
+    return ``;
+});
+
+const actualizaMontos = () => {
+    // form.moneda_id_tc = monedaOficial?.value.id;
+    form.saldo = form.total - form.cancelado;
+    // USAR UNA FUNCION PARA TIPO DE CAMBIO
+    // DETECTANDO SI HAY O NO UN TIPO DE CAMBIO
+    if (form.tc == 1) {
+        form.total_tc = convertirMonto(form.total, 1, form.valor_tc);
+        form.saldo_tc = convertirMonto(form.saldo, 1, form.valor_tc);
+    }
+};
+
+// calcular el monto en la moneda principal
+const actualizaMontosCambio = () => {
+    form.saldo_tc = form.total_tc - form.cancelado_tc;
+    form.saldo = convertirMonto(form.saldo_tc, form.valor_tc, 1);
+    form.cancelado = convertirMonto(form.cancelado_tc, form.valor_tc, 1);
+    if (form.saldo_tc == 0) {
+        form.cancelado = form.total;
+    }
 };
 
 onMounted(() => {});
@@ -551,7 +642,8 @@ onMounted(() => {});
                             <div class="row">
                                 <div class="col-12">
                                     <small class="font-weight-bold"
-                                        >Total</small
+                                        >Total
+                                        {{ monedaOficial?.simbolo }}</small
                                     >
                                     <input
                                         type="number"
@@ -562,7 +654,8 @@ onMounted(() => {});
                                 </div>
                                 <div class="col-12">
                                     <small class="font-weight-bold"
-                                        >Cancelado</small
+                                        >Cancelado
+                                        {{ monedaOficial?.simbolo }}</small
                                     >
                                     <input
                                         type="number"
@@ -600,7 +693,8 @@ onMounted(() => {});
                                 </div>
                                 <div class="col-12">
                                     <small class="font-weight-bold"
-                                        >Saldo</small
+                                        >Saldo
+                                        {{ monedaOficial?.simbolo }}</small
                                     >
                                     <input
                                         type="number"
@@ -609,17 +703,17 @@ onMounted(() => {});
                                         readonly
                                     />
                                 </div>
-                                <div class="col-12" v-if="cambio > 0">
+                                <!-- <div class="col-12" v-if="cambio > 0">
                                     <small class="font-weight-bold"
                                         >Cambio</small
                                     >
                                     <input
                                         type="number"
-                                        class="form-control bg7"
+                                        class="form-control bg-yellow"
                                         v-model="cambio"
                                         readonly
                                     />
-                                </div>
+                                </div> -->
                                 <div class="col-12 mt-2">
                                     <button
                                         class="btn bg-principal w-100"
