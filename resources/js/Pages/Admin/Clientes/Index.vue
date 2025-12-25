@@ -40,7 +40,7 @@ const headers = [
         sortable: true,
     },
     {
-        label: "C.I.",
+        label: "C.I./Pasaporte",
         key: "full_ci",
         sortable: true,
     },

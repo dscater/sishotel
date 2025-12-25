@@ -3,6 +3,9 @@ import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { useCajas } from "@/composables/cajas/useCajas";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
+import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+const { monedaOficial } = useMonedaOficial();
+
 const props = defineProps({
     muestra_formulario: {
         type: Boolean,
@@ -45,8 +48,8 @@ watch(
 
 const tituloDialog = computed(() => {
     return accion_form.value == 0
-        ? `<i class="fa fa-plus"></i> Nueva Caja`
-        : `<i class="fa fa-edit"></i> Editar Caja`;
+        ? `<i class="fa fa-plus"></i> Nuevo Movimiento de Caja`
+        : `<i class="fa fa-edit"></i> Editar Movimiento de Caja`;
 });
 
 const textBtn = computed(() => {
@@ -89,17 +92,30 @@ const enviarFormulario = () => {
             console.log(code ?? "");
             console.log(form.errors);
             if (form.errors) {
-                const error =
-                    "Existen errores en el formulario, por favor verifique";
-                Swal.fire({
-                    icon: "info",
-                    title: "Error",
-                    html: `<strong>${error}</strong>`,
-                    confirmButtonText: `Aceptar`,
-                    customClass: {
-                        confirmButton: "btn-success",
-                    },
-                });
+                if (form.errors.error) {
+                    const error = form.errors.error;
+                    Swal.fire({
+                        icon: "info",
+                        title: "Error",
+                        html: `<strong>${error}</strong>`,
+                        confirmButtonText: `Aceptar`,
+                        customClass: {
+                            confirmButton: "btn-error",
+                        },
+                    });
+                } else {
+                    const error =
+                        "Existen errores en el formulario, por favor verifique";
+                    Swal.fire({
+                        icon: "info",
+                        title: "Error",
+                        html: `<strong>${error}</strong>`,
+                        confirmButtonText: `Aceptar`,
+                        customClass: {
+                            confirmButton: "btn-success",
+                        },
+                    });
+                }
             } else {
                 const error =
                     "Ocurrió un error inesperado contactese con el Administrador";
@@ -168,66 +184,124 @@ onMounted(() => {
                 </p>
                 <div class="row">
                     <div class="col-md-4 mt-2">
-                        <label class="required">Código</label>
+                        <label class="required"
+                            >Monto {{ monedaOficial?.simbolo }}</label
+                        >
                         <input
                             type="text"
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.codigo,
+                                'parsley-error': form.errors?.monto,
                             }"
-                            v-model="form.codigo"
+                            v-model="form.monto"
                         />
-                        <small class="text-muted">Ejemplo: BOB, USD, EUR</small>
                         <ul
-                            v-if="form.errors?.codigo"
+                            v-if="form.errors?.monto"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.codigo }}
+                                {{ form.errors?.monto }}
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Nombre</label>
+                        <label class="required"
+                            >Descripción del movimiento</label
+                        >
                         <input
                             type="text"
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.nombre,
+                                'parsley-error': form.errors?.descripcion,
                             }"
-                            v-model="form.nombre"
+                            v-model="form.descripcion"
                         />
-                        <small class="text-muted"
-                            >Ejemplo: Bolivianos, Dólares, Euros</small
-                        >
                         <ul
-                            v-if="form.errors?.nombre"
+                            v-if="form.errors?.descripcion"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.nombre }}
+                                {{ form.errors?.descripcion }}
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <label class="required">Simbolo</label>
-                        <input
-                            type="text"
+                        <label class="required">Tipo de movimiento</label>
+                        <select
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.simbolo,
+                                'parsley-error': form.errors?.tipo,
                             }"
-                            v-model="form.simbolo"
-                        />
-                        <small class="text-muted">Ejemplo: Bs, $us, €</small>
+                            v-model="form.tipo"
+                        >
+                            <option value="">- Seleccione -</option>
+                            <option value="INGRESO">INGRESO</option>
+                            <option value="EGRESO">EGRESO</option>
+                        </select>
                         <ul
-                            v-if="form.errors?.simbolo"
+                            v-if="form.errors?.tipo"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.simbolo }}
+                                {{ form.errors?.tipo }}
                             </li>
                         </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label class="required">Fecha</label>
+                        <input
+                            type="date"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.fecha_movimiento,
+                            }"
+                            v-model="form.fecha_movimiento"
+                        />
+                        <ul
+                            v-if="form.errors?.fecha_movimiento"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.fecha_movimiento }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label class="required">Hora</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.hora_movimiento,
+                            }"
+                            v-model="form.hora_movimiento"
+                        />
+                        <ul
+                            v-if="form.errors?.hora_movimiento"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.hora_movimiento }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label>Tipo</label>
+                        <br />
+                        <el-radio-group v-model="form.efectivo_banco">
+                            <el-radio-button :value="'EFECTIVO'"
+                                ><span
+                                    ><i class="fa fa-money-bill text-md"></i>
+                                    Efectivo</span
+                                ></el-radio-button
+                            >
+                            <el-radio-button :value="'BANCO'"
+                                ><span
+                                    ><i class="fa fa-credit-card text-md"></i>
+                                    Banco</span
+                                ></el-radio-button
+                            >
+                        </el-radio-group>
                     </div>
                 </div>
             </form>

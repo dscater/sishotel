@@ -6,11 +6,12 @@ use App\Models\MovimientoCaja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use League\Config\Exception\ValidationException;
+use Illuminate\Validation\ValidationException;
 use App\Http\Requests\CajaStoreRequest;
 use App\Http\Requests\CajaUpdateRequest;
 use App\Models\Caja;
 use App\Services\CajaService;
+use App\Services\MovimientoCajaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
@@ -21,7 +22,7 @@ use Inertia\Response as InertiaResponse;
 class CajaController extends Controller
 {
 
-    public function __construct(private CajaService $cajaService) {}
+    public function __construct(private CajaService $cajaService, private MovimientoCajaService $movimiento_caja_service) {}
 
     public function cierre_caja()
     {
@@ -30,7 +31,10 @@ class CajaController extends Controller
 
     public function verificaCajaAbierta()
     {
-        return response()->JSON($this->cajaService->verificarCajaAbierta());
+        $caja = $this->cajaService->verificarCajaAbierta();
+        return response()->JSON([
+            "caja" => $caja,
+        ]);
     }
     public function aperturarCaja()
     {
@@ -67,27 +71,21 @@ class CajaController extends Controller
         ]);
     }
 
-    public function getCajaOficial()
-    {
-        $oficial = Caja::where("oficial", 1)->get()->first();
-        return response()->JSON($oficial);
-    }
-
     public function paginado(Request $request)
     {
         $perPage = $request->perPage;
         $page = (int)($request->input("page", 1));
         $search = (string)$request->input("search", "");
-        $orderByCol = $request->orderByCol;
-        $desc = $request->desc;
+        $orderBy = $request->orderBy;
+        $orderAsc = $request->orderAsc;
 
         $columnsSerachLike = ["nombre", "codigo", "simbolo"];
         $columnsFilter = [];
         $columnsBetweenFilter = [];
         $arrayOrderBy = [];
-        if ($orderByCol && $desc) {
+        if ($orderBy && $orderAsc) {
             $arrayOrderBy = [
-                [$orderByCol, $desc]
+                [$orderBy, $orderAsc]
             ];
         }
 
@@ -109,7 +107,7 @@ class CajaController extends Controller
     {
         DB::beginTransaction();
         try {
-            $this->cajaService->crear($request->validated());
+            $this->movimiento_caja_service->crear($request->validated());
             DB::commit();
             return redirect()->route("cajas.index")->with("bien", "Registro realizado");
         } catch (\Exception $e) {

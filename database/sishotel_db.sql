@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 25-12-2025 a las 00:56:18
+-- Tiempo de generación: 25-12-2025 a las 18:07:01
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -44,6 +44,13 @@ CREATE TABLE `cajas` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `cajas`
+--
+
+INSERT INTO `cajas` (`id`, `monto_inicial`, `monto_final`, `monto_efectivo_inicial`, `monto_efectivo_final`, `monto_banco_inicial`, `monto_banco_final`, `fecha_apertura`, `hora_apertura`, `fecha_cierre`, `hora_cierre`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 0.00, 980.00, 0.00, 970.00, 0.00, 10.00, '2025-12-25', '13:55:37', NULL, NULL, 1, 1, '2025-12-25 17:55:37', '2025-12-25 18:05:57');
 
 -- --------------------------------------------------------
 
@@ -163,10 +170,10 @@ CREATE TABLE `habitacions` (
 --
 
 INSERT INTO `habitacions` (`id`, `numero_habitacion`, `tipo_habitacion_id`, `piso`, `capacidad`, `precio`, `precio_temp`, `estado`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'H-001', 1, 0, 1, 300.00, 0.00, 1, 1, '2025-11-24 21:08:48', '2025-12-23 23:34:53'),
-(2, 'H-002', 2, 1, 2, 500.00, 0.00, 1, 1, '2025-11-24 21:17:59', '2025-12-24 22:33:41'),
+(1, 'H-001', 1, 0, 1, 300.00, 0.00, 0, 1, '2025-11-24 21:08:48', '2025-12-23 23:34:53'),
+(2, 'H-002', 2, 1, 2, 500.00, 0.00, 0, 1, '2025-11-24 21:17:59', '2025-12-24 22:33:41'),
 (3, 'H-003', 3, 1, 2, 800.00, 200.00, 0, 1, '2025-11-24 21:23:46', '2025-12-24 23:45:51'),
-(4, 'H-004', 4, 1, 3, 800.00, 250.00, 1, 1, '2025-11-24 21:30:34', '2025-12-24 23:10:43');
+(4, 'H-004', 4, 1, 3, 800.00, 250.00, 0, 1, '2025-11-24 21:30:34', '2025-12-24 23:10:43');
 
 -- --------------------------------------------------------
 
@@ -211,6 +218,16 @@ CREATE TABLE `historial_accions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `historial_accions`
+--
+
+INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `datos_original`, `datos_nuevo`, `modulo`, `fecha`, `hora`, `created_at`, `updated_at`) VALUES
+(1, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 1, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"1000\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T17:55:47.000000Z\", \"updated_at\": \"2025-12-25T17:55:47.000000Z\", \"descripcion\": \"INICIO CAJA EFECTIVO\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"13:55\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '13:55:47', '2025-12-25 17:55:47', '2025-12-25 17:55:47'),
+(2, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 3, \"tc\": 0, \"tipo\": \"EGRESO\", \"monto\": \"20\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T17:56:20.000000Z\", \"updated_at\": \"2025-12-25T17:56:20.000000Z\", \"descripcion\": \"PASAJES\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"13:56\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '13:56:20', '2025-12-25 17:56:20', '2025-12-25 17:56:20'),
+(3, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 5, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"10\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T18:05:00.000000Z\", \"updated_at\": \"2025-12-25T18:05:00.000000Z\", \"descripcion\": \"OTROS\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"14:04\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '14:05:00', '2025-12-25 18:05:00', '2025-12-25 18:05:00'),
+(4, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 6, \"tc\": 0, \"tipo\": \"EGRESO\", \"monto\": \"10\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T18:05:57.000000Z\", \"updated_at\": \"2025-12-25T18:05:57.000000Z\", \"descripcion\": \"EGRES\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"14:05\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '14:05:57', '2025-12-25 18:05:57', '2025-12-25 18:05:57');
 
 -- --------------------------------------------------------
 
@@ -348,6 +365,16 @@ CREATE TABLE `movimiento_cajas` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `movimiento_cajas`
+--
+
+INSERT INTO `movimiento_cajas` (`id`, `caja_id`, `modelo_id`, `modelo`, `monto`, `moneda_id`, `tc`, `monto_tc`, `moneda_id_tc`, `tipo_cambio_id`, `valor_tc`, `tipo`, `efectivo_banco`, `descripcion`, `fecha_movimiento`, `hora_movimiento`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 1, NULL, NULL, 1000.00, 1, 0, NULL, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'INICIO CAJA EFECTIVO', '2025-12-25', '13:55:00', 1, '2025-12-25 17:55:47', '2025-12-25 17:55:47'),
+(3, 1, NULL, NULL, 20.00, 1, 0, NULL, NULL, NULL, NULL, 'EGRESO', 'EFECTIVO', 'PASAJES', '2025-12-25', '13:56:00', 1, '2025-12-25 17:56:20', '2025-12-25 17:56:20'),
+(5, 1, NULL, NULL, 10.00, 1, 0, NULL, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'OTROS', '2025-12-25', '14:04:00', 1, '2025-12-25 18:05:00', '2025-12-25 18:05:00'),
+(6, 1, NULL, NULL, 10.00, 1, 0, NULL, NULL, NULL, NULL, 'EGRESO', 'EFECTIVO', 'EGRES', '2025-12-25', '14:05:00', 1, '2025-12-25 18:05:57', '2025-12-25 18:05:57');
 
 -- --------------------------------------------------------
 
@@ -775,7 +802,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `cajas`
 --
 ALTER TABLE `cajas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
@@ -811,7 +838,7 @@ ALTER TABLE `habitacion_fotos`
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
@@ -841,7 +868,7 @@ ALTER TABLE `monedas`
 -- AUTO_INCREMENT de la tabla `movimiento_cajas`
 --
 ALTER TABLE `movimiento_cajas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`

@@ -173,7 +173,7 @@ const precarCargarHabitacions = () => {
 const oCaja = ref(null);
 const verificaCaja = () => {
     axios.get(route("cajas.verificaCajaAbierta")).then((response) => {
-        oCaja.value = response.data;
+        oCaja.value = response.data.caja;
     });
 };
 

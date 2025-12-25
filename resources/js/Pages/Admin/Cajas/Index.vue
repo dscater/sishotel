@@ -18,32 +18,38 @@ const { setCaja, limpiarCaja } = useCajas();
 const miTable = ref(null);
 
 const headers = [
+    // {
+    //     label: "Nro.",
+    //     key: "id",
+    //     sortable: true,
+    //     width: "1%",
+    //     fixed: true,
+    // },
     {
-        label: "CÓDIGO",
-        key: "codigo",
+        label: "DESCRIPCIÓN",
+        key: "descripcion",
         sortable: true,
-        classRow: (item) => {
-            if (item.oficial == 1) {
-                return "bg-oficial";
-            }
-            return "";
-        },
+        fixed: true,
     },
     {
-        label: "NOMBRE",
-        key: "nombre",
-        sortable: true,
-    },
-    {
-        label: "SIMBOLO",
-        key: "simbolo",
+        label: "MONTO",
+        key: "monto",
         sortable: true,
     },
     {
-        label: "ACCIÓN",
-        key: "accion",
-        fixed: "right",
-        width: "4%",
+        label: "TIPO DE MOVIMIENTO",
+        key: "tipo",
+        sortable: true,
+    },
+    {
+        label: "TIPO",
+        key: "efectivo_banco",
+        sortable: true,
+    },
+    {
+        label: "FECHA",
+        key: "fecha_hora",
+        sortable: true,
     },
 ];
 
@@ -90,7 +96,45 @@ const eliminarCaja = (item) => {
     });
 };
 
+const oCaja = ref(null);
+const verificaCaja = () => {
+    axios.get(route("cajas.verificaCajaAbierta")).then((response) => {
+        oCaja.value = response.data.caja;
+    });
+};
+
+const abrirCaja = () => {
+    Swal.fire({
+        title: "¿Realizar apertura de caja?",
+        html: `Se abrirá la caja para el día de hoy.`,
+        showCancelButton: true,
+        confirmButtonText: "Si, aperturar",
+        cancelButtonText: "No, cancelar",
+        denyButtonText: `No, cancelar`,
+        customClass: {
+            confirmButton: "btn-primary",
+        },
+    }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            axios.post(route("cajas.aperturarCaja")).then((response) => {
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Aperturada!",
+                    html: `La caja ha sido aperturada con éxito.`,
+                    confirmButtonText: `Aceptar`,
+                    customClass: {
+                        confirmButton: "btn-success",
+                    },
+                });
+                verificaCaja();
+            });
+        }
+    });
+};
+
 onMounted(async () => {
+    verificaCaja();
     appStore.stopLoading();
 });
 </script>
@@ -120,6 +164,28 @@ onMounted(async () => {
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
+                    <div class="col-12 font-weight-bold mb-2">
+                        CAJA:
+                        <span
+                            class="badge text-sm"
+                            :class="{
+                                'bg4 text-success': oCaja,
+                                'bg8 text-danger': !oCaja,
+                            }"
+                            ><i class="fa fa-circle"></i
+                            >{{ oCaja ? " ABIERTO" : " CERRADO" }}</span
+                        >
+                        <button
+                            class="btn bg-primary btn-sm text-xs ml-1"
+                            title="Aperturar Caja"
+                            @click.prevent="abrirCaja"
+                            v-if="!oCaja"
+                        >
+                            <i class="fa fa-external-link-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4">
                         <button
                             v-if="
@@ -132,7 +198,7 @@ onMounted(async () => {
                             class="btn btn-primary"
                             @click="agregarRegistro"
                         >
-                            <i class="fa fa-plus"></i> Nueva Caja
+                            <i class="fa fa-plus"></i> Nuevo Movimiento
                         </button>
                     </div>
                     <div class="col-md-8 my-1">
@@ -177,6 +243,20 @@ onMounted(async () => {
                             :header-class="'bg__primary'"
                             fixed-header
                         >
+                            <template #tipo="{ item }">
+                                <span
+                                    class="badge text-sm"
+                                    :class="{
+                                        'bg4 text-success':
+                                            item.tipo == 'INGRESO',
+                                        'bg8 text-danger':
+                                            item.tipo == 'EGRESO',
+                                    }"
+                                >
+                                    {{ item.tipo }}
+                                </span>
+                            </template>
+
                             <template #accion="{ item }">
                                 <el-tooltip
                                     class="box-item"

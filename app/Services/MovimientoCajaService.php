@@ -21,40 +21,44 @@ class MovimientoCajaService
      */
     public function crear(array $datos): MovimientoCaja
     {
-
         $monedaOficial = $this->monedaService->getMonedaPrincipal();
         if (!$monedaOficial) {
             throw new Exception("No se configuro la moneda oficial, contactese con el Administrador");
         }
 
         $caja = $this->cajaService->verificarCajaAbierta();
+
         if (!$caja) {
             throw new \Exception("No hay una caja abierta para registrar el movimiento");
         }
 
         $movimiento_caja = MovimientoCaja::create([
             "caja_id" => $caja->id,
-            "modelo_id" => $datos["modelo_id"],
-            "modelo" => $datos["modelo"],
+            "modelo_id" => $datos["modelo_id"] ?? NULL,
+            "modelo" => $datos["modelo"] ?? NULL,
             "monto" => $datos["monto"],
-            "moneda_id" => $datos["moneda_id"],
+            "moneda_id" => $datos["moneda_id"] ?? $monedaOficial->id,
             "tc" => $datos["tc"] ?? 0,
             "monto_tc" => $datos["monto_tc"] ?? null,
             "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
             "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
             "tipo" => $datos["tipo"],
             "efectivo_banco" => $datos["efectivo_banco"] ?? null,
-            "descripcion" => $datos["descripcion"],
+            "descripcion" => mb_strtoupper($datos["descripcion"]),
             "fecha_movimiento" => $datos["fecha_movimiento"],
             "hora_movimiento" => $datos["hora_movimiento"],
             "user_id" => Auth::user()->id,
         ]);
 
         // actualizar montos en caja
-        $this->cajaService->registrarMonto($datos["monto"], $datos["efectivo_banco"]);
+        if ($datos["tipo"] == 'INGRESO') {
+            $this->cajaService->registrarMontoIngreso($datos["monto"], $datos["efectivo_banco"]);
+        } else {
+            $this->cajaService->registrarMontoEgreso($datos["monto"], $datos["efectivo_banco"]);
+        }
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN SERVICIO", $movimiento_caja);
+        $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REGISTRO UN MOVIMIENTO DE CAJA", $movimiento_caja);
 
         return $movimiento_caja;
     }

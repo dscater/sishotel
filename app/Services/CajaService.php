@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Caja;
+use App\Models\MovimientoCaja;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
@@ -50,7 +51,7 @@ class CajaService
         return $caja;
     }
 
-    public function registrarMonto($monto, $tipo_pago)
+    public function registrarMontoIngreso($monto, $tipo_pago)
     {
         $caja = $this->verificarCajaAbierta();
         if (!$caja) {
@@ -69,6 +70,49 @@ class CajaService
         return $caja;
     }
 
+    public function registrarMontoEgreso($monto, $tipo_pago)
+    {
+        $caja = $this->verificarCajaAbierta();
+        if (!$caja) {
+            throw new \Exception("No hay una caja abierta para registrar el movimiento");
+        }
+
+        $this->verificaSaldoEgreso($tipo_pago, $monto);
+
+        if ($tipo_pago == 'EFECTIVO') {
+            $caja->monto_efectivo_final -= (float)$monto;
+        } else {
+            $caja->monto_banco_final -= (float)$monto;
+        }
+
+        $caja->monto_final -= (float)$monto;
+        $caja->save();
+        return $caja;
+    }
+
+
+    private function verificaSaldoEgreso($tipo_pago, $monto)
+    {
+        $caja = $this->verificarCajaAbierta();
+        if (!$caja) {
+            throw new \Exception("No hay una caja abierta para registrar el movimiento");
+        }
+        if ($tipo_pago == 'EFECTIVO') {
+            if ($caja->monto_efectivo_final < $monto) {
+                throw new \Exception("Monto insuficiente EFECTIVO, para realizar el egreso");
+
+                return false;
+            }
+        } else {
+            if ($caja->monto_banco_final < $monto) {
+                throw new \Exception("Monto insuficiente BANCO, para realizar el egreso");
+
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public function listado(string $search): array
     {
@@ -94,9 +138,7 @@ class CajaService
      */
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $cajas = Caja::select("cajas.*");
-
-        $cajas->where("status", 1);
+        $cajas = MovimientoCaja::select("movimiento_cajas.*");
 
         // Filtros exactos
         foreach ($columnsFilter as $key => $value) {
@@ -194,18 +236,18 @@ class CajaService
     public function crear(array $datos): Caja
     {
         $caja = Caja::create([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
-            "fecha_registro" => date("Y-m-d"),
+            "monto" => $datos["monto"],
+            "moneda_id" => $datos["moneda_id"],
+            "tc" => $datos["tc"],
+            "monto_tc" => $datos["monto_tc"],
+            "moneda_id_tc" => $datos["moneda_id_tc"],
+            "tipo_cambio_id" => $datos["tipo_cambio_id"],
+            "valor_tc" => $datos["valor_tc"],
+            "tipo" => $datos["tipo"],
+            "efectivo_banco" => $datos["efectivo_banco"],
+            "descripcion" => $datos["descripcion"],
+            "fecha_movimiento" => $datos["fecha_movimiento"],
+            "hora_movimiento" => $datos["hora_movimiento"],
             "user_id" => Auth::user()->id,
         ]);
 
@@ -227,17 +269,18 @@ class CajaService
         $old_user = clone $caja;
 
         $caja->update([
-            "nombre" => mb_strtoupper($datos["nombre"]),
-            "paterno" => mb_strtoupper($datos["paterno"]),
-            "materno" => mb_strtoupper($datos["materno"]),
-            "dir" => mb_strtoupper($datos["dir"]),
-            "ci" => $datos["ci"],
-            "ci_exp" => $datos["ci_exp"],
-            "fono" => $datos["fono"],
-            "correo" => $datos["correo"],
-            "edad" => $datos["edad"],
-            "nacionalidad" => mb_strtoupper($datos["nacionalidad"]),
-            "pais" => mb_strtoupper($datos["pais"]),
+            "monto" => $datos["monto"],
+            "moneda_id" => $datos["moneda_id"],
+            "tc" => $datos["tc"],
+            "monto_tc" => $datos["monto_tc"],
+            "moneda_id_tc" => $datos["moneda_id_tc"],
+            "tipo_cambio_id" => $datos["tipo_cambio_id"],
+            "valor_tc" => $datos["valor_tc"],
+            "tipo" => $datos["tipo"],
+            "efectivo_banco" => $datos["efectivo_banco"],
+            "descripcion" => $datos["descripcion"],
+            "fecha_movimiento" => $datos["fecha_movimiento"],
+            "hora_movimiento" => $datos["hora_movimiento"],
         ]);
 
         // registrar accion

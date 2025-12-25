@@ -11,12 +11,48 @@ onBeforeMount(() => {});
 const oCaja = ref(null);
 const verificaCaja = () => {
     axios.get(route("cajas.verificaCajaAbierta")).then((response) => {
-        oCaja.value = response.data;
+        oCaja.value = response.data.caja;
         if (oCaja.value) {
             oCaja.value.fecha_hora_cierre = getFechaHoraCierre();
             oCaja.value.fecha_cierre = getFechaActual();
             oCaja.value.hora_cierre = getHoraActual();
             cargarMovimientoCajas();
+        }
+    });
+};
+
+const updateFechaCierre = () => {
+    oCaja.value.fecha_cierre = getFechaActual();
+    oCaja.value.hora_cierre = getHoraActual();
+    oCaja.value.fecha_hora_cierre = getFechaHoraCierre();
+};
+
+const abrirCaja = () => {
+    Swal.fire({
+        title: "¿Realizar apertura de caja?",
+        html: `Se abrirá la caja para el día de hoy.`,
+        showCancelButton: true,
+        confirmButtonText: "Si, aperturar",
+        cancelButtonText: "No, cancelar",
+        denyButtonText: `No, cancelar`,
+        customClass: {
+            confirmButton: "btn-primary",
+        },
+    }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            axios.post(route("cajas.aperturarCaja")).then((response) => {
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Aperturada!",
+                    html: `La caja ha sido aperturada con éxito.`,
+                    confirmButtonText: `Aceptar`,
+                    customClass: {
+                        confirmButton: "btn-success",
+                    },
+                });
+                verificaCaja();
+            });
         }
     });
 };
@@ -125,7 +161,7 @@ onMounted(async () => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 py-2 bg8">
+                            <div class="col-md-6 py-2 bg4">
                                 <div class="row">
                                     <div
                                         class="col-4 font-weight-bold text-right"
@@ -134,6 +170,10 @@ onMounted(async () => {
                                     </div>
                                     <div class="col-8">
                                         {{ oCaja.fecha_hora_cierre }}
+                                        <i
+                                            class="fa fa-sync cursor-pointer ml-2"
+                                            @click.prevent="updateFechaCierre()"
+                                        ></i>
                                     </div>
                                 </div>
                             </div>
