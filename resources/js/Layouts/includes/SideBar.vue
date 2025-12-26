@@ -129,7 +129,7 @@ onUnmounted(() => {});
                     ></ItemMenu>
                     <ItemMenu
                         :label="'Listado de Reservas'"
-                        :ruta="'clientes.index'"
+                        :ruta="'registros.reservas'"
                         :icon="'fa fa-list'"
                     ></ItemMenu>
                     <ItemMenu

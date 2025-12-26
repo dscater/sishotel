@@ -187,6 +187,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // REGISTROS
+    Route::get("registros/reservas/paginado", [RegistroController::class, 'reservasPaginado'])->name("registros.reservasPaginado");
+    Route::get("registros/reservas", [RegistroController::class, 'reservas'])->name("registros.reservas");
     Route::get("registros", [RegistroController::class, 'index'])->name("registros.index");
     Route::get("registros/verificaHabitacion", [RegistroController::class, 'verificaHabitacion'])->name("registros.verificaHabitacion");
     Route::post("registros", [RegistroController::class, 'store'])->name("registros.store");
@@ -195,6 +197,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::put("registros/actualizaGarantia/{registro}", [RegistroController::class, 'actualizaGarantia'])->name("registros.actualizaGarantia");
     Route::get("registros/finalizar/{registro}", [RegistroController::class, 'finalizar'])->name("registros.finalizar");
     Route::post("registros/finalizar_registro/{registro}", [RegistroController::class, 'finalizar_registro'])->name("registros.finalizar_registro");
+    Route::delete("registros/destroy/{registro}", [RegistroController::class, 'destroy'])->name("registros.destroy");
 
     // REGISTROS-SERVICIOS
     Route::get("registro_servicios/listadoByRegistroId", [RegistroServicioController::class, 'listadoByRegistroId'])->name("registro_servicios.listadoByRegistroId");

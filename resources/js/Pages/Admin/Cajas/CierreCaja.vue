@@ -65,6 +65,14 @@ const getFechaActual = () => {
     return `${anio}-${mes}-${dia}`;
 };
 
+const getFechaActualTxt = () => {
+    const fecha = new Date();
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+    const anio = fecha.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+};
+
 const getHoraActual = () => {
     const fecha = new Date();
     const horas = String(fecha.getHours()).padStart(2, "0");
@@ -74,7 +82,7 @@ const getHoraActual = () => {
 };
 
 const getFechaHoraCierre = () => {
-    return getFechaActual() + " " + getHoraActual();
+    return getFechaActualTxt() + " " + getHoraActual();
 };
 
 const listMovimientoCajas = ref([]);

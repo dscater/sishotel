@@ -29,6 +29,37 @@ class RegistroController extends Controller
         return Inertia::render("Admin/Registros/Index");
     }
 
+    public function reservas()
+    {
+        return Inertia::render("Admin/Registros/Reservas");
+    }
+
+    public function reservasPaginado(Request $request)
+    {
+        $perPage = $request->perPage;
+        $page = (int)($request->input("page", 1));
+        $search = (string)$request->input("search", "");
+        $orderBy = $request->orderBy;
+        $orderAsc = $request->orderAsc;
+
+        $columnsSerachLike = ["numero_habitacion", "tipo_habitacions.nombre"];
+        $columnsFilter = [];
+        $columnsBetweenFilter = [];
+        $arrayOrderBy = [];
+        if ($orderBy && $orderAsc) {
+            $arrayOrderBy = [
+                [$orderBy, $orderAsc]
+            ];
+        }
+
+        $registros = $this->registroService->reservasPaginado($perPage, $page, $search, $columnsSerachLike, $columnsFilter, $columnsBetweenFilter, $arrayOrderBy);
+        return response()->JSON([
+            "data" => $registros->items(),
+            "total" => $registros->total(),
+            "lastPage" => $registros->lastPage()
+        ]);
+    }
+
     /**
      * Store registro
      *
@@ -154,7 +185,8 @@ class RegistroController extends Controller
     public function verificaHabitacion(Request $request)
     {
         $habitacion_id = $request->habitacion_id;
-        $registro = Registro::where("habitacion_id", $habitacion_id)->get()->last();
+        $registro = Registro::where("habitacion_id", $habitacion_id)
+            ->where("estado", 1)->get()->last();
 
         $array_verifica = $this->registroService->verificarDiasAdicionales($registro);
 
@@ -175,5 +207,29 @@ class RegistroController extends Controller
 
         $registro->save();
         return response()->JSON(true);
+    }
+
+    /**
+     * Delete registro
+     *
+     * @param Registro $registro
+     * @return JsonResponse|Response
+     */
+    public function destroy(Registro $registro): JsonResponse|Response
+    {
+        DB::beginTransaction();
+        try {
+            $this->registroService->eliminar($registro);
+            DB::commit();
+            return response()->JSON([
+                'sw' => true,
+                'message' => 'El registro se eliminó correctamente'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
     }
 }

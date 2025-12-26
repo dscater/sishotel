@@ -23,6 +23,7 @@ class RegistroUpdateRequest extends FormRequest
     {
 
         $validacion = [
+            "cliente_id" => "required",
             "desayuno" => "required",
             "fecha_entrada" => "required",
             "hora_entrada" => "required",
@@ -41,7 +42,7 @@ class RegistroUpdateRequest extends FormRequest
             "adelanto_tc" => "nullable|decimal:0,2",
             "saldo_tc" => "nullable|decimal:0,2",
             "garantia_tc" => "nullable|decimal:0,2",
-            "moneda_id_tc" => "required",
+            "moneda_id_tc" => "nullable",
             "tipo_cambio_id" => "nullable",
             "valor_tc" => "nullable",
             "tipo" => "required",

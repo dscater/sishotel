@@ -90,6 +90,60 @@ class RegistroService
 
 
     /**
+     * Lista de registros reservasPaginado con filtros
+     *
+     * @param integer $length
+     * @param integer $page
+     * @param string $search
+     * @param array $columnsSerachLike
+     * @param array $columnsFilter
+     * @return LengthAwarePaginator
+     */
+    public function reservasPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
+    {
+        $registros = Registro::select("registros.*");
+        $registros->with(["cliente:id,nombre,paterno,materno,ci,ci_exp"]);
+        $registros->with(["habitacion.tipo_habitacion"]);
+        $registros->where("tipo", "RESERVA");
+        $registros->where("status", 1);
+
+        // Filtros exactos
+        foreach ($columnsFilter as $key => $value) {
+            if (!is_null($value)) {
+                $registros->where("registros.$key", $value);
+            }
+        }
+
+        // Filtros por rango
+        foreach ($columnsBetweenFilter as $key => $value) {
+            if (isset($value[0], $value[1])) {
+                $registros->whereBetween("registros.$key", $value);
+            }
+        }
+
+        // Búsqueda en múltiples columnas con LIKE
+        if (!empty($search) && !empty($columnsSerachLike)) {
+            $registros->where(function ($query) use ($search, $columnsSerachLike) {
+                foreach ($columnsSerachLike as $col) {
+                    $query->orWhere("registros.$col", "LIKE", "%$search%");
+                }
+            });
+        }
+
+        // Ordenamiento
+        foreach ($orderBy as $value) {
+            if (isset($value[0], $value[1])) {
+                $registros->orderBy($value[0], $value[1]);
+            }
+        }
+
+
+        $registros = $registros->paginate($length, ['*'], 'page', $page);
+        return $registros;
+    }
+
+
+    /**
      * Crear registro
      *
      * @param array $datos
@@ -131,33 +185,40 @@ class RegistroService
             "user_id" => Auth::user()->id,
         ]);
 
-
-        // verificar si es tipo NORMAL, registrar servicio de hospedaje
-        if ($datos["tipo"] == "NORMAL") {
-            $this->registroServicioService->crear([
-                "registro_id" => $registro->id,
-                "tipo" => "HOSPEDAJE",
-                "cantidad" => $datos["dias_estadia"],
-                "total" => $datos["total"],
-                "cancelado" => $datos["adelanto"],
-                "saldo" => $datos["saldo"],
-                "tc" => $datos["tc"] ?? 0,
-                "total_tc" => $datos["total_tc"] ?? null,
-                "cancelado_tc" => $datos["adelanto_tc"] ?? null,
-                "saldo_tc" => $datos["saldo_tc"] ?? null,
-                "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
-                "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
-                "valor_tc" => $datos["valor_tc"] ?? null,
-                "efectivo_banco" => $datos["efectivo_banco"] ?? null,
-            ]);
+        // si es reserva agregar fecha y hora de reserva
+        if ($registro->tipo == 'RESERVA') {
+            $arrayCodigo = $this->getCodigoReserva();
+            $registro->nro_reserva = $arrayCodigo[0];
+            $registro->cod_reserva = $arrayCodigo[1];
+            $registro->fecha_reserva = date("Y-m-d");
+            $registro->hora_reserva = date("H:i:s");
+            $registro->estado = 2;
+            $registro->save();
+        } else {
+            // habitacion ocupada
+            $this->habitacionService->actualizarEstado($registro->habitacion_id, 1);
         }
+
+        // registrar el servicio con el total y saldo
+        $this->registroServicioService->crear([
+            "registro_id" => $registro->id,
+            "tipo" => "HOSPEDAJE",
+            "cantidad" => $datos["dias_estadia"],
+            "total" => $datos["total"],
+            "cancelado" => $datos["adelanto"],
+            "saldo" => $datos["saldo"],
+            "tc" => $datos["tc"] ?? 0,
+            "total_tc" => $datos["total_tc"] ?? null,
+            "cancelado_tc" => $datos["adelanto_tc"] ?? null,
+            "saldo_tc" => $datos["saldo_tc"] ?? null,
+            "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
+            "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
+            "valor_tc" => $datos["valor_tc"] ?? null,
+            "efectivo_banco" => $datos["efectivo_banco"] ?? null,
+        ]);
 
 
         // TODO: VERIFICAR RESERVAS CON FECHAS
-
-
-        // habitacion ocupada
-        $this->habitacionService->actualizarEstado($registro->habitacion_id, 1);
 
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UN REGISTRO", $registro);
@@ -211,24 +272,23 @@ class RegistroService
 
         // TODO: VERIFICAR RESERVAS CON FECHAS
 
-        // verificar si es tipo NORMAL, registrar servicio de hospedaje
-        if ($old_registro->tipo == 'RESERVA' &&  $datos["tipo"] == "NORMAL") {
-            $this->registroServicioService->crear([
-                "registro_id" => $registro->id,
-                "tipo" => "HOSPEDAJE",
-                "cantidad" => $datos["dias_estadia"],
-                "total" => $datos["total"],
-                "cancelado" => $datos["adelanto"],
-                "saldo" => $datos["saldo"],
-                "tc" => $datos["tc"] ?? 0,
-                "total_tc" => $datos["total_tc"] ?? null,
-                "cancelado_tc" => $datos["adelanto_tc"] ?? null,
-                "saldo_tc" => $datos["saldo_tc"] ?? null,
-                "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
-                "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
-                "valor_tc" => $datos["valor_tc"] ?? null,
-                "efectivo_banco" => $datos["efectivo_banco"] ?? null,
-            ]);
+        // si es reserva agregar fecha y hora de reserva
+        if ($registro->tipo == 'RESERVA') {
+            $arrayCodigo = $this->getCodigoReserva();
+            $registro->fecha_reserva = date("Y-m-d");
+            $registro->hora_reserva = date("H:i:s");
+            if ($old_registro->tipo == 'NORMAL' || !$registro->cod_reserva) {
+                $registro->nro_reserva = $arrayCodigo[0];
+                $registro->cod_reserva = $arrayCodigo[1];
+            }
+            $registro->estado = 2;
+            $registro->save();
+        } else {
+            $registro->fecha_reserva = NULL;
+            $registro->hora_reserva = NULL;
+            $registro->nro_reserva = NULL;
+            $registro->cod_reserva = NULL;
+            $registro->save();
         }
 
         // registrar accion
@@ -240,7 +300,7 @@ class RegistroService
 
     public function transferencia(Registro $registro, array $datos = [])
     {
-        Log::debug($datos);
+        // Log::debug($datos);
         if (!isset($datos["habitacion_destino_id"]) || !$datos["habitacion_destino_id"] || $datos["habitacion_destino_id"] == 0) {
             throw new Exception("Ocurrió un error al actualizar la transferencia");
         }
@@ -290,7 +350,7 @@ class RegistroService
 
         $registro->habitacion->estado = 3;
         $registro->habitacion->save();
-        $registro->estado = 0;
+        $registro->estado = 0; // FINALIZADO
         $registro->save();
 
         return $registro;
@@ -304,17 +364,14 @@ class RegistroService
      */
     public function eliminar(Registro $registro): bool
     {
-        // TODO: registrar EGRESO en CAJA si existe un adelanto
-
         $old_registro = clone $registro;
         $registro->status = 0;
         $registro->save();
 
         // registrar accion
-        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN REGISTRO", $old_registro, $registro);
+        $this->historialAccionService->registrarAccion($this->modulo, "ELIMINACIÓN", "ELIMINÓ EL REGISTRO DE UN HOSPEDAJE", $old_registro, $registro);
         return true;
     }
-
 
     public function verificarDiasAdicionales(Registro $registro)
     {
@@ -341,5 +398,20 @@ class RegistroService
             $diasAdicionales++;
         }
         return [$diasAdicionales, $fecha_txt, $hora_txt]; // dias, fecha, hora
+    }
+
+    public function getCodigoReserva()
+    {
+        $ultimo = Registro::where("tipo", "RESERVA")
+            ->orderBy("nro_reserva", "desc")->get()->first();
+
+        $nro = 1;
+        if ($ultimo) {
+            $nro = (int)$ultimo->nro_reserva + 1;
+        }
+
+        $codigo = 'R-' . $nro;
+
+        return [$nro, $codigo];
     }
 }

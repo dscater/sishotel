@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 25-12-2025 a las 18:07:01
+-- Tiempo de generación: 26-12-2025 a las 14:52:37
 -- Versión del servidor: 8.0.30
 -- Versión de PHP: 8.2.22
 
@@ -50,7 +50,7 @@ CREATE TABLE `cajas` (
 --
 
 INSERT INTO `cajas` (`id`, `monto_inicial`, `monto_final`, `monto_efectivo_inicial`, `monto_efectivo_final`, `monto_banco_inicial`, `monto_banco_final`, `fecha_apertura`, `hora_apertura`, `fecha_cierre`, `hora_cierre`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 0.00, 980.00, 0.00, 970.00, 0.00, 10.00, '2025-12-25', '13:55:37', NULL, NULL, 1, 1, '2025-12-25 17:55:37', '2025-12-25 18:05:57');
+(1, 0.00, 6580.00, 0.00, 970.00, 0.00, 5610.00, '2025-12-25', '13:55:37', NULL, NULL, 1, 1, '2025-12-25 17:55:37', '2025-12-26 14:22:31');
 
 -- --------------------------------------------------------
 
@@ -172,7 +172,7 @@ CREATE TABLE `habitacions` (
 INSERT INTO `habitacions` (`id`, `numero_habitacion`, `tipo_habitacion_id`, `piso`, `capacidad`, `precio`, `precio_temp`, `estado`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'H-001', 1, 0, 1, 300.00, 0.00, 0, 1, '2025-11-24 21:08:48', '2025-12-23 23:34:53'),
 (2, 'H-002', 2, 1, 2, 500.00, 0.00, 0, 1, '2025-11-24 21:17:59', '2025-12-24 22:33:41'),
-(3, 'H-003', 3, 1, 2, 800.00, 200.00, 0, 1, '2025-11-24 21:23:46', '2025-12-24 23:45:51'),
+(3, 'H-003', 3, 1, 2, 800.00, 200.00, 0, 1, '2025-11-24 21:23:46', '2025-12-26 14:22:31'),
 (4, 'H-004', 4, 1, 3, 800.00, 250.00, 0, 1, '2025-11-24 21:30:34', '2025-12-24 23:10:43');
 
 -- --------------------------------------------------------
@@ -227,7 +227,12 @@ INSERT INTO `historial_accions` (`id`, `user_id`, `accion`, `descripcion`, `dato
 (1, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 1, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"1000\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T17:55:47.000000Z\", \"updated_at\": \"2025-12-25T17:55:47.000000Z\", \"descripcion\": \"INICIO CAJA EFECTIVO\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"13:55\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '13:55:47', '2025-12-25 17:55:47', '2025-12-25 17:55:47'),
 (2, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 3, \"tc\": 0, \"tipo\": \"EGRESO\", \"monto\": \"20\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T17:56:20.000000Z\", \"updated_at\": \"2025-12-25T17:56:20.000000Z\", \"descripcion\": \"PASAJES\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"13:56\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '13:56:20', '2025-12-25 17:56:20', '2025-12-25 17:56:20'),
 (3, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 5, \"tc\": 0, \"tipo\": \"INGRESO\", \"monto\": \"10\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T18:05:00.000000Z\", \"updated_at\": \"2025-12-25T18:05:00.000000Z\", \"descripcion\": \"OTROS\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"14:04\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '14:05:00', '2025-12-25 18:05:00', '2025-12-25 18:05:00'),
-(4, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 6, \"tc\": 0, \"tipo\": \"EGRESO\", \"monto\": \"10\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T18:05:57.000000Z\", \"updated_at\": \"2025-12-25T18:05:57.000000Z\", \"descripcion\": \"EGRES\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"14:05\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '14:05:57', '2025-12-25 18:05:57', '2025-12-25 18:05:57');
+(4, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 6, \"tc\": 0, \"tipo\": \"EGRESO\", \"monto\": \"10\", \"modelo\": null, \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": null, \"moneda_id\": 1, \"created_at\": \"2025-12-25T18:05:57.000000Z\", \"updated_at\": \"2025-12-25T18:05:57.000000Z\", \"descripcion\": \"EGRES\", \"moneda_id_tc\": null, \"efectivo_banco\": \"EFECTIVO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"14:05\", \"fecha_movimiento\": \"2025-12-25\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-25', '14:05:57', '2025-12-25 18:05:57', '2025-12-25 18:05:57'),
+(5, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN MOVIMIENTO DE CAJA', '{\"id\": 7, \"tc\": \"0\", \"tipo\": \"INGRESO\", \"monto\": \"5600\", \"modelo\": \"RegistroServicio\", \"caja_id\": 1, \"user_id\": 1, \"monto_tc\": null, \"modelo_id\": 1, \"moneda_id\": 1, \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:22:31.000000Z\", \"descripcion\": \"PAGO POR SERVICIO/PRODUCTO REGISTRADO CON NRO. DE RECIBO 1\", \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null, \"hora_movimiento\": \"10:22:31\", \"fecha_movimiento\": \"2025-12-26\"}', NULL, 'MOVIMIENTO DE CAJA', '2025-12-26', '10:22:31', '2025-12-26 14:22:31', '2025-12-26 14:22:31'),
+(6, 1, 'CREACIÓN', 'EL USUARIO admin REGISTRO UN SERVICIO', '{\"id\": 1, \"tc\": \"0\", \"hora\": \"10:22:31\", \"tipo\": \"HOSPEDAJE\", \"fecha\": \"2025-12-26\", \"saldo\": \"0\", \"total\": \"5600\", \"user_id\": 1, \"cantidad\": \"7\", \"saldo_tc\": null, \"total_tc\": null, \"cancelado\": \"5600\", \"moneda_id\": 1, \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:22:31.000000Z\", \"registro_id\": 1, \"cancelado_tc\": null, \"moneda_id_tc\": null, \"efectivo_banco\": \"BANCO\", \"tipo_cambio_id\": null}', NULL, 'REGISTRO SERVICIOS', '2025-12-26', '10:22:31', '2025-12-26 14:22:31', '2025-12-26 14:22:31'),
+(7, 1, 'CREACIÓN', 'EL USUARIO admin REALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": \"0\", \"tipo\": \"RESERVA\", \"cd_tc\": null, \"saldo\": \"0\", \"total\": \"5600\", \"user_id\": 1, \"adelanto\": \"5600\", \"desayuno\": \"0\", \"garantia\": \"0\", \"saldo_tc\": null, \"total_tc\": null, \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": \"4\", \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:22:31.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": \"R-1\", \"garantia_tc\": null, \"hora_salida\": \"12:00\", \"nro_reserva\": 1, \"dias_estadia\": \"7\", \"fecha_salida\": \"2026-01-06\", \"hora_entrada\": \"12:00\", \"hora_reserva\": \"10:22:31\", \"moneda_id_tc\": 1, \"desc_garantia\": null, \"fecha_entrada\": \"2025-12-30\", \"fecha_reserva\": \"2025-12-26\", \"habitacion_id\": \"3\", \"tipo_cambio_id\": null}', NULL, 'REGISTROS', '2025-12-26', '10:22:31', '2025-12-26 14:22:31', '2025-12-26 14:22:31'),
+(8, 1, 'MODIFICACIÓN', 'EL USUARIO admin ACTUALIZÓ UN REGISTRO', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": 0, \"tipo\": \"RESERVA\", \"cd_tc\": null, \"saldo\": \"0.00\", \"total\": \"5600.00\", \"estado\": 1, \"status\": 1, \"cliente\": {\"ci\": \"3453453\", \"id\": 4, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"FRANZ\", \"status\": 1, \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:26.000000Z\", \"updated_at\": \"2025-11-28T15:10:56.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"5600.00\", \"desayuno\": 0, \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": 4, \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:22:31.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": \"R-1\", \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": 1, \"dev_garantia\": 0, \"dias_estadia\": 7, \"fecha_salida\": \"2026-01-06\", \"hora_entrada\": \"12:00:00\", \"hora_reserva\": \"10:22:31\", \"moneda_id_tc\": 1, \"tipo_reserva\": null, \"desc_garantia\": null, \"fecha_entrada\": \"2025-12-30\", \"fecha_reserva\": \"2025-12-26\", \"habitacion_id\": 3, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": \"0\", \"tipo\": \"RESERVA\", \"cd_tc\": null, \"saldo\": \"0.00\", \"total\": \"5600.00\", \"estado\": 1, \"status\": 1, \"cliente\": {\"ci\": \"3453453\", \"id\": 4, \"dir\": \"\", \"edad\": null, \"fono\": \"345345345\", \"pais\": \"\", \"ci_exp\": null, \"correo\": null, \"nombre\": \"FRANZ\", \"status\": 1, \"materno\": \"\", \"paterno\": \"GONZALES\", \"user_id\": 1, \"fecha_nac\": null, \"created_at\": \"2025-11-28T15:09:26.000000Z\", \"updated_at\": \"2025-11-28T15:10:56.000000Z\", \"nacionalidad\": \"\"}, \"user_id\": 1, \"adelanto\": \"5600.00\", \"desayuno\": \"0\", \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": \"4\", \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:32:29.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": \"R-2\", \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": 2, \"dev_garantia\": 0, \"dias_estadia\": \"7\", \"fecha_salida\": \"2026-01-02\", \"hora_entrada\": \"12:00:00\", \"hora_reserva\": \"10:32:29\", \"moneda_id_tc\": 1, \"tipo_reserva\": null, \"desc_garantia\": null, \"fecha_entrada\": \"2025-12-26\", \"fecha_reserva\": \"2025-12-26\", \"habitacion_id\": 3, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', 'REGISTROS', '2025-12-26', '10:32:29', '2025-12-26 14:32:29', '2025-12-26 14:32:29'),
+(9, 1, 'ELIMINACIÓN', 'EL USUARIO admin ELIMINÓ EL REGISTRO DE UN HOSPEDAJE', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": 0, \"tipo\": \"RESERVA\", \"cd_tc\": null, \"saldo\": \"0.00\", \"total\": \"5600.00\", \"estado\": 2, \"status\": 1, \"user_id\": 1, \"adelanto\": \"5600.00\", \"desayuno\": 0, \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": 4, \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:32:29.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": \"R-1\", \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": 1, \"dev_garantia\": 0, \"dias_estadia\": 7, \"fecha_salida\": \"2026-01-02\", \"hora_entrada\": \"12:00:00\", \"hora_reserva\": \"10:32:29\", \"moneda_id_tc\": 1, \"tipo_reserva\": null, \"desc_garantia\": null, \"fecha_entrada\": \"2025-12-26\", \"fecha_reserva\": \"2025-12-26\", \"habitacion_id\": 3, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', '{\"cd\": \"800.00\", \"id\": 1, \"tc\": 0, \"tipo\": \"RESERVA\", \"cd_tc\": null, \"saldo\": \"0.00\", \"total\": \"5600.00\", \"estado\": 2, \"status\": 0, \"user_id\": 1, \"adelanto\": \"5600.00\", \"desayuno\": 0, \"garantia\": \"0.00\", \"saldo_tc\": null, \"total_tc\": null, \"valor_tc\": null, \"moneda_id\": 1, \"cliente_id\": 4, \"created_at\": \"2025-12-26T14:22:31.000000Z\", \"updated_at\": \"2025-12-26T14:49:17.000000Z\", \"adelanto_tc\": null, \"cod_reserva\": \"R-1\", \"garantia_tc\": null, \"hora_salida\": \"12:00:00\", \"nro_reserva\": 1, \"dev_garantia\": 0, \"dias_estadia\": 7, \"fecha_salida\": \"2026-01-02\", \"hora_entrada\": \"12:00:00\", \"hora_reserva\": \"10:32:29\", \"moneda_id_tc\": 1, \"tipo_reserva\": null, \"desc_garantia\": null, \"fecha_entrada\": \"2025-12-26\", \"fecha_reserva\": \"2025-12-26\", \"habitacion_id\": 3, \"motivo_salida\": null, \"tipo_cambio_id\": null, \"hora_salida_reg\": null}', 'REGISTROS', '2025-12-26', '10:49:17', '2025-12-26 14:49:17', '2025-12-26 14:49:17');
 
 -- --------------------------------------------------------
 
@@ -374,7 +379,8 @@ INSERT INTO `movimiento_cajas` (`id`, `caja_id`, `modelo_id`, `modelo`, `monto`,
 (1, 1, NULL, NULL, 1000.00, 1, 0, NULL, NULL, NULL, NULL, 'INGRESO', 'EFECTIVO', 'INICIO CAJA EFECTIVO', '2025-12-25', '13:55:00', 1, '2025-12-25 17:55:47', '2025-12-25 17:55:47'),
 (3, 1, NULL, NULL, 20.00, 1, 0, NULL, NULL, NULL, NULL, 'EGRESO', 'EFECTIVO', 'PASAJES', '2025-12-25', '13:56:00', 1, '2025-12-25 17:56:20', '2025-12-25 17:56:20'),
 (5, 1, NULL, NULL, 10.00, 1, 0, NULL, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'OTROS', '2025-12-25', '14:04:00', 1, '2025-12-25 18:05:00', '2025-12-25 18:05:00'),
-(6, 1, NULL, NULL, 10.00, 1, 0, NULL, NULL, NULL, NULL, 'EGRESO', 'EFECTIVO', 'EGRES', '2025-12-25', '14:05:00', 1, '2025-12-25 18:05:57', '2025-12-25 18:05:57');
+(6, 1, NULL, NULL, 10.00, 1, 0, NULL, NULL, NULL, NULL, 'EGRESO', 'EFECTIVO', 'EGRES', '2025-12-25', '14:05:00', 1, '2025-12-25 18:05:57', '2025-12-25 18:05:57'),
+(7, 1, 1, 'RegistroServicio', 5600.00, 1, 0, NULL, NULL, NULL, NULL, 'INGRESO', 'BANCO', 'PAGO POR SERVICIO/PRODUCTO REGISTRADO CON NRO. DE RECIBO 1', '2025-12-26', '10:22:31', 1, '2025-12-26 14:22:31', '2025-12-26 14:22:31');
 
 -- --------------------------------------------------------
 
@@ -454,6 +460,13 @@ CREATE TABLE `registros` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `registros`
+--
+
+INSERT INTO `registros` (`id`, `habitacion_id`, `cliente_id`, `desayuno`, `fecha_entrada`, `hora_entrada`, `dias_estadia`, `fecha_salida`, `hora_salida`, `hora_salida_reg`, `cd`, `total`, `adelanto`, `saldo`, `garantia`, `desc_garantia`, `moneda_id`, `tc`, `cd_tc`, `total_tc`, `adelanto_tc`, `saldo_tc`, `garantia_tc`, `moneda_id_tc`, `tipo_cambio_id`, `valor_tc`, `motivo_salida`, `tipo`, `fecha_reserva`, `hora_reserva`, `nro_reserva`, `cod_reserva`, `tipo_reserva`, `dev_garantia`, `estado`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 3, 4, 0, '2025-12-26', '12:00:00', 7, '2026-01-02', '12:00:00', NULL, 800.00, 5600.00, 5600.00, 0.00, 0.00, NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'RESERVA', '2025-12-26', '10:32:29', 1, 'R-1', NULL, 0, 2, 1, 1, '2025-12-26 14:22:31', '2025-12-26 14:49:17');
+
 -- --------------------------------------------------------
 
 --
@@ -483,6 +496,13 @@ CREATE TABLE `registro_servicios` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `registro_servicios`
+--
+
+INSERT INTO `registro_servicios` (`id`, `registro_id`, `tipo`, `cantidad`, `total`, `cancelado`, `saldo`, `moneda_id`, `tc`, `total_tc`, `cancelado_tc`, `saldo_tc`, `moneda_id_tc`, `tipo_cambio_id`, `valor_tc`, `efectivo_banco`, `fecha`, `hora`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 'HOSPEDAJE', 7.00, 5600.00, 5600.00, 0.00, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, 'BANCO', '2025-12-26', '10:22:31', 1, '2025-12-26 14:22:31', '2025-12-26 14:22:31');
 
 -- --------------------------------------------------------
 
@@ -838,7 +858,7 @@ ALTER TABLE `habitacion_fotos`
 -- AUTO_INCREMENT de la tabla `historial_accions`
 --
 ALTER TABLE `historial_accions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso_productos`
@@ -868,7 +888,7 @@ ALTER TABLE `monedas`
 -- AUTO_INCREMENT de la tabla `movimiento_cajas`
 --
 ALTER TABLE `movimiento_cajas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -880,13 +900,13 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `registros`
 --
 ALTER TABLE `registros`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `registro_servicios`
 --
 ALTER TABLE `registro_servicios`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio_detalles`

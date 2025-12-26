@@ -141,6 +141,11 @@ class PermisoService
             "registros.finalizar",
             "registros.finalizar_registro",
             "registros.actualizaGarantia",
+            "registros.reservas",
+            "registros.create",
+            "registros.edit",
+            "registros.destroy",
+            "registros.reservasPaginado",
 
             // servicios
             "registro_servicios.store",

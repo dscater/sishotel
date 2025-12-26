@@ -43,7 +43,7 @@ class RegistroStoreRequest extends FormRequest
             "adelanto_tc" => "nullable|decimal:0,2",
             "saldo_tc" => "nullable|decimal:0,2",
             "garantia_tc" => "nullable|decimal:0,2",
-            "moneda_id_tc" => "required",
+            "moneda_id_tc" => "nullable",
             "tipo_cambio_id" => "nullable",
             "valor_tc" => "nullable",
             "tipo" => "required",
