@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use PDF;
 
 use Carbon\Carbon;
 
@@ -29,9 +30,57 @@ class RegistroController extends Controller
         return Inertia::render("Admin/Registros/Index");
     }
 
+
+    public function historial(): InertiaResponse
+    {
+        return Inertia::render("Admin/Registros/Historial");
+    }
+
     public function reservas()
     {
         return Inertia::render("Admin/Registros/Reservas");
+    }
+
+
+    public function listadoSalientesHoy(Request $request): JsonResponse
+    {
+        return response()->JSON([
+            "registros" => $this->registroService->listadoSalientesHoy($request->input("serach", ""))
+        ]);
+    }
+
+    public function listadoReservasHoy(Request $request): JsonResponse
+    {
+        return response()->JSON([
+            "registros" => $this->registroService->listadoReservasHoy($request->input("serach", ""))
+        ]);
+    }
+
+
+    public function paginado(Request $request)
+    {
+        $perPage = $request->perPage;
+        $page = (int)($request->input("page", 1));
+        $search = (string)$request->input("search", "");
+        $orderBy = $request->orderBy;
+        $orderAsc = $request->orderAsc;
+
+        $columnsSerachLike = ["numero_habitacion", "tipo_habitacions.nombre"];
+        $columnsFilter = [];
+        $columnsBetweenFilter = [];
+        $arrayOrderBy = [];
+        if ($orderBy && $orderAsc) {
+            $arrayOrderBy = [
+                [$orderBy, $orderAsc]
+            ];
+        }
+
+        $registros = $this->registroService->listadoPaginado($perPage, $page, $search, $columnsSerachLike, $columnsFilter, $columnsBetweenFilter, $arrayOrderBy);
+        return response()->JSON([
+            "data" => $registros->items(),
+            "total" => $registros->total(),
+            "lastPage" => $registros->lastPage()
+        ]);
     }
 
     public function reservasPaginado(Request $request)
@@ -72,7 +121,14 @@ class RegistroController extends Controller
         try {
             $registro = $this->registroService->crear($request->validated());
             DB::commit();
-            return redirect()->route("registros.index")->with("bien", "Registro realizado");
+            if ($registro->tipo == 'RESERVA') {
+
+                return redirect()->route("registros.reservas")->with("bien", "Registro realizado")
+                    ->with("codigoReserva", $registro->cod_reserva);
+            }
+            $url = route('registros.checkin', $registro->id);
+            return redirect()->route("registros.index")->with("bien", "Registro realizado")
+                ->with("urlPdf", $url);
         } catch (\Exception $e) {
             DB::rollBack();
             throw ValidationException::withMessages([
@@ -94,6 +150,10 @@ class RegistroController extends Controller
         try {
             $registro =  $this->registroService->actualizar($request->validated(), $registro);
             DB::commit();
+            if ($registro->tipo == 'RESERVA') {
+                return redirect()->route("registros.reservas")->with("bien", "Registro realizado")
+                    ->with("codigoReserva", $registro->cod_reserva);
+            }
             return redirect()->route("registros.index")->with("bien", "Registro actualizado");
         } catch (\Exception $e) {
             DB::rollBack();
@@ -129,8 +189,9 @@ class RegistroController extends Controller
                     "tc" => 0,
                     "efectivo_banco" => "",
                 ]);
-
                 $registro->dias_estadia = (int)$registro->dias_estadia + $dias_adicionales;
+                $registro->total = (float)$registro->cd * (float)$registro->dias_estadia;
+                $registro->saldo = (float)$registro->total - (float)$registro->adelanto;
                 $registro->fecha_salida = $array_verifica[1];
                 $registro->hora_salida = $array_verifica[2];
                 $registro->save();
@@ -148,7 +209,11 @@ class RegistroController extends Controller
         try {
             $registro =  $this->registroService->finalizar_registro($registro);
             DB::commit();
-            return response()->JSON($registro);
+            $url = route('registros.checkout', $registro->id);
+            return response()->JSON([
+                "url" => $url,
+                "registro" => $registro,
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             // Log::debug($e->getMessage());
@@ -209,6 +274,16 @@ class RegistroController extends Controller
         return response()->JSON(true);
     }
 
+    public function atenderReserva(Registro $registro)
+    {
+        $habitacion = $registro->habitacion;
+        $habitacion->estado = 1;
+        $habitacion->save();
+        $registro->estado = 1;
+        $registro->save();
+        return response()->JSON(true);
+    }
+
     /**
      * Delete registro
      *
@@ -231,5 +306,40 @@ class RegistroController extends Controller
                 'error' =>  $e->getMessage(),
             ]);
         }
+    }
+
+    public function checkin(Registro $registro)
+    {
+        $nro_registro = $registro->id;
+        if ($nro_registro < 10) {
+            $nro_registro = '00000' . $nro_registro;
+        } elseif ($nro_registro < 100) {
+            $nro_registro = '0000' . $nro_registro;
+        } elseif ($nro_registro < 1000) {
+            $nro_registro = '000' . $nro_registro;
+        } elseif ($nro_registro < 10000) {
+            $nro_registro = '00' . $nro_registro;
+        } elseif ($nro_registro < 100000) {
+            $nro_registro = '0' . $nro_registro;
+        }
+        $pdf = PDF::loadView('reportes.checkin', compact('registro', 'nro_registro'))->setPaper('letter', 'portrait');
+        return $pdf->stream('CheckIn.pdf');
+    }
+    public function checkout(Registro $registro)
+    {
+        $nro_registro = $registro->id;
+        if ($nro_registro < 10) {
+            $nro_registro = '00000' . $nro_registro;
+        } elseif ($nro_registro < 100) {
+            $nro_registro = '0000' . $nro_registro;
+        } elseif ($nro_registro < 1000) {
+            $nro_registro = '000' . $nro_registro;
+        } elseif ($nro_registro < 10000) {
+            $nro_registro = '00' . $nro_registro;
+        } elseif ($nro_registro < 100000) {
+            $nro_registro = '0' . $nro_registro;
+        }
+        $pdf = PDF::loadView('reportes.checkout', compact('registro', 'nro_registro'))->setPaper('letter', 'portrait');
+        return $pdf->stream('CheckOut.pdf');
     }
 }

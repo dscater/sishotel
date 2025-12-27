@@ -161,8 +161,10 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
+
+            const url = response.props.flash.urlPdf ?? "";
+            window.open(url, "_blank");
             cargarProductosByTipo();
-            // TODO: IMPRIMIR PDF DE COMANDA
             emits("envio-formulario");
         },
         onError: (err, code) => {
@@ -473,6 +475,10 @@ onMounted(() => {});
                                                 </div>
                                                 <div
                                                     class="stock"
+                                                    :class="{
+                                                        'bg-danger':
+                                                            item.stock == 0,
+                                                    }"
                                                     v-if="
                                                         item.tipo_producto
                                                             .tipo == 'PRODUCTO'
@@ -717,6 +723,7 @@ onMounted(() => {});
                                 <div class="col-12 mt-2">
                                     <button
                                         class="btn bg-principal w-100"
+                                        :disabled="enviando"
                                         @click="enviarFormulario"
                                         v-html="textBtn"
                                     ></button>

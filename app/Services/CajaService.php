@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Caja;
+use App\Models\Moneda;
 use App\Models\MovimientoCaja;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -58,8 +59,6 @@ class CajaService
             throw new \Exception("No hay una caja abierta para registrar el movimiento");
         }
 
-        // TODO: VERIFICAR MONTOS POR MONEDAS
-        // TODO: Validar montos por el id de la moneda selecciona
         if ($tipo_pago == 'EFECTIVO') {
             $caja->monto_efectivo_final += (float)$monto + (float)$caja->monto_efectivo_inicial;
         } else {
@@ -79,10 +78,6 @@ class CajaService
             throw new \Exception("No hay una caja abierta para registrar el movimiento");
         }
 
-        // TODO: VERIFICAR SALDOS POR MONEDAS
-        // TODO: Validar montos por el id de la moneda selecciona
-        $this->verificaSaldoEgreso($tipo_pago, $monto);
-
         if ($tipo_pago == 'EFECTIVO') {
             $caja->monto_efectivo_final -= (float)$monto;
         } else {
@@ -92,30 +87,6 @@ class CajaService
         $caja->monto_final -= (float)$monto;
         $caja->save();
         return $caja;
-    }
-
-
-    private function verificaSaldoEgreso($tipo_pago, $monto)
-    {
-        $caja = $this->verificarCajaAbierta();
-        if (!$caja) {
-            throw new \Exception("No hay una caja abierta para registrar el movimiento");
-        }
-        if ($tipo_pago == 'EFECTIVO') {
-            if ($caja->monto_efectivo_final < $monto) {
-                throw new \Exception("Monto insuficiente EFECTIVO, para realizar el egreso");
-
-                return false;
-            }
-        } else {
-            if ($caja->monto_banco_final < $monto) {
-                throw new \Exception("Monto insuficiente BANCO, para realizar el egreso");
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function listado(string $search): array

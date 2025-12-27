@@ -93,6 +93,7 @@ watch(
                 form.fecha_entrada = getFechaAtual();
                 form.hora_entrada = getHoraActual();
             } else {
+                verificaReservasHabitacion();
                 asignarDatosForm();
             }
             actualizaMontos();
@@ -239,7 +240,9 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
-            // TODO: IMPRIMIR PDF DE REGISTRO
+            const url = response.props.flash.urlPdf ?? "";
+            window.open(url, "_blank");
+
             emits("envio-formulario");
         },
         onError: (err, code) => {
@@ -338,6 +341,8 @@ const caclularFechaSalida = () => {
         const day = String(fecha.getDate()).padStart(2, "0");
 
         form.fecha_salida = `${year}-${month}-${day}`;
+
+        verificaReservasHabitacion();
     }
 };
 
@@ -483,6 +488,21 @@ const cierreFormCliente = () => {
 
 const modificarCD = () => {
     actualizaMontos();
+};
+
+const listReservasRegistros = ref([]);
+const verificaReservasHabitacion = () => {
+    axios
+        .get(route("habitacions.verificaReservasHabitacion"), {
+            params: {
+                fecha_ini: form.fecha_entrada,
+                fecha_fin: form.fecha_salida,
+                habitacion_id: habitacion.value.id,
+            },
+        })
+        .then((response) => {
+            listReservasRegistros.value = response.data.registros;
+        });
 };
 
 onMounted(() => {});
@@ -729,6 +749,48 @@ onMounted(() => {});
                                             <label class="h5"
                                                 >Habitación asignada</label
                                             >
+                                            <div
+                                                class="row"
+                                                v-if="
+                                                    listReservasRegistros.length >
+                                                    0
+                                                "
+                                            >
+                                                <div class="col-12">
+                                                    <div
+                                                        class="alert alert-danger mb-1"
+                                                    >
+                                                        <i
+                                                            class="fa fa-info-circle"
+                                                        ></i>
+                                                        Conflicto con reservas
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="col-12 border_importante mb-1"
+                                                    v-for="item in listReservasRegistros"
+                                                >
+                                                    <p
+                                                        class="text-left"
+                                                        v-if="item.cod_reserva"
+                                                    >
+                                                        <b>Código Reserva:</b>
+                                                        {{ item.cod_reserva }}
+                                                    </p>
+                                                    <p class="text-left">
+                                                        <b>Fecha entrada:</b>
+                                                        {{
+                                                            item.fecha_hora_entrada
+                                                        }}
+                                                    </p>
+                                                    <p class="text-left">
+                                                        <b>Fecha Salida:</b>
+                                                        {{
+                                                            item.fecha_hora_salida
+                                                        }}
+                                                    </p>
+                                                </div>
+                                            </div>
                                             <template v-if="habitacion">
                                                 <div
                                                     class="d-block badge bg1 text-md"
@@ -1071,7 +1133,8 @@ onMounted(() => {});
                                         :disabled="
                                             enviando ||
                                             !form.cliente_id ||
-                                            !form.habitacion_id
+                                            !form.habitacion_id ||
+                                            listReservasRegistros.length > 0
                                         "
                                         v-html="textBtn"
                                     ></button>

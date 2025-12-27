@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use PDF;
 
 class RegistroServicioController extends Controller
 {
@@ -42,7 +43,10 @@ class RegistroServicioController extends Controller
         try {
             $registro_servicio = $this->registro_servicio_service->crear($request->validated());
             DB::commit();
-            return redirect()->route("registros.index")->with("bien", "Registro realizado");
+
+            $url = route('registro_servicios.comanda', $registro_servicio->id);
+
+            return redirect()->route("registros.index")->with("bien", "Registro realizado")->with("urlPdf", $url);
             // return redirect()->route("registro_servicios.index")->with("bien", "RegsitroServicio realizado");
         } catch (\Exception $e) {
             DB::rollBack();
@@ -50,5 +54,30 @@ class RegistroServicioController extends Controller
                 'error' =>  $e->getMessage(),
             ]);
         }
+    }
+
+    public function comanda(RegistroServicio $registro_servicio)
+    {
+        $nro_registro = $registro_servicio->id;
+        if ($nro_registro < 10) {
+            $nro_registro = '00000' . $nro_registro;
+        } elseif ($nro_registro < 100) {
+            $nro_registro = '0000' . $nro_registro;
+        } elseif ($nro_registro < 1000) {
+            $nro_registro = '000' . $nro_registro;
+        } elseif ($nro_registro < 10000) {
+            $nro_registro = '00' . $nro_registro;
+        } elseif ($nro_registro < 100000) {
+            $nro_registro = '0' . $nro_registro;
+        }
+
+
+
+        $alto = $registro_servicio->servicio_detalles->count();
+
+        $customPaper = [0, 0, 226.8, $alto * 200];
+
+        $pdf = PDF::loadView('reportes.comanda', compact('registro_servicio', 'nro_registro'))->setPaper($customPaper);
+        return $pdf->stream('CheckIn.pdf');
     }
 }

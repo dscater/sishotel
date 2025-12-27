@@ -1,7 +1,7 @@
 <script setup>
 import Content from "@/Components/Content.vue";
 import MiTable from "@/Components/MiTable.vue";
-import { Head, Link, usePage } from "@inertiajs/vue3";
+import { Head, Link, router, usePage } from "@inertiajs/vue3";
 import { useRegistros } from "@/composables/registros/useRegistros";
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
@@ -22,8 +22,8 @@ const miTable = ref(null);
 
 const headers = [
     {
-        label: "CÓDIGO",
-        key: "cod_reserva",
+        label: "N°",
+        key: "id",
         sortable: true,
         width: "3%",
         fixed: true,
@@ -72,6 +72,11 @@ const headers = [
     {
         label: "TOTAL",
         key: "total",
+        sortable: true,
+    },
+    {
+        label: "TIPO REGISTRO",
+        key: "tipo",
         sortable: true,
     },
     {
@@ -132,34 +137,11 @@ const eliminarRegistro = (item) => {
     });
 };
 
-const atenderReserva = (item) => {
-    Swal.fire({
-        icon: "info",
-        title: `Se registrara la reserva ${item.cod_reserva}`,
-        html: `<p><strong>Cliente: </strong>${item.cliente.nombre} ${item.cliente.paterno} ${item.cliente.materno}</p>
-        <p><strong>Habitación: </strong>${item.habitacion.numero_habitacion} - ${item.habitacion.tipo_habitacion.nombre}</p>
-        <p><strong>Fecha de Ingreso: </strong>${item.fecha_hora_entrada}</p>
-        <p><strong>Fecha de Salida: </strong>${item.fecha_hora_salida}</p>`,
-        showCancelButton: true,
-        confirmButtonText: "Registrar",
-        cancelButtonText: "Cancelar",
-        denyButtonText: `Cancelar`,
-        customClass: {
-            confirmButton: "bg-principal",
-        },
-    }).then(async (result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
-            axios
-                .post(route("registros.atenderReserva", item.id), {
-                    _method: "put",
-                })
-                .then((repsonse) => {
-                    toast.success("Registro realizado con éxito");
-                    updateDatatable();
-                });
-        }
-    });
+const getCheckIn = (item) => {
+    window.open(route("registros.checkin", item.id), "_blank");
+};
+const getCheckOut = (item) => {
+    window.open(route("registros.checkout", item.id), "_blank");
 };
 
 onMounted(async () => {
@@ -167,13 +149,13 @@ onMounted(async () => {
 });
 </script>
 <template>
-    <Head title="Lista de Reservas"></Head>
+    <Head title="Historial de Registros"></Head>
 
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Lista de Reservas</h1>
+                    <h1 class="m-0">Historial de Registros</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -182,7 +164,7 @@ onMounted(async () => {
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
                         <li class="breadcrumb-item active">
-                            Lista de Reservas
+                            Historial de Registros
                         </li>
                     </ol>
                 </div>
@@ -194,21 +176,7 @@ onMounted(async () => {
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-4">
-                        <button
-                            v-if="
-                                props_page.auth?.user.permisos == '*' ||
-                                props_page.auth?.user.permisos.includes(
-                                    'registros.create'
-                                )
-                            "
-                            type="button"
-                            class="btn btn-primary"
-                            @click="agregarRegistro"
-                        >
-                            <i class="fa fa-plus"></i> Nueva Reserva
-                        </button>
-                    </div>
+                    <div class="col-md-4"></div>
                     <div class="col-md-8 my-1">
                         <div class="row justify-content-end">
                             <div class="col-md-5">
@@ -242,7 +210,7 @@ onMounted(async () => {
                             ref="miTable"
                             :cols="headers"
                             :api="true"
-                            :url="route('registros.reservasPaginado')"
+                            :url="route('registros.paginado')"
                             :numPages="5"
                             :multiSearch="multiSearch"
                             :syncOrderBy="'id'"
@@ -257,16 +225,14 @@ onMounted(async () => {
                                     :class="{
                                         'bg-info': item.estado == 2,
                                         'bg-success': item.estado == 1,
-                                        'bg-warning':
-                                            item.estado != 2 &&
-                                            item.estado != 1,
+                                        'bg-warning': item.estado == 0,
                                     }"
                                 >
                                     {{
                                         item.estado == 2
                                             ? "RESERVA PENDIENTE"
                                             : item.estado == 1
-                                            ? "ATENDIDO"
+                                            ? "ACTIVO"
                                             : "FINALIZADO"
                                     }}
                                 </span>
@@ -288,72 +254,28 @@ onMounted(async () => {
                                 <el-tooltip
                                     class="box-item"
                                     effect="dark"
-                                    content="Atender Reserva"
+                                    content="Check-In"
                                     placement="left-start"
-                                    v-if="
-                                        item.hoy &&
-                                        item.estado != 1 &&
-                                        (props_page.auth?.user.permisos ==
-                                            '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'registros.edit'
-                                            ))
-                                    "
+                                    v-if="item.estado == 1"
                                 >
                                     <button
-                                        class="btn btn-primary"
-                                        @click="atenderReserva(item)"
+                                        class="btn btn-success"
+                                        @click="getCheckIn(item)"
                                     >
-                                        <i
-                                            class="fa fa-clipboard-check text-md"
-                                        ></i></button
+                                        <i class="fa fa-file-pdf"></i></button
                                 ></el-tooltip>
-
                                 <el-tooltip
                                     class="box-item"
                                     effect="dark"
-                                    content="Editar"
+                                    content="Check-Out"
                                     placement="left-start"
-                                    v-if="
-                                        item.editable &&
-                                        item.estado != 1 &&
-                                        (props_page.auth?.user.permisos ==
-                                            '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'registros.edit'
-                                            ))
-                                    "
+                                    v-if="item.estado == 0"
                                 >
                                     <button
                                         class="btn btn-warning"
-                                        @click="
-                                            setRegistro(item);
-                                            accion_formulario = 1;
-                                            muestra_formulario = true;
-                                        "
+                                        @click="getCheckOut(item)"
                                     >
-                                        <i class="fa fa-pen"></i></button
-                                ></el-tooltip>
-                                <el-tooltip
-                                    class="box-item"
-                                    effect="dark"
-                                    content="Eliminar"
-                                    placement="left-start"
-                                    v-if="
-                                        item.editable &&
-                                        item.estado != 1 &&
-                                        (props_page.auth?.user.permisos ==
-                                            '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'registros.destroy'
-                                            ))
-                                    "
-                                >
-                                    <button
-                                        class="btn btn-danger"
-                                        @click="eliminarRegistro(item)"
-                                    >
-                                        <i class="fa fa-trash-alt"></i></button
+                                        <i class="fa fa-file-pdf"></i></button
                                 ></el-tooltip>
                             </template>
                         </MiTable>

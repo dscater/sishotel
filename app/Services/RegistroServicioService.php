@@ -69,7 +69,6 @@ class RegistroServicioService
         if ((float)$datos["cancelado"] > 0) {
             // registrar cancelado en caja
             // registrar movimiento
-
             $this->movimientoCajaService->crear([
                 "modelo_id" => $registro_servicio->id,
                 "modelo" => "RegistroServicio",

@@ -73,9 +73,12 @@ const finalizarRegistro = () => {
             axios
                 .post(route("registros.finalizar_registro", props.registro.id))
                 .then((response) => {
+                    window.open(
+                        route("registros.checkout", response.data.url),
+                        "_blank"
+                    );
                     toast.success("Registro finalizado");
                     router.get(route("registros.index"));
-                    // TODO: IMPRIMIR PDF DE FINALIZACIÓN
                 })
                 .catch((err) => {
                     console.log(err);

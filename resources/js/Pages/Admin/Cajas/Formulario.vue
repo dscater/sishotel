@@ -178,6 +178,7 @@ const tipoCambios = () => {
     form.tc = 0;
     form.valor_tc = null;
     oTipoCambio.value = null;
+    actualizaMontos();
     if (form.moneda_id_tc != monedaOficial.value.id) {
         axios
             .get(route("tipo_cambios.listadoByMonedaId"), {
@@ -191,6 +192,7 @@ const tipoCambios = () => {
                     form.tc = 1;
                     form.tipo_cambio_id = oTipoCambio.value.id;
                     form.valor_tc = oTipoCambio.value.valor;
+                    actualizaMontos();
                 } else {
                     toast.error(
                         "La moneda seleccionada no cuena con un tipo de cambio definido"
@@ -206,6 +208,7 @@ const actualizaMontos = () => {
     } else {
         form.monto = form.monto_tc;
     }
+    // console.log(form.monto);
 };
 
 onMounted(() => {
@@ -242,7 +245,8 @@ onMounted(() => {
                     <div class="col-md-4 mt-2">
                         <label class="required">Ingresar Monto</label>
                         <input
-                            type="text"
+                            type="number"
+                            step="0.01"
                             class="form-control"
                             :class="{
                                 'parsley-error': form.errors?.monto_tc,
@@ -267,7 +271,7 @@ onMounted(() => {
                                 'parsley-error': form.errors?.moneda_id_tc,
                             }"
                             v-model="form.moneda_id_tc"
-                            @change="tipoCambios"
+                            @change="tipoCambios()"
                         >
                             <option
                                 v-for="item in listMonedas"

@@ -28,13 +28,34 @@ class RegistroService
     public function listado(string $search): array
     {
         return Registro::where("status", 1)
-            ->where(function ($query) use ($search) {
-                $query->where("ci", "LIKE", "%$search%")
-                    ->orWhereRaw("CONCAT(nombre, ' ', paterno, ' ', materno) LIKE ?", ["%$search%"]);
-            })
-            ->orderBy("nombre")
             ->get()
             ->toArray();
+    }
+
+    public function listadoSalientesHoy(string $search): array
+    {
+        $fecha_actual = Carbon::now("America/La_Paz");
+        $fecha_actual = $fecha_actual->format("Y-m-d");
+
+        $registros = Registro::with(["habitacion.tipo_habitacion", "cliente:id,nombre,paterno,materno,ci,ci_exp"])->where("status", 1)
+            ->where("fecha_salida", $fecha_actual)
+            ->where("estado", 1)
+            ->get()
+            ->toArray();
+        return $registros;
+    }
+
+    public function listadoReservasHoy(string $search): array
+    {
+        $fecha_actual = Carbon::now("America/La_Paz");
+        $fecha_actual = $fecha_actual->format("Y-m-d");
+
+        $registros = Registro::with(["habitacion.tipo_habitacion", "cliente:id,nombre,paterno,materno,ci,ci_exp"])->where("status", 1)
+            ->where("fecha_entrada", $fecha_actual)
+            ->where("estado", 2)
+            ->get()
+            ->toArray();
+        return $registros;
     }
 
     /**
@@ -50,6 +71,8 @@ class RegistroService
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
         $registros = Registro::select("registros.*");
+        $registros->with(["cliente:id,nombre,paterno,materno,ci,ci_exp"]);
+        $registros->with(["habitacion.tipo_habitacion"]);
 
         $registros->where("status", 1);
 
@@ -82,7 +105,6 @@ class RegistroService
                 $registros->orderBy($value[0], $value[1]);
             }
         }
-
 
         $registros = $registros->paginate($length, ['*'], 'page', $page);
         return $registros;
@@ -217,9 +239,6 @@ class RegistroService
             "efectivo_banco" => $datos["efectivo_banco"] ?? null,
         ]);
 
-
-        // TODO: VERIFICAR RESERVAS CON FECHAS
-
         // registrar accion
         $this->historialAccionService->registrarAccion($this->modulo, "CREACIÓN", "REALIZÓ UN REGISTRO", $registro);
 
@@ -243,6 +262,7 @@ class RegistroService
             throw new Exception("No se configuro la moneda oficial, contactese con el Administrador");
         }
         $registro->update([
+            "habitacion_id" => $datos["habitacion_id"],
             "cliente_id" => $datos["cliente_id"],
             "desayuno" => $datos["desayuno"],
             "fecha_entrada" => $datos["fecha_entrada"],
@@ -270,8 +290,6 @@ class RegistroService
             // "user_id" => Auth::user()->id,
         ]);
 
-        // TODO: VERIFICAR RESERVAS CON FECHAS
-
         // si es reserva agregar fecha y hora de reserva
         if ($registro->tipo == 'RESERVA') {
             $arrayCodigo = $this->getCodigoReserva();
@@ -281,7 +299,7 @@ class RegistroService
                 $registro->nro_reserva = $arrayCodigo[0];
                 $registro->cod_reserva = $arrayCodigo[1];
             }
-            $registro->estado = 2;
+            // $registro->estado = 2;
             $registro->save();
         } else {
             $registro->fecha_reserva = NULL;
@@ -325,8 +343,6 @@ class RegistroService
             "habitacion_id" => $datos["habitacion_destino_id"]
         ]);
 
-        // TODO: VERIFICAR RESERVAS DE LA HABITACION CON FECHAS
-        // si existe conflicto con la fecha de salida con reservas
 
         // habitacion unevo
         $habitacionNuevo = Habitacion::findOrFail($datos["habitacion_destino_id"]);
@@ -413,5 +429,31 @@ class RegistroService
         $codigo = 'R-' . $nro;
 
         return [$nro, $codigo];
+    }
+
+    public function getIdsHabitacionesPorFecha($fecha_ini, $fecha_fin)
+    {
+        $ids = Registro::select("habitacion_id")
+            ->where("fecha_salida", ">", $fecha_ini)
+            ->where("fecha_entrada", "<", $fecha_fin)
+            ->where("status", 1)
+            ->distinct("habitacion_id")
+            ->get()
+            ->pluck("habitacion_id")
+            ->toArray();
+
+        return $ids;
+    }
+
+
+    public function getReservasHabitacion($fecha_ini, $fecha_fin, $habitacion_id)
+    {
+        $registros = Registro::where("habitacion_id", $habitacion_id)
+            ->where("fecha_salida", ">", $fecha_ini)
+            ->where("fecha_entrada", "<", $fecha_fin)
+            ->where("esado", 2)
+            ->where("status", 1)
+            ->get();
+        return $registros;
     }
 }

@@ -221,10 +221,10 @@ const actualizarMontoFila = (data, index) => {
                         </td>
                         <td
                             :class="{
-                                'bg-gray': item.tipo != 'HOSPEDAJE',
+                                bg7: item.tipo != 'HOSPEDAJE',
                             }"
                         >
-                            {{ item.tipo == "HOSPEDAJE" ? item.cantidad : "" }}
+                            {{ item.cantidad }}
                         </td>
                         <td class="text-right">
                             {{ item.total }}
@@ -284,6 +284,19 @@ const actualizarMontoFila = (data, index) => {
                                         @click.prevent="pagoPorPartes(index)"
                                         ><i class="fa fa-list"></i> Por
                                         partes</a
+                                    >
+                                    <a
+                                        v-if="item.tipo != 'HOSPEDAJE'"
+                                        class="dropdown-item text-sm"
+                                        target="_blank"
+                                        :href="
+                                            route(
+                                                'registro_servicios.comanda',
+                                                item.id
+                                            )
+                                        "
+                                        ><i class="fa fa-file-pdf"></i> Imprimir
+                                        Comanda</a
                                     >
                                 </div>
                             </div>

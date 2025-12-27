@@ -70,7 +70,7 @@ export const useRegistros = () => {
         oRegistro.value.cliente_id = "";
         oRegistro.value.desayuno = 0;
         oRegistro.value.fecha_entrada = getFechaAtual();
-        oRegistro.value.hora_entrada = getHoraActual();
+        oRegistro.value.hora_entrada = "12:00";
         oRegistro.value.dias_estadia = 1;
         oRegistro.value.fecha_salida = null;
         oRegistro.value.hora_salida = "12:00";

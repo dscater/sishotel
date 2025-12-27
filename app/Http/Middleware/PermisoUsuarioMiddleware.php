@@ -32,11 +32,11 @@ class PermisoUsuarioMiddleware
                 "profile.edit",
                 "profile.update",
                 "profile.update_foto",
-                
+
                 "users.getUser",
             ];
 
-            if ($prefijo == 'admin') {
+            if ($prefijo == 'admin' && is_array($permisos)) {
                 if (!in_array($nom_ruta, $permisos)) {
                     $continuar = false;
                 }

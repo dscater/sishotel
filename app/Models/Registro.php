@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,7 +49,31 @@ class Registro extends Model
         "user_id",
     ];
 
-    protected $appends = ["fecha_entrada_t", "fecha_salida_t", "fecha_hora_entrada", "fecha_hora_salida", "fecha_reserva_t", "fecha_hora_reserva"];
+    protected $appends = ["fecha_entrada_t", "fecha_salida_t", "fecha_hora_entrada", "fecha_hora_salida", "fecha_reserva_t", "fecha_hora_reserva", "editable", "hoy"];
+
+
+    public function getHoyAttribute()
+    {
+        $hoy = Carbon::now("America/La_Paz");
+
+        if ($this->fecha_entrada == $hoy->toDateString()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getEditableAttribute()
+    {
+        $hoy = Carbon::now("America/La_Paz");
+
+        if ($this->fecha_entrada < $hoy->toDateString()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function getFechaHoraReservaAttribute()
     {
         return date("d/m/Y H:i:s", strtotime($this->fecha_reserva . ' ' . $this->hora_reserva));
@@ -106,5 +131,10 @@ class Registro extends Model
     public function registro_servicios()
     {
         return $this->hasMany(RegistroServicio::class);
+    }
+
+    public function transferencias()
+    {
+        return $this->hasMany(Transferencia::class, "registro_id");
     }
 }

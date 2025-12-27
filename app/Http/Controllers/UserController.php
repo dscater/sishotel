@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\Registro;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -35,25 +37,34 @@ class UserController extends Controller
                 $array_infos[] = [
                     'label' => 'USUARIOS',
                     'cantidad' => User::where('id', '!=', 1)->count(),
-                    'color' => 'bg-principal',
+                    'color' => 'bg-secundario',
                     'icon' => "fa-users",
                     "url" => "usuarios.index"
                 ];
             }
 
-            // if ($permisos == '*' || (is_array($permisos) && in_array('areas.index', $permisos))) {
-            //     $areas = Area::select("areas.id");
-            //     $areas = $areas->count();
-            //     $array_infos[] = [
-            //         'label' => 'ÁREAS DE PRODUCCIÓN',
-            //         'cantidad' => $areas,
-            //         'color' => 'bg-principal',
-            //         'icon' => "fa-list",
-            //         "url" => "areas.index"
-            //     ];
-            // }
-        }
+            if ($permisos == '*' || (is_array($permisos) && in_array('registros.index', $permisos))) {
+                $registros = Registro::where("estado", 1)->where("status", 1)->count();
+                $array_infos[] = [
+                    'label' => 'REGISTROS ACTIVOS',
+                    'cantidad' => $registros,
+                    'color' => 'bg-secundario',
+                    'icon' => "fa-list",
+                    "url" => "registros.index"
+                ];
+            }
 
+            if ($permisos == '*' || (is_array($permisos) && in_array('clientes.index', $permisos))) {
+                $clientes = Cliente::where("status", 1)->count();
+                $array_infos[] = [
+                    'label' => 'CLIENTES REGISTRADOS',
+                    'cantidad' => $clientes,
+                    'color' => 'bg-secundario',
+                    'icon' => "fa-list",
+                    "url" => "clientes.index"
+                ];
+            }
+        }
 
         return $array_infos;
     }

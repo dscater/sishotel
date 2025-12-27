@@ -59,6 +59,8 @@ class PermisoService
             "habitacions.eliminacion_permanente",
             "habitacions.actualizar_estado",
             "habitacions.imagenes",
+            "habitacions.verificaHabitacionesReserva",
+            "habitacions.verificaReservasHabitacion",
 
             "tipo_habitacions.listado",
             "tipo_habitacions.paginado",
@@ -134,6 +136,8 @@ class PermisoService
             "egreso_productos.destroy",
 
             "registros.index",
+            "registros.historial",
+            "registros.paginado",
             "registros.store",
             "registros.update",
             "registros.verificaHabitacion",
@@ -146,10 +150,16 @@ class PermisoService
             "registros.edit",
             "registros.destroy",
             "registros.reservasPaginado",
+            "registros.atenderReserva",
+            "registros.listadoSalientesHoy",
+            "registros.listadoReservasHoy",
+            "registros.checkin",
+            "registros.checkout",
 
             // servicios
             "registro_servicios.store",
             "registro_servicios.listadoByRegistroId",
+            "registro_servicios.comanda",
 
             // cajas
             "cajas.listado",
@@ -180,16 +190,16 @@ class PermisoService
             "reportes.usuarios",
             "reportes.r_usuarios",
         ],
-        "GERENTE" => [
-            "reportes.tareas",
-            "reportes.r_tareas",
-        ],
-        "EMPLEADO" => [],
+        "RECEPCIONISTA" => [],
+        "CONTADOR" => [],
     ];
 
     public function getPermisosUser()
     {
         $user = Auth::user();
+        // if ($user->id == 1) {
+        //     return "*";
+        // }
         $permisos = [];
         if ($user) {
             return $this->arrayPermisos[$user->tipo];

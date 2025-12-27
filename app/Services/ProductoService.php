@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\EgresoProducto;
+use App\Models\IngresoProducto;
 use App\Models\Producto;
+use App\Models\ServicioDetalle;
 use App\Models\TipoProducto;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -168,12 +171,18 @@ class ProductoService
      */
     public function eliminar(Producto $producto): bool
     {
-        //TODO: Verificar usos del producto 
-        // $usos = TipoCambio::where("producto_id", $producto->id)->count();
-        // if ($usos > 0) {
-        //     throw new \Exception("No se puede eliminar el registro porque esta siendo utilizado.");
-        // }
-
+        $usos = ServicioDetalle::where("producto_id", $producto->id)->count();
+        if ($usos > 0) {
+            throw new \Exception("No se puede eliminar el registro porque esta siendo utilizado.");
+        }
+        $usos = IngresoProducto::where("producto_id", $producto->id)->count();
+        if ($usos > 0) {
+            throw new \Exception("No se puede eliminar el registro porque esta siendo utilizado.");
+        }
+        $usos = EgresoProducto::where("producto_id", $producto->id)->count();
+        if ($usos > 0) {
+            throw new \Exception("No se puede eliminar el registro porque esta siendo utilizado.");
+        }
 
         $old_producto = clone $producto;
         $producto->delete();

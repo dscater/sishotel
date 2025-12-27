@@ -45,8 +45,9 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
+                'codigoReserva' => fn() => $request->session()->get('codigoReserva'),
+                'urlPdf' => fn() => $request->session()->get('urlPdf'),
             ],
-            // 'venta_id' => session('venta_id')
         ];
     }
 }

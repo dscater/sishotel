@@ -128,6 +128,11 @@ onUnmounted(() => {});
                         :icon="'fa fa-sign-in-alt'"
                     ></ItemMenu>
                     <ItemMenu
+                        :label="'Historial de Registros'"
+                        :ruta="'registros.historial'"
+                        :icon="'fa fa-list'"
+                    ></ItemMenu>
+                    <ItemMenu
                         :label="'Listado de Reservas'"
                         :ruta="'registros.reservas'"
                         :icon="'fa fa-list'"

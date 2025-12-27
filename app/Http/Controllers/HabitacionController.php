@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\HabitacionStoreRequest;
 use App\Http\Requests\HabitacionUpdateRequest;
 use App\Models\Habitacion;
+use App\Models\Registro;
 use App\Services\HabitacionService;
+use App\Services\RegistroService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ use Inertia\Response as InertiaResponse;
 
 class HabitacionController extends Controller
 {
-    public function __construct(private HabitacionService $habitacionService) {}
+    public function __construct(private HabitacionService $habitacionService, private RegistroService $registroService) {}
 
     public function index(): InertiaResponse
     {
@@ -77,6 +79,56 @@ class HabitacionController extends Controller
             "habitacions" => $habitacions,
         ]);
     }
+
+    /**
+     * OBTENER Y VERIFICAR QUE HABITACIONES SE ENCUENTRAN RESERVADAS
+     * EN UN RANGO DE FECHAS
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function verificaHabitacionesReserva(Request $request)
+    {
+        $fecha_ini = $request->input('fecha_ini', null);
+        $fecha_fin = $request->input('fecha_fin', null);
+
+
+        $ids = $this->registroService->getIdsHabitacionesPorFecha($fecha_ini, $fecha_fin);
+
+
+        if (isset($request->habitacion_id) && $request->habitacion_id != 0) {
+            $clave = array_search($request->habitacion_id, $ids);
+            if ($clave !== false) {
+                unset($ids[$clave]);
+            }
+        }
+        // Log::debug($ids);
+
+        $habitacions = Habitacion::with(["tipo_habitacion"])->whereNotIn("id", $ids)->where("status", 1)->get();
+
+        return response()->JSON([
+            "habitacions" => $habitacions
+        ]);
+    }
+    /**
+     * OBTENER Y VERIFICAR LAS RESERVAS QUE TENGA UNA HABITACIÓN
+     * EN UN DETERMINADO RANGO DE FECHAS
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function verificaReservasHabitacion(Request $request)
+    {
+        $habitacion_id = $request->input('habitacion_id', 0);
+        $fecha_ini = $request->input('fecha_ini', null);
+        $fecha_fin = $request->input('fecha_fin', null);
+
+        $registros = $this->registroService->getReservasHabitacion($fecha_ini, $fecha_fin, $habitacion_id);
+        return response()->JSON([
+            "registros" => $registros
+        ]);
+    }
+
 
     public function paginado(Request $request)
     {

@@ -19,6 +19,10 @@ body {
     font-size: 0.85rem;
 }
 
+.border_importante {
+    border: dashed 2px var(--principal);
+}
+
 .login-page {
     min-height: 100vh;
 }
@@ -110,6 +114,10 @@ body .mi-table tr.bg-oficial td .label-responsive {
 .bg9 {
     background-color: var(--bg9);
 }
+.bg10 {
+    background-color: var(--bg10);
+}
+
 body .sidebar .bg3,
 .bg3 {
     background-color: var(--bg3);

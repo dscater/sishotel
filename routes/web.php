@@ -147,6 +147,8 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get("habitacions/api", [HabitacionController::class, 'api'])->name("habitacions.api");
     Route::get("habitacions/paginado", [HabitacionController::class, 'paginado'])->name("habitacions.paginado");
     Route::get("habitacions/listado", [HabitacionController::class, 'listado'])->name("habitacions.listado");
+    Route::get("habitacions/verificaHabitacionesReserva", [HabitacionController::class, 'verificaHabitacionesReserva'])->name("habitacions.verificaHabitacionesReserva");
+    Route::get("habitacions/verificaReservasHabitacion", [HabitacionController::class, 'verificaReservasHabitacion'])->name("habitacions.verificaReservasHabitacion");
     Route::resource("habitacions", HabitacionController::class)->only(
         ["index", "store", "edit", "show", "update", "destroy"]
     );
@@ -187,12 +189,19 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     );
 
     // REGISTROS
+    Route::get("registros/checkin/{registro}", [RegistroController::class, 'checkin'])->name("registros.checkin");
+    Route::get("registros/checkout/{registro}", [RegistroController::class, 'checkout'])->name("registros.checkout");
+    Route::get("registros/reservas/listadoSalientesHoy", [RegistroController::class, 'listadoSalientesHoy'])->name("registros.listadoSalientesHoy");
+    Route::get("registros/reservas/listadoReservasHoy", [RegistroController::class, 'listadoReservasHoy'])->name("registros.listadoReservasHoy");
+    Route::get("registros/historial", [RegistroController::class, 'historial'])->name("registros.historial");
+    Route::get("registros/paginado", [RegistroController::class, 'paginado'])->name("registros.paginado");
     Route::get("registros/reservas/paginado", [RegistroController::class, 'reservasPaginado'])->name("registros.reservasPaginado");
     Route::get("registros/reservas", [RegistroController::class, 'reservas'])->name("registros.reservas");
     Route::get("registros", [RegistroController::class, 'index'])->name("registros.index");
     Route::get("registros/verificaHabitacion", [RegistroController::class, 'verificaHabitacion'])->name("registros.verificaHabitacion");
     Route::post("registros", [RegistroController::class, 'store'])->name("registros.store");
     Route::put("registros/update/{registro}", [RegistroController::class, 'update'])->name("registros.update");
+    Route::put("registros/atenderReserva/{registro}", [RegistroController::class, 'atenderReserva'])->name("registros.atenderReserva");
     Route::put("registros/transferencia/{registro}", [RegistroController::class, 'transferencia'])->name("registros.transferencia");
     Route::put("registros/actualizaGarantia/{registro}", [RegistroController::class, 'actualizaGarantia'])->name("registros.actualizaGarantia");
     Route::get("registros/finalizar/{registro}", [RegistroController::class, 'finalizar'])->name("registros.finalizar");
@@ -200,6 +209,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::delete("registros/destroy/{registro}", [RegistroController::class, 'destroy'])->name("registros.destroy");
 
     // REGISTROS-SERVICIOS
+    Route::get("registro_servicios/comanda/{registro_servicio}", [RegistroServicioController::class, 'comanda'])->name("registro_servicios.comanda");
     Route::get("registro_servicios/listadoByRegistroId", [RegistroServicioController::class, 'listadoByRegistroId'])->name("registro_servicios.listadoByRegistroId");
     Route::post("registro_servicios", [RegistroServicioController::class, 'store'])->name("registro_servicios.store");
 

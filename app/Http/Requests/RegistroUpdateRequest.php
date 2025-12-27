@@ -23,6 +23,7 @@ class RegistroUpdateRequest extends FormRequest
     {
 
         $validacion = [
+            "habitacion_id" => "required",
             "cliente_id" => "required",
             "desayuno" => "required",
             "fecha_entrada" => "required",
