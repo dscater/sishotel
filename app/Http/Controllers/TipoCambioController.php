@@ -38,9 +38,9 @@ class TipoCambioController extends Controller
 
     public function listadoByMonedaId(Request $request)
     {
-        $tipo_cambio_id = $request->input("tipo_cambio_id", 0);
+        $moneda_id = $request->input("moneda_id", 0);
         $tipo_cambios = TipoCambio::select("tipo_cambios.*");
-        $tipo_cambios->where("moneda_id", $tipo_cambio_id);
+        $tipo_cambios->where("moneda_id", $moneda_id);
         $tipo_cambios = $tipo_cambios
             ->orderBy("created_at", "desc")
             ->get()->first();

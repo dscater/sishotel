@@ -394,7 +394,7 @@ const cargarTipoCambios = () => {
     axios
         .get(route("tipo_cambios.listadoByMonedaId"), {
             params: {
-                tipo_cambio_id: form.moneda_id_tc ?? 0,
+                moneda_id: form.moneda_id_tc ?? 0,
             },
         })
         .then((response) => {

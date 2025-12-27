@@ -95,7 +95,7 @@ class Registro extends Model
 
     public function moneda_tc()
     {
-        return $this->belongsTo(Moneda::class);
+        return $this->belongsTo(Moneda::class, "moneda_id_tc");
     }
 
     public function user()

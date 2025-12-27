@@ -142,7 +142,11 @@ class CajaService
      */
     public function listadoPaginado(int $length, int $page, string $search, array $columnsSerachLike = [], array $columnsFilter = [], array $columnsBetweenFilter = [], array $orderBy = []): LengthAwarePaginator
     {
-        $cajas = MovimientoCaja::select("movimiento_cajas.*");
+        $cajas = MovimientoCaja::select("movimiento_cajas.*")
+            ->with([
+                "moneda",
+                "moneda_tc"
+            ]);
 
         // Filtros exactos
         foreach ($columnsFilter as $key => $value) {

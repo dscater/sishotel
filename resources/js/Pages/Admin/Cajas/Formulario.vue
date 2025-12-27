@@ -4,6 +4,13 @@ import { useForm, usePage } from "@inertiajs/vue3";
 import { useCajas } from "@/composables/cajas/useCajas";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
 import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+import axios from "axios";
+import { useTipoCambio } from "@/composables/useTipoCambio";
+const { convertirMonto } = useTipoCambio();
+
+// TOAST
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 const { monedaOficial } = useMonedaOficial();
 
 const props = defineProps({
@@ -27,11 +34,15 @@ watch(
     (newValue) => {
         muestra_form.value = newValue;
         if (muestra_form.value) {
+            cargarListas();
             form = useForm(oCaja.value);
+
+            if (form.id == 0) {
+                form.moneda_id_tc = monedaOficial.value.id;
+            }
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
-            form = useForm(oCaja.value);
         } else {
             document
                 .getElementsByTagName("body")[0]
@@ -150,7 +161,52 @@ const cerrarFormulario = () => {
     document.getElementsByTagName("body")[0].classList.remove("modal-open");
 };
 
-const cargarListas = () => {};
+const listMonedas = ref([]);
+
+const cargarMonedas = () => {
+    axios.get(route("monedas.listado")).then((response) => {
+        listMonedas.value = response.data.monedas;
+    });
+};
+
+const cargarListas = () => {
+    cargarMonedas();
+};
+
+const oTipoCambio = ref(null);
+const tipoCambios = () => {
+    form.tc = 0;
+    form.valor_tc = null;
+    oTipoCambio.value = null;
+    if (form.moneda_id_tc != monedaOficial.value.id) {
+        axios
+            .get(route("tipo_cambios.listadoByMonedaId"), {
+                params: {
+                    moneda_id: form.moneda_id_tc,
+                },
+            })
+            .then((response) => {
+                oTipoCambio.value = response.data.tipo_cambios;
+                if (oTipoCambio.value) {
+                    form.tc = 1;
+                    form.tipo_cambio_id = oTipoCambio.value.id;
+                    form.valor_tc = oTipoCambio.value.valor;
+                } else {
+                    toast.error(
+                        "La moneda seleccionada no cuena con un tipo de cambio definido"
+                    );
+                }
+            });
+    }
+};
+
+const actualizaMontos = () => {
+    if (form.moneda_id_tc != monedaOficial.value.id) {
+        form.monto = convertirMonto(form.monto_tc, form.valor_tc, 1);
+    } else {
+        form.monto = form.monto_tc;
+    }
+};
 
 onMounted(() => {
     cargarListas();
@@ -184,23 +240,76 @@ onMounted(() => {
                 </p>
                 <div class="row">
                     <div class="col-md-4 mt-2">
-                        <label class="required"
-                            >Monto {{ monedaOficial?.simbolo }}</label
-                        >
+                        <label class="required">Ingresar Monto</label>
                         <input
                             type="text"
                             class="form-control"
                             :class="{
-                                'parsley-error': form.errors?.monto,
+                                'parsley-error': form.errors?.monto_tc,
                             }"
-                            v-model="form.monto"
+                            v-model="form.monto_tc"
+                            @keyup="actualizaMontos"
                         />
                         <ul
-                            v-if="form.errors?.monto"
+                            v-if="form.errors?.monto_tc"
                             class="parsley-errors-list filled"
                         >
                             <li class="parsley-required">
-                                {{ form.errors?.monto }}
+                                {{ form.errors?.monto_tc }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <label class="required">Moneda</label>
+                        <select
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.moneda_id_tc,
+                            }"
+                            v-model="form.moneda_id_tc"
+                            @change="tipoCambios"
+                        >
+                            <option
+                                v-for="item in listMonedas"
+                                :value="item.id"
+                            >
+                                {{ item.simbolo }}
+                            </option>
+                        </select>
+                        <ul
+                            v-if="form.errors?.moneda_id_tc"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.moneda_id_tc }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div
+                        class="col-md-4 mt-2"
+                        v-if="
+                            monedaOficial &&
+                            form.moneda_id_tc != monedaOficial.id
+                        "
+                    >
+                        <label class="required">Tipo de Cambio</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            :class="{
+                                'parsley-error': form.errors?.valor_tc,
+                            }"
+                            v-model="form.valor_tc"
+                            readonly
+                        />
+
+                        <ul
+                            v-if="form.errors?.valor_tc"
+                            class="parsley-errors-list filled"
+                        >
+                            <li class="parsley-required">
+                                {{ form.errors?.valor_tc }}
                             </li>
                         </ul>
                     </div>

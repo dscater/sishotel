@@ -40,7 +40,7 @@ class MovimientoCajaService
             "moneda_id" => $datos["moneda_id"] ?? $monedaOficial->id,
             "tc" => $datos["tc"] ?? 0,
             "monto_tc" => $datos["monto_tc"] ?? null,
-            "moneda_id_tc" => $datos["moneda_id_tc"] ?? null,
+            "moneda_id_tc" => $datos["moneda_id_tc"] ?? $monedaOficial->id,
             "tipo_cambio_id" => $datos["tipo_cambio_id"] ?? null,
             "tipo" => $datos["tipo"],
             "efectivo_banco" => $datos["efectivo_banco"] ?? null,

@@ -243,6 +243,12 @@ onMounted(async () => {
                             :header-class="'bg__primary'"
                             fixed-header
                         >
+                            <template #monto="{ item }">
+                                <span>
+                                    {{ item.monto_tc }}
+                                    {{ item.moneda_tc?.simbolo }}
+                                </span>
+                            </template>
                             <template #tipo="{ item }">
                                 <span
                                     class="badge text-sm"

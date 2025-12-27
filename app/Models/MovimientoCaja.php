@@ -44,4 +44,14 @@ class MovimientoCaja extends Model
     {
         return $this->belongsTo(Caja::class);
     }
+
+    public function moneda()
+    {
+        return $this->belongsTo(Moneda::class);
+    }
+
+    public function moneda_tc()
+    {
+        return $this->belongsTo(Moneda::class, "moneda_id_tc");
+    }
 }
