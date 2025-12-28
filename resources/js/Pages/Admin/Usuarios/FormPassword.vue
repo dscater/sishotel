@@ -3,32 +3,32 @@ import { useForm, usePage } from "@inertiajs/vue3";
 import { useUsuarios } from "@/composables/usuarios/useUsuarios";
 import { watch, ref, computed, defineEmits } from "vue";
 const props = defineProps({
-    open_dialog: {
+    muestra_formulario: {
         type: Boolean,
         default: false,
     },
-    accion_dialog: {
+    accion_formulario: {
         type: Number,
         default: 0,
     },
 });
 
 const { oUsuario, limpiarUsuario } = useUsuarios();
-const accion = ref(props.accion_dialog);
-const dialog = ref(props.open_dialog);
+const accion = ref(props.accion_formulario);
+const formulario = ref(props.muestra_formulario);
 let form = useForm({
     password: "",
 });
 watch(
-    () => props.open_dialog,
+    () => props.muestra_formulario,
     (newValue) => {
-        dialog.value = newValue;
+        formulario.value = newValue;
 
         document.getElementsByTagName("body")[0].classList.add("modal-open");
     }
 );
 watch(
-    () => props.accion_dialog,
+    () => props.accion_formulario,
     (newValue) => {
         accion.value = newValue;
     }
@@ -36,7 +36,7 @@ watch(
 
 const { flash } = usePage().props;
 
-const tituloDialog = computed(() => {
+const tituloFormulario = computed(() => {
     return accion.value == 0 ? `Agregar Usuario` : `Actualizar Contraseña`;
 });
 
@@ -75,16 +75,16 @@ const enviarFormulario = () => {
     });
 };
 
-const emits = defineEmits(["cerrar-dialog", "envio-formulario"]);
+const emits = defineEmits(["cerrar-formulario", "envio-formulario"]);
 
-watch(dialog, (newVal) => {
+watch(formulario, (newVal) => {
     if (!newVal) {
-        emits("cerrar-dialog");
+        emits("cerrar-formulario");
     }
 });
 
-const cerrarDialog = () => {
-    dialog.value = false;
+const cerrarFormulario = () => {
+    formulario.value = false;
 };
 </script>
 
@@ -92,28 +92,31 @@ const cerrarDialog = () => {
     <div
         class="modal fade"
         :class="{
-            show: dialog,
+            show: formulario,
         }"
-        id="modal-dialog-form"
+        id="modal-formulario-form"
         :style="{
-            display: dialog ? 'block' : 'none',
+            display: formulario ? 'block' : 'none',
         }"
     >
-        <div class="modal-dialog">
+        <div class="modal-formulario modal-lg mx-auto">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h4 class="modal-title" v-html="tituloDialog"></h4>
+                <div class="modal-header bg-principal text-white">
+                    <h4
+                        class="modal-title text-white"
+                        v-html="tituloFormulario"
+                    ></h4>
                     <button
                         type="button"
                         class="btn-close"
-                        @click="cerrarDialog()"
+                        @click="cerrarFormulario()"
                     ></button>
                 </div>
                 <div class="modal-body">
                     <form @submit.prevent="enviarFormulario()">
                         <div class="row">
                             <div class="px-4 text-center col-md-12">
-                                <span class="text-body-2"
+                                <span class="text-body-2 h3"
                                     >{{ oUsuario.nombre }}
                                     {{ oUsuario.paterno }}
                                     {{ oUsuario.materno }}</span
@@ -137,14 +140,14 @@ const cerrarDialog = () => {
                 <div class="modal-footer">
                     <a
                         href="javascript:;"
-                        class="btn btn-white"
-                        @click="cerrarDialog()"
+                        class="btn btn-default"
+                        @click="cerrarFormulario()"
                         ><i class="fa fa-times"></i> Cerrar</a
                     >
                     <button
                         type="button"
                         @click="enviarFormulario()"
-                        class="btn btn-primary"
+                        class="btn btn-success"
                     >
                         <i class="fa fa-save"></i>
                         Guardar

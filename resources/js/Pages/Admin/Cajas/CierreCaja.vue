@@ -3,6 +3,9 @@ import Content from "@/Components/Content.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import { ref, onMounted, onBeforeMount } from "vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
+// TOAST
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -10,6 +13,9 @@ onBeforeMount(() => {});
 
 const oCaja = ref(null);
 const verificaCaja = () => {
+    listMovimientoCajas.value = [];
+    listMonedasSaldos.value = [];
+    oCaja.value = null;
     axios.get(route("cajas.verificaCajaAbierta")).then((response) => {
         oCaja.value = response.data.caja;
         if (oCaja.value) {
@@ -104,6 +110,48 @@ const reporteMovimientos = () => {
     );
 };
 
+const cerrarCaja = () => {
+    let mensaje = `Usuario encargado: ${oCaja.value.user.full_name}<br/>`;
+    mensaje += `<h5>Montos Saldo:</h5>`;
+    listMonedasSaldos.value.forEach((element) => {
+        mensaje += `- ${element.simbolo}: ${element.saldo}<br/>`;
+    });
+    mensaje += `<br/><h5>Fecha Cierre: ${oCaja.value.fecha_hora_cierre}</h5>`;
+    Swal.fire({
+        title: "¿Cerrar Caja?",
+        html: mensaje,
+        showCancelButton: true,
+        confirmButtonText: "Si, cerrar",
+        cancelButtonText: "No, cancelar",
+        denyButtonText: `No, cancelar`,
+        customClass: {
+            confirmButton: "bg-principal",
+        },
+    }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            axios
+                .post(route("cajas.cerrarCaja"), {
+                    caja_id: oCaja.value.id,
+                    fecha_cierre: oCaja.value.fecha_cierre,
+                    hora_cierre: oCaja.value.hora_cierre,
+                })
+                .then((response) => {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Correcto",
+                        html: `La caja se cerró correctamente`,
+                        confirmButtonText: `Aceptar`,
+                        customClass: {
+                            confirmButton: "btn-success",
+                        },
+                    });
+                    verificaCaja();
+                });
+        }
+    });
+};
+
 onMounted(async () => {
     verificaCaja();
     appStore.stopLoading();
@@ -157,6 +205,12 @@ onMounted(async () => {
             <div class="col-12" v-if="oCaja">
                 <div class="card">
                     <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <b>Usuario Encargado:</b>
+                                {{ oCaja.user.full_name }}
+                            </div>
+                        </div>
                         <div class="row bg7">
                             <div class="col-md-6 py-2">
                                 <div class="row">
@@ -200,7 +254,14 @@ onMounted(async () => {
                             <div
                                 class="col-12 d-flex w-100 justify-content-between"
                             >
-                                <button class="btn bg-danger" @click="">
+                                <button
+                                    v-if="
+                                        oCaja &&
+                                        oCaja.user_id == props_page.auth.user.id
+                                    "
+                                    class="btn bg-danger"
+                                    @click="cerrarCaja"
+                                >
                                     Cerrar Caja <i class="fa fa-times"></i>
                                 </button>
                                 <!-- <button class="btn bg-principal">
@@ -235,7 +296,7 @@ onMounted(async () => {
                                     <td
                                         v-for="item_moneda in listMonedasSaldos"
                                         :class="{
-                                            bg7:
+                                            'bg-dark':
                                                 item_moneda.moneda_id_tc !=
                                                 item.moneda_id_tc,
                                         }"

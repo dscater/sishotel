@@ -23,10 +23,11 @@ class Cliente extends Model
         "nacionalidad",
         "pais",
         "user_id",
+        "fecha_registro",
         "status",
     ];
 
-    // protected $appends = ["url_foto", "foto_b64", "full_name", "full_ci", "fecha_registro_t"];
+    protected $appends = ["full_name", "full_ci", "fecha_registro_t"];
 
     public function getFechaRegistroTAttribute()
     {

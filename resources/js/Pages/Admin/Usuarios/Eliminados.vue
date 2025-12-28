@@ -305,17 +305,16 @@ onMounted(async () => {
                                     effect="dark"
                                     content="Restaurar"
                                     placement="left-start"
+                                    v-if="
+                                        props_page.auth.user.permisos == '*' ||
+                                        props_page.auth?.user.permisos.includes(
+                                            'usuarios.reestablecer'
+                                        )
+                                    "
                                 >
                                     <button
                                         class="btn btn-success"
                                         @click="restaurar(item)"
-                                        v-if="
-                                            props_page.auth.user.permisos ==
-                                                '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'personas.reestablecer'
-                                            )
-                                        "
                                     >
                                         <i class="fa fa-sync"></i></button
                                 ></el-tooltip>
@@ -324,17 +323,16 @@ onMounted(async () => {
                                     effect="dark"
                                     content="Eliminar definitivamente"
                                     placement="left-start"
+                                    v-if="
+                                        props_page.auth.user.permisos == '*' ||
+                                        props_page.auth?.user.permisos.includes(
+                                            'usuarios.eliminacion_permanente'
+                                        )
+                                    "
                                 >
                                     <button
                                         class="btn btn-danger"
                                         @click="eliminarUsuario(item)"
-                                        v-if="
-                                            props_page.auth.user.permisos ==
-                                                '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'personas.eliminacion_permanente'
-                                            )
-                                        "
                                     >
                                         <i class="fa fa-trash-alt"></i></button
                                 ></el-tooltip>

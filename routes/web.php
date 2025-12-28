@@ -215,6 +215,7 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
 
     // CAJAS
     Route::get("cajas/cierre_caja", [CajaController::class, 'cierre_caja'])->name("cajas.cierre_caja");
+    Route::post("cajas/cerrarCaja", [CajaController::class, 'cerrarCaja'])->name("cajas.cerrarCaja");
     Route::get("cajas/verificaCajaAbierta", [CajaController::class, 'verificaCajaAbierta'])->name("cajas.verificaCajaAbierta");
     Route::get("cajas/movimiento_cajas", [CajaController::class, 'movimiento_cajas'])->name("cajas.movimiento_cajas");
     Route::post("cajas/aperturarCaja", [CajaController::class, 'aperturarCaja'])->name("cajas.aperturarCaja");
@@ -252,7 +253,19 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     Route::get('reportes/movimiento_cajas', [ReporteController::class, 'movimiento_cajas'])->name("reportes.movimiento_cajas");
     Route::get('reportes/r_movimiento_cajas', [ReporteController::class, 'r_movimiento_cajas'])->name("reportes.r_movimiento_cajas");
 
-    Route::get('reportes/ingresos_recepcion', [ReporteController::class, 'ingresos_recepcion'])->name("reportes.ingresos_recepcion");
-    Route::get('reportes/r_ingresos_recepcion', [ReporteController::class, 'r_ingresos_recepcion'])->name("reportes.r_ingresos_recepcion");
+    // Route::get('reportes/ingresos_recepcion', [ReporteController::class, 'ingresos_recepcion'])->name("reportes.ingresos_recepcion");
+    // Route::get('reportes/r_ingresos_recepcion', [ReporteController::class, 'r_ingresos_recepcion'])->name("reportes.r_ingresos_recepcion");
+
+    Route::get('reportes/kardex_productos', [ReporteController::class, 'kardex_productos'])->name("reportes.kardex_productos");
+    Route::get('reportes/r_kardex_productos', [ReporteController::class, 'r_kardex_productos'])->name("reportes.r_kardex_productos");
+
+    Route::get('reportes/productos', [ReporteController::class, 'productos'])->name("reportes.productos");
+    Route::get('reportes/r_productos', [ReporteController::class, 'r_productos'])->name("reportes.r_productos");
+
+    Route::get('reportes/clientes', [ReporteController::class, 'clientes'])->name("reportes.clientes");
+    Route::get('reportes/r_clientes', [ReporteController::class, 'r_clientes'])->name("reportes.r_clientes");
+
+    Route::get('reportes/registros', [ReporteController::class, 'registros'])->name("reportes.registros");
+    Route::get('reportes/r_registros', [ReporteController::class, 'r_registros'])->name("reportes.r_registros");
 });
 require __DIR__ . '/auth.php';

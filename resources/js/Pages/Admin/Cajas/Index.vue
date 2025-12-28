@@ -53,6 +53,11 @@ const headers = [
         sortable: true,
     },
     {
+        label: "RESPONSABLE",
+        key: "user.full_name",
+        sortable: true,
+    },
+    {
         label: "FECHA",
         key: "fecha_hora",
         sortable: true,
@@ -170,7 +175,7 @@ onMounted(async () => {
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-12 font-weight-bold mb-2">
+                    <div class="col-md-12 font-weight-bold mb-2">
                         CAJA:
                         <span
                             class="badge text-sm"
@@ -189,20 +194,28 @@ onMounted(async () => {
                         >
                             <i class="fa fa-external-link-alt"></i>
                         </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <h6>Saldos de Caja</h6>
-                        <table class="saldos_caja">
-                            <tbody>
+                        <table class="saldos_caja mt-1">
+                            <thead class="bg-secundario">
+                                <tr>
+                                    <th
+                                        class="text-center font-weight-bold"
+                                        :colspan="saldos_monedas.length"
+                                    >
+                                        SALDOS
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-secundario">
                                 <tr>
                                     <td v-for="item in saldos_monedas">
                                         {{ item.simbolo }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td v-for="item in saldos_monedas">
+                                    <td
+                                        class="bg4 text-dark"
+                                        v-for="item in saldos_monedas"
+                                    >
                                         {{ item.saldo }}
                                     </td>
                                 </tr>
@@ -352,13 +365,11 @@ onMounted(async () => {
 
 <style scoped>
 .saldos_caja {
-    background-color: white;
     margin-bottom: 10px;
 }
 
 .saldos_caja td {
     padding: 5px;
-    background-color: white;
     border: solid 1px;
     font-size: 1.1em;
     text-align: center;

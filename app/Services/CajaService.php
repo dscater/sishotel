@@ -52,6 +52,18 @@ class CajaService
         return $caja;
     }
 
+    public function cerrarCaja($caja_id, $fecha_cierre, $hora_cierre): Caja
+    {
+
+        $caja = Caja::findOrFail($caja_id);
+        $caja->status = 2; // CERRADO
+        $caja->fecha_cierre = $fecha_cierre;
+        $caja->hora_cierre = $hora_cierre;
+        $caja->save();
+
+        return $caja;
+    }
+
     public function registrarMontoIngreso($monto, $tipo_pago)
     {
         $caja = $this->verificarCajaAbierta();
@@ -116,7 +128,8 @@ class CajaService
         $cajas = MovimientoCaja::select("movimiento_cajas.*")
             ->with([
                 "moneda",
-                "moneda_tc"
+                "moneda_tc",
+                "user",
             ]);
 
         // Filtros exactos

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string("pais", 255)->nullable();
             $table->unsignedBigInteger("user_id");
             $table->integer("status")->default(1);
+            $table->date("fecha_registro")->nullable();
             $table->timestamps();
 
             $table->foreign("user_id")->on("users")->references("id");

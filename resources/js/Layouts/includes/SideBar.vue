@@ -1,12 +1,15 @@
 <script setup>
 import { onMounted, onUnmounted, ref, nextTick, watch } from "vue";
-import { router } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import ItemMenu from "@/Components/ItemMenu.vue";
 import { useSideBar } from "@/composables/useSidebar.js";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useConfiguracionStore } from "@/stores/configuracion/configuracionStore";
 import { verificaImagen } from "@/composables/useLoadings/verificaImagen";
+import { useUser } from "@/composables/useUser";
+const { getUser } = useUser();
 
+const { props: props_page } = usePage();
 const { closeSidebar, toggleSubMenuELem } = useSideBar();
 const configuracionStore = useConfiguracionStore();
 const appStore = useAppStore();
@@ -34,6 +37,9 @@ router.on("navigate", (event) => {
     closeSidebar();
 });
 
+const user_logeado = ref({
+    permisos: [],
+});
 onMounted(() => {
     configuracionStore.initConfiguracion();
     usuario.value = appStore.getUsuario;
@@ -41,6 +47,11 @@ onMounted(() => {
     var sidebarSearchElement = $('[data-widget="sidebar-search"]');
     // Configura manualmente el texto de "no encontrado"
     sidebarSearchElement.data("notFoundText", "Sin resultados");
+
+    if (props_page.auth) {
+        user_logeado.value = props_page.auth?.user;
+        // console.log(user_logeado.value.permisos);
+    }
 });
 
 const loadingLogo = ref(true);
@@ -104,7 +115,9 @@ onUnmounted(() => {});
                     />
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">{{ usuario?.full_name }}</a>
+                    <Link :href="route('profile.edit')" class="d-block">{{
+                        usuario?.full_name
+                    }}</Link>
                 </div>
             </div>
 
@@ -123,26 +136,48 @@ onUnmounted(() => {});
                     ></ItemMenu>
                     <li class="nav-header font-weight-bold bg3">OPERACIONES</li>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('registros.index')
+                        "
                         :label="'Recepción'"
                         :ruta="'registros.index'"
                         :icon="'fa fa-sign-in-alt'"
                     ></ItemMenu>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes(
+                                'registros.historial'
+                            )
+                        "
                         :label="'Historial de Registros'"
                         :ruta="'registros.historial'"
                         :icon="'fa fa-list'"
                     ></ItemMenu>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('registros.reservas')
+                        "
                         :label="'Listado de Reservas'"
                         :ruta="'registros.reservas'"
                         :icon="'fa fa-list'"
                     ></ItemMenu>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('cajas.cierre_caja')
+                        "
                         :label="'Cierre de caja'"
                         :ruta="'cajas.cierre_caja'"
                         :icon="'fa fa-cash-register'"
                     ></ItemMenu>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('clientes.inedx')
+                        "
                         :label="'Clientes'"
                         :ruta="'clientes.index'"
                         :icon="'fa fa-user-friends'"
@@ -172,28 +207,63 @@ onUnmounted(() => {});
                         </a>
                         <ul class="nav nav-treeview">
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'productos.index'
+                                    )
+                                "
                                 :label="'Listado Productos/Servicios'"
                                 :ruta="'productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'ingreso_productos.index'
+                                    )
+                                "
                                 :label="'Ingreso de Productos'"
                                 :ruta="'ingreso_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'egreso_productos.index'
+                                    )
+                                "
                                 :label="'Salida de Productos'"
                                 :ruta="'egreso_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'tipo_productos.index'
+                                    )
+                                "
                                 :label="'Tipos de Productos'"
                                 :ruta="'tipo_productos.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    <li
+                        class="nav-item"
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes(
+                                'habitacions.index'
+                            ) ||
+                            user_logeado.permisos.includes(
+                                'tipo_habitacions.index'
+                            )
+                        "
+                    >
                         <a
                             href="#"
                             class="nav-link sub-menu"
@@ -213,11 +283,23 @@ onUnmounted(() => {});
                         </a>
                         <ul class="nav nav-treeview">
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'habitacions.index'
+                                    )
+                                "
                                 :label="'Habitaciones'"
                                 :ruta="'habitacions.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'tipo_habitacions.index'
+                                    )
+                                "
                                 :label="'Tipo de Habitaciones'"
                                 :ruta="'tipo_habitacions.index'"
                                 :icon="'fa fa-angle-right'"
@@ -244,11 +326,23 @@ onUnmounted(() => {});
                         </a>
                         <ul class="nav nav-treeview">
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'monedas.index'
+                                    )
+                                "
                                 :label="'Monedas'"
                                 :ruta="'monedas.index'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'tipo_cambios.index'
+                                    )
+                                "
                                 :label="'Tipo de Cambio'"
                                 :ruta="'tipo_cambios.index'"
                                 :icon="'fa fa-angle-right'"
@@ -256,11 +350,19 @@ onUnmounted(() => {});
                         </ul>
                     </li>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('cajas.index')
+                        "
                         :label="'Caja'"
                         :ruta="'cajas.index'"
                         :icon="'fa fa-cash-register'"
                     ></ItemMenu>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes('usuarios.index')
+                        "
                         :label="'Usuarios'"
                         :ruta="'usuarios.index'"
                         :icon="'fa fa-users'"
@@ -286,17 +388,78 @@ onUnmounted(() => {});
                         </a>
                         <ul class="nav nav-treeview">
                             <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'reportes.usuarios'
+                                    )
+                                "
                                 :label="'Usuarios'"
                                 :ruta="'reportes.usuarios'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'reportes.kardex_productos'
+                                    )
+                                "
+                                :label="'Kardex de Productos'"
+                                :ruta="'reportes.kardex_productos'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'reportes.productos'
+                                    )
+                                "
+                                :label="'Productos'"
+                                :ruta="'reportes.productos'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'reportes.clientes'
+                                    )
+                                "
+                                :label="'Clientes'"
+                                :ruta="'reportes.clientes'"
+                                :icon="'fa fa-angle-right'"
+                            ></ItemMenu>
+                            <ItemMenu
+                                v-if="
+                                    user_logeado.permisos == '*' ||
+                                    user_logeado.permisos.includes(
+                                        'reportes.registros'
+                                    )
+                                "
+                                :label="'Registros'"
+                                :ruta="'reportes.registros'"
                                 :icon="'fa fa-angle-right'"
                             ></ItemMenu>
                         </ul>
                     </li>
                     <li class="nav-header font-weight-bold bg3">OTROS</li>
                     <ItemMenu
+                        v-if="
+                            user_logeado.permisos == '*' ||
+                            user_logeado.permisos.includes(
+                                'configuracions.index'
+                            )
+                        "
                         :label="'Configuración Sistema'"
                         :ruta="'configuracions.index'"
                         :icon="'fa fa-cog'"
+                    ></ItemMenu>
+                    <ItemMenu
+                        :label="'Perfil'"
+                        :ruta="'profile.edit'"
+                        :icon="'fa fa-id-card'"
                     ></ItemMenu>
                     <ItemMenu
                         :label="'Salir'"

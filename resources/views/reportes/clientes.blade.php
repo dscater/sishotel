@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>MovimientoCajas</title>
+    <title>Usuarios</title>
     <style type="text/css">
         * {
             font-family: sans-serif;
@@ -24,18 +24,18 @@
             page-break-before: avoid;
         }
 
-        table th,
-        tbody td {
+        table thead tr th,
+        tbody tr td {
             padding: 3px;
             word-wrap: break-word;
         }
 
-        table th {
-            font-size: 9pt;
+        table thead tr th {
+            font-size: 7pt;
         }
 
-        table td {
-            font-size: 8pt;
+        table tbody tr td {
+            font-size: 6pt;
         }
 
 
@@ -138,27 +138,10 @@
             color: white;
         }
 
-        .egreso {
-            color: red;
-        }
+        .txt_rojo {}
 
         .img_celda img {
             width: 45px;
-        }
-
-
-        .firma {
-            width: 50%;
-            margin: auto;
-            margin-top: 60px;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .border_firma {
-            border-bottom: dotted 1px #00008A;
         }
     </style>
 </head>
@@ -172,97 +155,50 @@
         <h2 class="titulo">
             {{ $configuracion->first()->razon_social }}
         </h2>
-        <h4 class="texto">MOVIMIENTOS DE CAJA</h4>
+        <h4 class="texto">LISTA DE CLIENTES</h4>
         <h4 class="fecha">Expedido: {{ date('d-m-Y') }}</h4>
     </div>
     <table border="1">
         <thead class="bg-principal">
             <tr>
                 <th width="3%">N°</th>
-                <th width="8%">FECHA</th>
-                <th>DESCRIPCIÓN</th>
-                <th width="13%">RESPONSABLE</th>
-                @foreach ($saldos_monedas as $sm)
-                    <th width="12%">{{ $sm['simbolo'] }}</th>
-                @endforeach
+                <th>PATERNO</th>
+                <th>MATERNO</th>
+                <th>NOMBRE(S)</th>
+                <th>C.I.</th>
+                <th>DIRECCIÓN</th>
+                <th>FECHA NAC.</th>
+                <th>EDAD</th>
+                <th>NACIONALIDAD</th>
+                <th>PAÍS</th>
+                <th>CORREO</th>
+                <th>TELÉFONO/CELULAR</th>
+                <th width="9%">FECHA DE REGISTRO</th>
             </tr>
         </thead>
         <tbody>
             @php
                 $cont = 1;
             @endphp
-            @foreach ($movimiento_cajas as $item)
+            @foreach ($clientes as $item)
                 <tr>
                     <td class="centreado">{{ $cont++ }}</td>
-                    <td>{{ $item->fecha_hora }}</td>
-                    <td>{{ $item->descripcion }}</td>
-                    <td>{{ $item->user->full_name }}</td>
-                    @foreach ($saldos_monedas as $sm)
-                        <th>
-                            @if ($sm['moneda_id_tc'] == $item->moneda_id_tc)
-                                <span class="{{ $item->tipo == 'EGRESO' ? 'egreso' : '' }}">
-                                    @if ($item->tipo == 'EGRESO')
-                                        -
-                                    @endif
-                                    {{ $item->monto_tc }}
-                                </span>
-                            @endif
-                        </th>
-                    @endforeach
+                    <td class="">{{ $item->paterno }}</td>
+                    <td class="">{{ $item->materno }}</td>
+                    <td class="">{{ $item->nombre }}</td>
+                    <td class="">{{ $item->full_ci }}</td>
+                    <td class="">{{ $item->dir }}</td>
+                    <td class="">{{ $item->dir }}</td>
+                    <td class="">{{ $item->edad }}</td>
+                    <td class="">{{ $item->nacionalidad }}</td>
+                    <td class="">{{ $item->pais }}</td>
+                    <td class="">{{ $item->correo }}</td>
+                    <td class="">{{ $item->fono }}</td>
+                    <td class="centreado">{{ $item->fecha_registro_t }}</td>
                 </tr>
             @endforeach
         </tbody>
-        <tfoot class="bg-principal">
-            <tr>
-                <th colspan="4">TOTALES</th>
-                @foreach ($saldos_monedas as $sm)
-                    <th>
-                        {{ $sm['saldo'] }}
-                    </th>
-                @endforeach
-            </tr>
-        </tfoot>
     </table>
-
-    <table border="1">
-        <thead class="bg-principal">
-            <tr>
-                <th colspan="{{ count($saldos_monedas_totales) }}">SALDO TOTAL EN CAJA</th>
-            </tr>
-            <tr>
-                @foreach ($saldos_monedas_totales as $smt)
-                    <th class="centreado">{{ $smt['simbolo'] }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                @foreach ($saldos_monedas_totales as $smt)
-                    <td class="centreado">{{ $smt['saldo'] }}</td>
-                @endforeach
-            </tr>
-        </tbody>
-    </table>
-
-    @if ($caja)
-        <table class="firma">
-            <tbody>
-                <tr>
-                    <td class="border_firma"></td>
-                </tr>
-                <tr>
-                    <td class="centreado bold text2">
-                        {{ $caja->user->full_name }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="centreado bold text2">
-                        Encargado de caja
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    @endif
 </body>
 
 </html>

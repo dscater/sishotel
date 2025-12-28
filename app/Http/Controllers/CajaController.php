@@ -33,6 +33,10 @@ class CajaController extends Controller
     public function verificaCajaAbierta()
     {
         $caja = $this->cajaService->verificarCajaAbierta();
+        if ($caja) {
+            $caja = $caja->load(["user:id,usuario,nombre,paterno,materno"]);
+        }
+
         return response()->JSON([
             "caja" => $caja,
         ]);
@@ -42,6 +46,21 @@ class CajaController extends Controller
         DB::beginTransaction();
         try {
             $caja = $this->cajaService->aperturarCaja();
+            DB::commit();
+            return response()->JSON($caja);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw ValidationException::withMessages([
+                'error' =>  $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function cerrarCaja(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $caja = $this->cajaService->cerrarCaja($request->get("caja_id", ""), $request->get("fecha_cierre", ""), $request->get("hora_cierre", ""));
             DB::commit();
             return response()->JSON($caja);
         } catch (\Exception $e) {

@@ -1,20 +1,22 @@
 <script setup>
-import Content from "@/Components/Content.vue";
 import { computed, onMounted, ref } from "vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import { useAppStore } from "@/stores/aplicacion/appStore";
-
+import Content from "@/Components/Content.vue";
 const appStore = useAppStore();
-const listSucursals = ref([]);
+
+const { auth } = usePage().props;
+const user = ref(auth.user);
+
+const cargarListas = () => {
+    cargarProductos();
+};
 
 onMounted(() => {
-    cargarListas();
     appStore.stopLoading();
 });
 
-const form = ref({
-    tipo: "TODOS",
-});
+const form = ref({});
 
 const generando = ref(false);
 const txtBtn = computed(() => {
@@ -26,36 +28,20 @@ const txtBtn = computed(() => {
 
 const generarReporte = () => {
     generando.value = true;
-    const url = route("reportes.r_usuarios", form.value);
+    const url = route("reportes.r_productos", form.value);
     window.open(url, "_blank");
     setTimeout(() => {
         generando.value = false;
     }, 500);
 };
-
-const listTipos = ref([]);
-
-const cargarTiposUsuario = async () => {
-    try {
-        const response = await axios.get(route("tipo_usuarios.getTipos"));
-        listTipos.value = response.data;
-        listTipos.value.unshift("TODOS");
-    } catch (error) {
-        listTipos.value = [];
-    }
-};
-
-const cargarListas = () => {
-    cargarTiposUsuario();
-};
 </script>
 <template>
-    <Head title="Reporte Usuarios"></Head>
+    <Head title="Reporte > Lista de Productos"></Head>
     <Content>
         <template #header>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Reportes > Usuarios</h1>
+                    <h1 class="m-0">Reportes > Lista de Productos</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -64,7 +50,7 @@ const cargarListas = () => {
                             <Link :href="route('inicio')">Inicio</Link>
                         </li>
                         <li class="breadcrumb-item active">
-                            Reportes > Usuarios
+                            Reportes > Lista de Productos
                         </li>
                     </ol>
                 </div>
@@ -78,30 +64,11 @@ const cargarListas = () => {
                     <div class="card-body">
                         <form @submit.prevent="generarReporte">
                             <div class="row">
-                                <div class="col-md-12">
-                                    <label>Seleccionar tipo de usuario*</label>
-                                    <select
-                                        :hide-details="
-                                            form.errors?.tipo ? false : true
-                                        "
-                                        :error="
-                                            form.errors?.tipo ? true : false
-                                        "
-                                        :error-messages="
-                                            form.errors?.tipo
-                                                ? form.errors?.tipo
-                                                : ''
-                                        "
-                                        v-model="form.tipo"
-                                        class="form-control"
-                                    >
-                                        <option
-                                            v-for="item in listTipos"
-                                            :value="item"
-                                        >
-                                            {{ item }}
-                                        </option>
-                                    </select>
+                                <div class="col-12">
+                                    <p class="my-0 text-center text-muted">
+                                        Generar el listado de todos los
+                                        productos
+                                    </p>
                                 </div>
                                 <div class="col-md-12 text-center mt-3">
                                     <button

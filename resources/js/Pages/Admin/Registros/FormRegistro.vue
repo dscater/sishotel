@@ -240,8 +240,11 @@ const enviarFormulario = () => {
                     confirmButton: "btn-success",
                 },
             });
-            const url = response.props.flash.urlPdf ?? "";
-            window.open(url, "_blank");
+
+            if (form._method == "POST") {
+                const url = response.props.flash.urlPdf ?? "";
+                window.open(url, "_blank");
+            }
 
             emits("envio-formulario");
         },

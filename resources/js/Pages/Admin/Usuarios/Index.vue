@@ -263,8 +263,30 @@ onMounted(async () => {
                                 <el-tooltip
                                     class="box-item"
                                     effect="dark"
+                                    content="Cambiar contraseña"
+                                    placement="left-start"
+                                >
+                                    <button
+                                        class="btn btn-info"
+                                        @click="
+                                            setUsuario(item);
+                                            accion_formulario_pass = 1;
+                                            muestra_formulario_pass = true;
+                                        "
+                                    >
+                                        <i class="fa fa-key"></i></button
+                                ></el-tooltip>
+                                <el-tooltip
+                                    class="box-item"
+                                    effect="dark"
                                     content="Editar"
                                     placement="left-start"
+                                    v-if="
+                                        props_page.auth?.user.permisos == '*' ||
+                                        props_page.auth?.user.permisos.includes(
+                                            'usuarios.edit'
+                                        )
+                                    "
                                 >
                                     <button
                                         class="btn btn-warning"
@@ -272,13 +294,6 @@ onMounted(async () => {
                                             setUsuario(item);
                                             accion_formulario = 1;
                                             muestra_formulario = true;
-                                        "
-                                        v-if="
-                                            props_page.auth?.user.permisos ==
-                                                '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'personas.edit'
-                                            )
                                         "
                                     >
                                         <i class="fa fa-pen"></i></button
@@ -288,17 +303,16 @@ onMounted(async () => {
                                     effect="dark"
                                     content="Eliminar"
                                     placement="left-start"
+                                    v-if="
+                                        props_page.auth?.user.permisos == '*' ||
+                                        props_page.auth?.user.permisos.includes(
+                                            'usuarios.destroy'
+                                        )
+                                    "
                                 >
                                     <button
                                         class="btn btn-danger"
                                         @click="eliminarUsuario(item)"
-                                        v-if="
-                                            props_page.auth?.user.permisos ==
-                                                '*' ||
-                                            props_page.auth?.user.permisos.includes(
-                                                'personas.destroy'
-                                            )
-                                        "
                                     >
                                         <i class="fa fa-trash-alt"></i></button
                                 ></el-tooltip>

@@ -1,11 +1,17 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { router, useForm, usePage, Head } from "@inertiajs/vue3";
+import { ref, onMounted, onBeforeMount } from "vue";
+import { router, useForm, usePage, Head, Link } from "@inertiajs/vue3";
 import { useUser } from "@/composables/useUser";
+import Content from "@/Components/Content.vue";
+import { useAppStore } from "@/stores/aplicacion/appStore";
+const appStore = useAppStore();
+
+onBeforeMount(() => {
+    appStore.startLoading();
+});
+
 onMounted(() => {
-    setTimeout(() => {
-        setLoading(false);
-    }, 300);
+    appStore.stopLoading();
 });
 
 const props = defineProps({
@@ -112,31 +118,39 @@ const enviaFormulario = () => {
 <template>
     <Head title="Perfil"></Head>
 
-    <!-- BEGIN breadcrumb -->
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="javascript:;">Inicio</a></li>
-        <li class="breadcrumb-item active">Perfil</li>
-    </ol>
-    <!-- END breadcrumb -->
-    <!-- BEGIN page-header -->
-    <h1 class="page-header">Perfil</h1>
-    <!-- END page-header -->
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-inverse">
-                <div class="panel-body">
-                    <div class="row">
-                        <div clas="col-12">
-                            <div class="info_foto">
+    <Content>
+        <template #header>
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Perfil</h1>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <Link :href="route('inicio')">Inicio</Link>
+                        </li>
+                        <li class="breadcrumb-item active">Perfil</li>
+                    </ol>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </template>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="info_foto w-100 text-center">
                                 <img class="image" :src="user.url_foto" />
-                                <br />
-                                <h4 class="mt-1 mb-3">
+                                <h4 class="mt-1 mb-1">
                                     {{ user.role?.nombre }}
                                 </h4>
                                 <label
                                     v-if="!imagen_cargada"
-                                    class="btn_principal"
+                                    class="btn btn-outline-success text-success"
+                                    id="labelFoto"
                                     for="file_foto"
                                     ><b>Cambiar foto</b
                                     ><input
@@ -153,30 +167,57 @@ const enviaFormulario = () => {
                                 >
                                     Guardar cambios
                                 </button>
-                                <br />
                                 <button
                                     v-if="imagen_cargada"
-                                    class="w-50 mb-1 btn"
+                                    class="w-50 mb-1 btn btn-default"
                                     @click="cancelarImagen"
                                 >
                                     Cancelar
                                 </button>
                             </div>
                         </div>
-                        <div cols="12">
-                            <div class="row">
+                        <div cols="d-flex w-100">
+                            <div class="row mb-1">
                                 <div class="text-right font-weight-bold col-4">
                                     Usuario:
                                 </div>
-                                <div class="col-8">{{ user.usuario }}</div>
+                                <div class="col-8">
+                                    {{ user.usuario }}
+                                </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb-1">
                                 <div class="text-right font-weight-bold col-4">
                                     Nombre:
                                 </div>
-                                <div class="col-8">{{ user.full_name }}</div>
+                                <div class="col-8">
+                                    {{ user.full_name }}
+                                </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb-1">
+                                <div class="text-right font-weight-bold col-4">
+                                    C.I.:
+                                </div>
+                                <div class="col-8">
+                                    {{ user.full_ci }}
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="text-right font-weight-bold col-4">
+                                    Correo:
+                                </div>
+                                <div class="col-8">
+                                    {{ user.correo }}
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="text-right font-weight-bold col-4">
+                                    Teléfono:
+                                </div>
+                                <div class="col-8">
+                                    {{ user.fono }}
+                                </div>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="text-right font-weight-bold col-4">
                                     Fecha Registro:
                                 </div>
@@ -188,83 +229,113 @@ const enviaFormulario = () => {
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-8">
-            <div class="panel panel-inverse pa-3">
-                <div class="panel-heading">Cambiar contraseña</div>
-                <div class="panel-body">
-                    <form>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <label>Contraseña actual</label>
-                                <input
-                                    placeholder="Contraseña actual"
-                                    autocomplete="false"
-                                    v-model="form.password_actual"
-                                    type="password"
-                                    class="form-control"
-                                    :class="{
-                                        'parsley-error':
-                                            form.errors?.password_actual,
-                                    }"
-                                />
-                                <ul
-                                    v-if="form.errors?.password_actual"
-                                    class="parsley-errors-list filled"
-                                >
-                                    <li class="parsley-required">
-                                        {{ form.errors?.password_actual }}
-                                    </li>
-                                </ul>
-                                <label>Ingresa la nueva contraseña</label>
-                                <input
-                                    placeholder="Ingresa la nueva contraseña"
-                                    prepend-inner-icon="mdi-lock-outline"
-                                    autocomplete="false"
-                                    v-model="form.password"
-                                    type="password"
-                                    class="form-control mt-2"
-                                    :class="{
-                                        'parsley-error': form.errors?.password,
-                                    }"
-                                />
-                                <ul
-                                    v-if="form.errors?.password"
-                                    class="parsley-errors-list filled"
-                                >
-                                    <li class="parsley-required">
-                                        {{ form.errors?.password }}
-                                    </li>
-                                </ul>
-                                <label>Repite la nueva contraseña</label>
-                                <input
-                                    placeholder="Repite la nueva contraseña"
-                                    autocomplete="false"
-                                    v-model="form.password_confirmation"
-                                    type="password"
-                                    class="form-control mt-2 mb-3"
-                                />
+            <div class="col-md-8">
+                <div class="card card-inverse pa-3">
+                    <div class="card-header">
+                        <h4 class="mb-0">Cambiar contraseña</h4>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form>
+                            <div class="row">
+                                <div class="col-12 mb-2 text-danger">
+                                    <i
+                                        ><small
+                                            >Debes ingresar al menos
+                                            <span class="bold"
+                                                >8 caracteres con una
+                                                combinación de al menos: 1
+                                                mayúscula, 1 número y un
+                                                caracter especial(@#$.&)</span
+                                            ></small
+                                        ></i
+                                    >
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label class="mb-0"
+                                        >Contraseña actual</label
+                                    >
+                                    <input
+                                        placeholder="Contraseña actual"
+                                        autocomplete="false"
+                                        v-model="form.password_actual"
+                                        type="password"
+                                        class="form-control"
+                                        :class="{
+                                            'parsley-error':
+                                                form.errors?.password_actual,
+                                        }"
+                                    />
+                                    <ul
+                                        v-if="form.errors?.password_actual"
+                                        class="list-unstyled text-danger"
+                                    >
+                                        <li class="parsley-required">
+                                            {{ form.errors?.password_actual }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label class="mb-0"
+                                        >Ingresa la nueva contraseña</label
+                                    >
+                                    <input
+                                        placeholder="Ingresa la nueva contraseña"
+                                        prepend-inner-icon="mdi-lock-outline"
+                                        autocomplete="false"
+                                        v-model="form.password"
+                                        type="password"
+                                        class="form-control mt-2"
+                                        :class="{
+                                            'parsley-error':
+                                                form.errors?.password,
+                                        }"
+                                    />
+                                    <ul
+                                        v-if="form.errors?.password"
+                                        class="list-unstyled text-danger"
+                                    >
+                                        <li class="parsley-required">
+                                            {{ form.errors?.password }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label class="mb-0"
+                                        >Repite la nueva contraseña</label
+                                    >
+                                    <input
+                                        placeholder="Repite la nueva contraseña"
+                                        autocomplete="false"
+                                        v-model="form.password_confirmation"
+                                        type="password"
+                                        class="form-control mt-2 mb-3"
+                                    />
+                                </div>
+                                <div class="col-md-4">
+                                    <button
+                                        type="button"
+                                        class="btn btn-success w-100"
+                                        @click="enviaFormulario"
+                                    >
+                                        Guardar cambios
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary w-100"
-                                    @click="enviaFormulario"
-                                >
-                                    Guardar cambios
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </Content>
 </template>
 
 <style scoped>
+label.btn.btn-principal {
+    color: white !important;
+}
 .info_foto {
     display: flex;
+    width: 100%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -276,5 +347,14 @@ const enviaFormulario = () => {
     object-fit: cover;
     border-radius: 50%;
     border: solid 1px gray;
+}
+
+#labelFoto b,
+.text-success {
+    color: green !important;
+}
+
+#labelFoto:hover b {
+    color: white !important;
 }
 </style>
