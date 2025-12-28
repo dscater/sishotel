@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Cliente;
 use App\Models\Configuracion;
 use App\Models\HistorialOferta;
+use App\Models\MovimientoCaja;
 use App\Models\Publicacion;
 use App\Models\PublicacionDetalle;
 use App\Models\SubastaCliente;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -53,54 +55,65 @@ class ReporteController extends Controller
         return $pdf->stream('usuarios.pdf');
     }
 
-
-    public function tareas()
+    public function movimiento_cajas()
     {
-        return Inertia::render("Admin/Reportes/Tareas");
+        return Inertia::render("Admin/Reportes/MovimientoCajas");
     }
 
-    public function r_tareas(Request $request)
+    public function r_movimiento_cajas(Request $request)
     {
-        $area_id = $request->area_id;
-        $estado = $request->estado;
         $fecha_ini = $request->fecha_ini;
         $fecha_fin = $request->fecha_fin;
-        $tareas = [];
-        if (Auth::user()->tipo == 'OPERARIOS') {
-            $tareas = Tarea::select("tareas.*")
-                ->join("tarea_operarios", "tarea_operarios.tarea_id", "=", "tareas.id");
-            $tareas->where("tarea_operarios.user_id", Auth::user()->id);
+        $caja_id = $request->caja_id;
 
-            if ($area_id != 'todos') {
-                $tareas->where("tareas.area_id", $area_id);
-            }
+        $movimiento_cajas = [];
+        $saldos_monedas = [];
 
-            if ($estado != 'todos') {
-                $tareas->where("tareas.estado", $estado);
-            }
-
-            $tareas->distinct("tareas.id");
-            $tareas->groupBy("tareas.id");
-            $tareas = $tareas->get();
+        if ($caja_id) {
+            $movimiento_cajas = MovimientoCaja::where("caja_id", $caja_id)->get();
+            // saldos 
+            $saldos_monedas = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+                ->select(
+                    'moneda_id_tc',
+                    'monedas.simbolo',
+                    DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                    DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+                )
+                ->where("caja_id", $caja_id)
+                ->groupBy('moneda_id_tc', 'monedas.simbolo')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'moneda_id_tc' => $item->moneda_id_tc,
+                        'simbolo' => $item->simbolo,
+                        'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", "")
+                    ];
+                });
         } else {
-            $tareas = Tarea::select("tareas.*");
-
-            if ($area_id != 'todos') {
-                $tareas->where("area_id", $area_id);
-            }
-
-            if ($estado != 'todos') {
-                $tareas->where("estado", $estado);
-            }
-
             if ($fecha_ini && $fecha_fin) {
-                $tareas->whereBetween("fecha_registro", [$fecha_ini, $fecha_fin]);
+                $movimiento_cajas = MovimientoCaja::whereBetween("fecha_movimiento", [$fecha_ini, $fecha_fin])->get();
+                // saldos 
+                $saldos_monedas = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+                    ->select(
+                        'moneda_id_tc',
+                        'monedas.simbolo',
+                        DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                        DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+                    )
+                    ->whereBetween("fecha_movimiento", [$fecha_ini, $fecha_fin])
+                    ->groupBy('moneda_id_tc', 'monedas.simbolo')
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'moneda_id_tc' => $item->moneda_id_tc,
+                            'simbolo' => $item->simbolo,
+                            'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", "")
+                        ];
+                    });
             }
-            $tareas = $tareas->get();
         }
 
-
-        $pdf = PDF::loadView('reportes.tareas', compact('tareas'))->setPaper('letter', 'portrait');
+        $pdf = PDF::loadView('reportes.movimiento_cajas', compact('movimiento_cajas', 'saldos_monedas'))->setPaper('letter', 'portrait');
 
         // ENUMERAR LAS PÁGINAS USANDO CANVAS
         $pdf->output();
@@ -110,58 +123,27 @@ class ReporteController extends Controller
         $ancho = $canvas->get_width();
         $canvas->page_text($ancho - 90, $alto - 25, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9, array(0, 0, 0));
 
-        return $pdf->stream('tareas.pdf');
+        return $pdf->stream('movimiento_cajas.pdf');
     }
 
-    public function rg_tareas(Request $request)
+    public function ingresos_recepcion()
     {
-        $estado = $request->estado;
-        $fecha_ini = $request->fecha_ini;
-        $fecha_fin = $request->fecha_fin;
+        return Inertia::render("Admin/Reportes/Usuarios");
+    }
 
-        $areas = Area::all();
-        $categories = Area::pluck("nombre")->toArray();
-        $estados = ["PENDIENTE", "INICIADO", "FINALIZADO"];
-        if ($estado != 'todos') {
-            $estados = [$estado];
-        }
+    public function r_ingresos_recepcion(Request $request)
+    {
 
-        $data = [];
-        foreach ($estados as $key => $estado) {
-            $data[] = [
-                "name" => $estado,
-                "data" => []
-            ];
-            foreach ($areas as $area) {
-                if (Auth::user()->tipo == 'OPERARIOS') {
-                    $tareas = Tarea::select("tareas.*")
-                        ->join("tarea_operarios", "tarea_operarios.tarea_id", "=", "tareas.id");
-                    $tareas->where("tarea_operarios.user_id", Auth::user()->id);
-                    $tareas->where("tareas.area_id", $area->id);
-                    $tareas->where("tareas.estado", $estado);
-                    if ($fecha_ini && $fecha_fin) {
-                        $tareas->whereBetween("tareas.fecha_registro", [$fecha_ini, $fecha_fin]);
-                    }
-                    $tareas->distinct("tareas.id");
-                    $tareas->groupBy("tareas.id");
-                    $tareas = $tareas->count();
-                } else {
-                    $tareas = Tarea::select("tareas.*");
-                    $tareas->where("estado", $estado);
-                    $tareas->where("area_id", $area->id);
-                    if ($fecha_ini && $fecha_fin) {
-                        $tareas->whereBetween("fecha_registro", [$fecha_ini, $fecha_fin]);
-                    }
-                    $tareas = $tareas->count();
-                }
+        $pdf = PDF::loadView('reportes.usuarios', compact('usuarios'))->setPaper('legal', 'landscape');
 
-                $data[$key]["data"][] = $tareas;
-            }
-        }
+        // ENUMERAR LAS PÁGINAS USANDO CANVAS
+        $pdf->output();
+        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $dom_pdf->get_canvas();
+        $alto = $canvas->get_height();
+        $ancho = $canvas->get_width();
+        $canvas->page_text($ancho - 90, $alto - 25, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9, array(0, 0, 0));
 
-        return response()->JSON([
-            "categories" => $categories,
-            "data" => $data,
-        ]);
+        return $pdf->stream('usuarios.pdf');
     }
 }

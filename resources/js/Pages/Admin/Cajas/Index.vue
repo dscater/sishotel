@@ -8,6 +8,12 @@ import Formulario from "./Formulario.vue";
 import { useAppStore } from "@/stores/aplicacion/appStore";
 import { useAxios } from "@/composables/axios/useAxios";
 const { props: props_page } = usePage();
+const props = defineProps({
+    saldos_monedas: {
+        type: Array,
+        default: [],
+    },
+});
 const appStore = useAppStore();
 const { axiosDelete } = useAxios();
 
@@ -186,6 +192,25 @@ onMounted(async () => {
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-12">
+                        <h6>Saldos de Caja</h6>
+                        <table class="saldos_caja">
+                            <tbody>
+                                <tr>
+                                    <td v-for="item in saldos_monedas">
+                                        {{ item.simbolo }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td v-for="item in saldos_monedas">
+                                        {{ item.saldo }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4">
                         <button
                             v-if="
@@ -324,3 +349,22 @@ onMounted(async () => {
         ></Formulario>
     </Content>
 </template>
+
+<style scoped>
+.saldos_caja {
+    background-color: white;
+    margin-bottom: 10px;
+}
+
+.saldos_caja td {
+    padding: 5px;
+    background-color: white;
+    border: solid 1px;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.saldos_caja tr:nth-child(1) {
+    font-weight: bold;
+}
+</style>

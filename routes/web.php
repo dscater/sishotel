@@ -248,5 +248,11 @@ Route::middleware(['auth', 'permisoUsuario'])->prefix("admin")->group(function (
     // REPORTES
     Route::get('reportes/usuarios', [ReporteController::class, 'usuarios'])->name("reportes.usuarios");
     Route::get('reportes/r_usuarios', [ReporteController::class, 'r_usuarios'])->name("reportes.r_usuarios");
+
+    Route::get('reportes/movimiento_cajas', [ReporteController::class, 'movimiento_cajas'])->name("reportes.movimiento_cajas");
+    Route::get('reportes/r_movimiento_cajas', [ReporteController::class, 'r_movimiento_cajas'])->name("reportes.r_movimiento_cajas");
+
+    Route::get('reportes/ingresos_recepcion', [ReporteController::class, 'ingresos_recepcion'])->name("reportes.ingresos_recepcion");
+    Route::get('reportes/r_ingresos_recepcion', [ReporteController::class, 'r_ingresos_recepcion'])->name("reportes.r_ingresos_recepcion");
 });
 require __DIR__ . '/auth.php';

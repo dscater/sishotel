@@ -189,6 +189,10 @@ class PermisoService
 
             "reportes.usuarios",
             "reportes.r_usuarios",
+            "reportes.movimiento_cajas",
+            "reportes.r_movimiento_cajas",
+            "reportes.ingresos_recepcion",
+            "reportes.r_ingresos_recepcion",
         ],
         "RECEPCIONISTA" => [],
         "CONTADOR" => [],

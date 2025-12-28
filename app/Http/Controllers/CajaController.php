@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Requests\CajaStoreRequest;
 use App\Http\Requests\CajaUpdateRequest;
 use App\Models\Caja;
+use App\Models\Moneda;
 use App\Services\CajaService;
 use App\Services\MovimientoCajaService;
 use Illuminate\Http\JsonResponse;
@@ -53,13 +54,62 @@ class CajaController extends Controller
 
     public function movimiento_cajas(Request $request)
     {
-        return response()->JSON(MovimientoCaja::where("caja_id", $request->caja_id)->get());
+
+        $caja_id = $request->caja_id;
+        $movimiento_cajas = MovimientoCaja::where("caja_id", $caja_id)->get();
+
+        $saldos_monedas = [];
+        if (!$caja_id) {
+            $ultima_caja = MovimientoCaja::get()->last();
+            $caja_id = $ultima_caja->caja_id;
+        }
+
+        // saldos 
+        if ($caja_id) {
+            $saldos_monedas = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+                ->select(
+                    'moneda_id_tc',
+                    'monedas.simbolo',
+                    DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                    DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+                )
+                ->groupBy('moneda_id_tc', 'monedas.simbolo')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'moneda_id_tc' => $item->moneda_id_tc,
+                        'simbolo' => $item->simbolo,
+                        'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", "")
+                    ];
+                });
+        }
+        return response()->JSON([
+            "movimiento_cajas" => $movimiento_cajas,
+            "saldos_monedas" => $saldos_monedas
+        ]);
     }
 
 
     public function index(): InertiaResponse
     {
-        return Inertia::render("Admin/Cajas/Index");
+        $saldos_monedas = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
+        return Inertia::render("Admin/Cajas/Index", compact("saldos_monedas"));
     }
 
     public function listado(Request $request): JsonResponse

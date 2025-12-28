@@ -86,25 +86,26 @@ const getFechaHoraCierre = () => {
 };
 
 const listMovimientoCajas = ref([]);
+const listMonedasSaldos = ref([]);
 const cargarMovimientoCajas = () => {
     if (!oCaja.value) return;
     axios
         .get(route("cajas.movimiento_cajas", { caja_id: oCaja.value.id }))
         .then((response) => {
-            listMovimientoCajas.value = response.data;
+            listMovimientoCajas.value = response.data.movimiento_cajas;
+            listMonedasSaldos.value = response.data.saldos_monedas;
         });
 };
 
-const listMonedas = ref([]);
-const cargarMonedas = () => {
-    axios.get(route("monedas.listado")).then((response) => {
-        listMonedas.value = response.data.monedas;
-    });
+const reporteMovimientos = () => {
+    window.open(
+        route("reportes.r_movimiento_cajas") + "?caja_id=" + oCaja.value.id,
+        "_blank"
+    );
 };
 
 onMounted(async () => {
     verificaCaja();
-    cargarMonedas();
     appStore.stopLoading();
 });
 </script>
@@ -186,8 +187,6 @@ onMounted(async () => {
                                 </div>
                             </div>
                         </div>
-
-                        <!-- TODO: Obtener suma total por monedas -->
                     </div>
                 </div>
 
@@ -197,12 +196,31 @@ onMounted(async () => {
                             Registros realizados:
                             {{ listMovimientoCajas.length }}
                         </h5>
-                        <table class="table table-bordered">
-                            <thead>
+                        <div class="row mb-2">
+                            <div
+                                class="col-12 d-flex w-100 justify-content-between"
+                            >
+                                <button class="btn bg-danger" @click="">
+                                    Cerrar Caja <i class="fa fa-times"></i>
+                                </button>
+                                <!-- <button class="btn bg-principal">
+                                    Exportar Ingresos de Recepción
+                                    <i class="fa fa-file-pdf"></i>
+                                </button> -->
+                                <button
+                                    class="btn bg-secundario"
+                                    @click.prevent="reporteMovimientos"
+                                >
+                                    Exportar <i class="fa fa-file-pdf"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-container">
+                            <thead class="bg2">
                                 <th>N°</th>
                                 <th>Fecha</th>
                                 <th>Descripción</th>
-                                <th v-for="item_moneda in listMonedas">
+                                <th v-for="item_moneda in listMonedasSaldos">
                                     {{ item_moneda.simbolo }}
                                 </th>
                             </thead>
@@ -214,25 +232,52 @@ onMounted(async () => {
                                     <td>{{ item.fecha_hora }}</td>
                                     <td>{{ item.descripcion }}</td>
 
-                                    <td v-for="item_moneda in listMonedas">
+                                    <td
+                                        v-for="item_moneda in listMonedasSaldos"
+                                        :class="{
+                                            bg7:
+                                                item_moneda.moneda_id_tc !=
+                                                item.moneda_id_tc,
+                                        }"
+                                    >
                                         <span
+                                            :class="{
+                                                'text-success':
+                                                    item.tipo == 'INGRESO',
+                                                'text-danger':
+                                                    item.tipo == 'EGRESO',
+                                            }"
                                             v-if="
-                                                item_moneda.id == 1 &&
-                                                item.tc == 0
+                                                item_moneda.moneda_id_tc ==
+                                                item.moneda_id_tc
                                             "
-                                            >{{ item.monto }}</span
-                                        >
-                                        <span
-                                            v-if="
-                                                item.tc == 1 &&
-                                                item_moneda.id ==
-                                                    item.moneda_id_tc
-                                            "
-                                            >{{ item.monto_tc }}</span
-                                        >
+                                            ><i
+                                                class="fa"
+                                                :class="{
+                                                    'fa-arrow-up':
+                                                        item.tipo == 'INGRESO',
+                                                    'fa-arrow-down':
+                                                        item.tipo == 'EGRESO',
+                                                }"
+                                            ></i>
+                                            {{ item.monto_tc }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr class="bg2">
+                                    <th colspan="3" class="text-right">
+                                        SALDOS CIERRE
+                                    </th>
+                                    <th
+                                        v-for="item_moneda in listMonedasSaldos"
+                                    >
+                                        {{ item_moneda.saldo }}
+                                        {{ item_moneda.simbolo }}
+                                    </th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -245,3 +290,27 @@ onMounted(async () => {
         </div>
     </Content>
 </template>
+
+<style scoped>
+.table-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+}
+</style>

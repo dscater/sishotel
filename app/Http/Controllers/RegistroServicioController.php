@@ -71,11 +71,11 @@ class RegistroServicioController extends Controller
             $nro_registro = '0' . $nro_registro;
         }
 
-
-
-        $alto = $registro_servicio->servicio_detalles->count();
-
-        $customPaper = [0, 0, 226.8, $alto * 200];
+        $total_regs = $registro_servicio->servicio_detalles->count();
+        $altoByRegistro = 20;
+        $alto_impresion = (int)$total_regs * $altoByRegistro;
+        $alto_impresion = $alto_impresion + 280;
+        $customPaper = [0, 0, 226.8, $alto_impresion];
 
         $pdf = PDF::loadView('reportes.comanda', compact('registro_servicio', 'nro_registro'))->setPaper($customPaper);
         return $pdf->stream('CheckIn.pdf');
