@@ -256,7 +256,7 @@ onMounted(async () => {
                                     effect="dark"
                                     content="Check-In"
                                     placement="left-start"
-                                    v-if="item.estado == 1"
+                                    v-if="item.estado != 2"
                                 >
                                     <button
                                         class="btn btn-success"
@@ -269,7 +269,7 @@ onMounted(async () => {
                                     effect="dark"
                                     content="Check-Out"
                                     placement="left-start"
-                                    v-if="item.estado == 0"
+                                    v-if="item.estado != 2"
                                 >
                                     <button
                                         class="btn btn-warning"

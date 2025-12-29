@@ -249,10 +249,7 @@ const actualizarMontoFila = (data, index) => {
                             {{ item.saldo }}
                         </td>
                         <td>
-                            <div
-                                class="dropdown dropleft"
-                                v-if="item.saldo > 0"
-                            >
+                            <div class="dropdown dropleft">
                                 <button
                                     class="btn dropdown-toggle btn-sm text-xs bg-principal"
                                     type="button"
@@ -263,6 +260,7 @@ const actualizarMontoFila = (data, index) => {
                                 </button>
                                 <div class="dropdown-menu">
                                     <a
+                                        v-if="item.saldo > 0"
                                         class="dropdown-item text-sm"
                                         href="#"
                                         @click.prevent="
@@ -272,6 +270,7 @@ const actualizarMontoFila = (data, index) => {
                                         Efectivo</a
                                     >
                                     <a
+                                        v-if="item.saldo > 0"
                                         class="dropdown-item text-sm"
                                         href="#"
                                         @click.prevent="pagarTotalBanco(index)"
@@ -279,6 +278,7 @@ const actualizarMontoFila = (data, index) => {
                                         Banco</a
                                     >
                                     <a
+                                        v-if="item.saldo > 0"
                                         class="dropdown-item text-sm"
                                         href="#"
                                         @click.prevent="pagoPorPartes(index)"
