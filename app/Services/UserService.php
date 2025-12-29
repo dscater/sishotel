@@ -195,8 +195,7 @@ class UserService
     public function actualizar(array $datos, User $user): User
     {
         $old_user = clone $user;
-        $persona = $user->persona;
-        $persona->update([
+        $user->update([
             "nombre" => mb_strtoupper($datos["nombre"]),
             "paterno" => mb_strtoupper($datos["paterno"]),
             "materno" => mb_strtoupper($datos["materno"]),
@@ -205,14 +204,8 @@ class UserService
             "ci_exp" => $datos["ci_exp"],
             "fono" => $datos["fono"],
             "correo" => $datos["correo"],
-            "fecha_registro" => date("Y-m-d")
-        ]);
-        $user->update([
-            "usuario" => $this->getNombreUsuario($persona->nombre, $persona->paterno, $user->id),
-            "password" => $persona->ci,
             "tipo" => $datos["tipo"],
             "acceso" => $datos["acceso"],
-            "fecha_registro" => date("Y-m-d")
         ]);
         // cargar foto
         if ($datos["foto"] && !is_string($datos["foto"])) {
@@ -247,7 +240,7 @@ class UserService
     public function cargarFoto(User $user, UploadedFile $foto): void
     {
         if ($user->foto) {
-            \File::delete(public_path("imgs/users/" . $this->user->foto));
+            \File::delete(public_path("imgs/users/" . $user->foto));
         }
 
         $nombre = $user->id . time();

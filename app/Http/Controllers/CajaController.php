@@ -102,15 +102,92 @@ class CajaController extends Controller
                     ];
                 });
         }
+        $saldos_efectivo = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "EFECTIVO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
+
+        $saldos_banco = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "BANCO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
         return response()->JSON([
             "movimiento_cajas" => $movimiento_cajas,
-            "saldos_monedas" => $saldos_monedas
+            "saldos_monedas" => $saldos_monedas,
+            "saldos_efectivo" => $saldos_efectivo,
+            "saldos_banco" => $saldos_banco,
         ]);
     }
 
 
     public function index(): InertiaResponse
     {
+
+        $saldos_efectivo = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "EFECTIVO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
+
+        $saldos_banco = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "BANCO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
         $saldos_monedas = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
             ->select(
                 'moneda_id_tc',
@@ -128,7 +205,11 @@ class CajaController extends Controller
                 ];
             });
 
-        return Inertia::render("Admin/Cajas/Index", compact("saldos_monedas"));
+        return Inertia::render("Admin/Cajas/Index", compact(
+            "saldos_monedas",
+            "saldos_efectivo",
+            "saldos_banco"
+        ));
     }
 
     public function listado(Request $request): JsonResponse

@@ -13,6 +13,14 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    saldos_efectivo: {
+        type: Array,
+        default: [],
+    },
+    saldos_banco: {
+        type: Array,
+        default: [],
+    },
 });
 const appStore = useAppStore();
 const { axiosDelete } = useAxios();
@@ -199,7 +207,7 @@ onMounted(async () => {
                                 <tr>
                                     <th
                                         class="text-center font-weight-bold"
-                                        :colspan="saldos_monedas.length"
+                                        :colspan="saldos_monedas.length + 1"
                                     >
                                         SALDOS
                                     </th>
@@ -207,15 +215,48 @@ onMounted(async () => {
                             </thead>
                             <tbody class="bg-secundario">
                                 <tr>
+                                    <td></td>
                                     <td v-for="item in saldos_monedas">
                                         {{ item.simbolo }}
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="bg4 text-dark">
+                                    <td class="text-left">EFECTIVO</td>
                                     <td
-                                        class="bg4 text-dark"
-                                        v-for="item in saldos_monedas"
+                                        v-for="(
+                                            item_moneda, index
+                                        ) in saldos_monedas"
                                     >
+                                        <span v-if="saldos_efectivo[index]">
+                                            {{ saldos_efectivo[index].saldo }}
+                                            {{ saldos_efectivo[index].simbolo }}
+                                        </span>
+                                        <span v-else
+                                            >0.00
+                                            {{ item_moneda.simbolo }}</span
+                                        >
+                                    </td>
+                                </tr>
+                                <tr class="bg7 text-dark">
+                                    <td class="text-left">BANCO</td>
+                                    <td
+                                        v-for="(
+                                            item_moneda, index
+                                        ) in saldos_monedas"
+                                    >
+                                        <span v-if="saldos_banco[index]">
+                                            {{ saldos_banco[index].saldo }}
+                                            {{ saldos_banco[index].simbolo }}
+                                        </span>
+                                        <span v-else
+                                            >0.00
+                                            {{ item_moneda.simbolo }}</span
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TOTAL</td>
+                                    <td class="" v-for="item in saldos_monedas">
                                         {{ item.saldo }}
                                     </td>
                                 </tr>

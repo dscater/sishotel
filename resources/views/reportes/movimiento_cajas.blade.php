@@ -160,6 +160,12 @@
         .border_firma {
             border-bottom: dotted 1px #00008A;
         }
+
+        .saldos {
+            width: 60%;
+            margin: auto;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -224,23 +230,29 @@
         </tfoot>
     </table>
 
-    <table border="1">
+    <table border="1" class="saldos">
         <thead class="bg-principal">
             <tr>
-                <th colspan="{{ count($saldos_monedas_totales) }}">SALDO TOTAL EN CAJA</th>
+                <th colspan="4">SALDO TOTAL EN CAJA</th>
             </tr>
             <tr>
-                @foreach ($saldos_monedas_totales as $smt)
-                    <th class="centreado">{{ $smt['simbolo'] }}</th>
-                @endforeach
+                <th></th>
+                <th>EFECTIVO</th>
+                <th>BANCO</th>
+                <th>TOTAL SALDO</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                @foreach ($saldos_monedas_totales as $smt)
-                    <td class="centreado">{{ $smt['saldo'] }}</td>
-                @endforeach
-            </tr>
+            @foreach ($saldos_monedas_totales as $key => $smt)
+                <tr>
+                    <td class="centreado">{{ $smt['simbolo'] }}</td>
+                    <td class="centreado">
+                        {{ isset($saldos_efectivo[$key]) ? $saldos_efectivo[$key]['saldo'] : '0.00' }}
+                    </td>
+                    <td class="centreado">{{ isset($saldos_banco[$key]) ? $saldos_banco[$key]['saldo'] : '0.00' }}</td>
+                    <td>{{ $smt['saldo'] }}</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 

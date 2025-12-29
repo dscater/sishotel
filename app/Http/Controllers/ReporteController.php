@@ -69,6 +69,8 @@ class ReporteController extends Controller
 
         $movimiento_cajas = [];
         $saldos_monedas = [];
+        $saldos_efectivo = [];
+        $saldos_banco = [];
 
         if ($caja_id) {
             $movimiento_cajas = MovimientoCaja::where("caja_id", $caja_id)->get();
@@ -131,12 +133,49 @@ class ReporteController extends Controller
                 ];
             });
 
+        $saldos_efectivo = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "EFECTIVO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
+
+        $saldos_banco = MovimientoCaja::join('monedas', 'monedas.id', '=', 'movimiento_cajas.moneda_id_tc')
+            ->select(
+                'moneda_id_tc',
+                'monedas.simbolo',
+                DB::raw("SUM(CASE WHEN tipo = 'INGRESO' THEN monto_tc ELSE 0 END) as ingresos"),
+                DB::raw("SUM(CASE WHEN tipo = 'EGRESO' THEN monto_tc ELSE 0 END) as egresos")
+            )
+            ->where("efectivo_banco", "BANCO")
+            ->groupBy('moneda_id_tc', 'monedas.simbolo')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'moneda_id_tc' => $item->moneda_id_tc,
+                    'simbolo' => $item->simbolo,
+                    'saldo' => number_format((float)$item->ingresos - (float)$item->egresos, 2, ".", ""),
+                ];
+            });
+
         $caja = null;
         if ($caja_id) {
             $caja = Caja::findOrFail($caja_id);
         }
 
-        $pdf = PDF::loadView('reportes.movimiento_cajas', compact('movimiento_cajas', 'saldos_monedas', 'saldos_monedas_totales', 'caja'))->setPaper('letter', 'portrait');
+        $pdf = PDF::loadView('reportes.movimiento_cajas', compact('movimiento_cajas', 'saldos_monedas', 'saldos_monedas_totales', 'caja', 'saldos_efectivo', 'saldos_banco'))->setPaper('letter', 'portrait');
 
         // ENUMERAR LAS PÁGINAS USANDO CANVAS
         $pdf->output();

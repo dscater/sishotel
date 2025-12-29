@@ -93,6 +93,9 @@ const getFechaHoraCierre = () => {
 
 const listMovimientoCajas = ref([]);
 const listMonedasSaldos = ref([]);
+const listSaldosEfectivo = ref([]);
+const listSaldosBanco = ref([]);
+
 const cargarMovimientoCajas = () => {
     if (!oCaja.value) return;
     axios
@@ -100,6 +103,8 @@ const cargarMovimientoCajas = () => {
         .then((response) => {
             listMovimientoCajas.value = response.data.movimiento_cajas;
             listMonedasSaldos.value = response.data.saldos_monedas;
+            listSaldosEfectivo.value = response.data.saldos_efectivo;
+            listSaldosBanco.value = response.data.saldos_banco;
         });
 };
 
@@ -327,9 +332,52 @@ onMounted(async () => {
                                 </tr>
                             </tbody>
                             <tfoot>
+                                <tr class="bg4">
+                                    <th colspan="3" class="text-right">
+                                        SALDO EFECTIVO
+                                    </th>
+                                    <th
+                                        v-for="(
+                                            item_moneda, index
+                                        ) in listMonedasSaldos"
+                                    >
+                                        <span v-if="listSaldosEfectivo[index]">
+                                            {{
+                                                listSaldosEfectivo[index].saldo
+                                            }}
+                                            {{
+                                                listSaldosEfectivo[index]
+                                                    .simbolo
+                                            }}
+                                        </span>
+                                        <span v-else
+                                            >0.00
+                                            {{ item_moneda.simbolo }}</span
+                                        >
+                                    </th>
+                                </tr>
+                                <tr class="bg7">
+                                    <th colspan="3" class="text-right">
+                                        SALDO BANCO
+                                    </th>
+                                    <th
+                                        v-for="(
+                                            item_moneda, index
+                                        ) in listMonedasSaldos"
+                                    >
+                                        <span v-if="listSaldosBanco[index]">
+                                            {{ listSaldosBanco[index].saldo }}
+                                            {{ listSaldosBanco[index].simbolo }}
+                                        </span>
+                                        <span v-else
+                                            >0.00
+                                            {{ item_moneda.simbolo }}</span
+                                        >
+                                    </th>
+                                </tr>
                                 <tr class="bg2">
                                     <th colspan="3" class="text-right">
-                                        SALDOS CIERRE
+                                        TOTALES SALDOS
                                     </th>
                                     <th
                                         v-for="item_moneda in listMonedasSaldos"
