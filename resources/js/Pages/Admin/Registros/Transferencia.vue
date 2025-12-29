@@ -2,8 +2,6 @@
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
-import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
-const { monedaOficial } = useMonedaOficial();
 
 const props = defineProps({
     oHabitacion: {

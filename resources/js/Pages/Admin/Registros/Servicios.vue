@@ -2,13 +2,11 @@
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
-import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
 import { useTipoCambio } from "@/composables/useTipoCambio";
 // TOAST
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
-const { monedaOficial } = useMonedaOficial();
 const { convertirMonto } = useTipoCambio();
 
 const props = defineProps({
@@ -27,6 +25,13 @@ const props = defineProps({
     accion_formulario: {
         type: Number,
         default: 0,
+    },
+    monedaOficial: {
+        type: Object,
+        default: {
+            simbolo: "Bs",
+        },
+        required: true,
     },
 });
 
@@ -67,7 +72,7 @@ watch(
             cargarListas();
             asignarDatosForm();
 
-            form.moneda_id_tc = monedaOficial?.value.id;
+            form.moneda_id_tc = props.monedaOficial.id;
             document
                 .getElementsByTagName("body")[0]
                 .classList.add("modal-open");
@@ -385,7 +390,7 @@ const simboloMonedaCambio = computed(() => {
 });
 
 const actualizaMontos = () => {
-    // form.moneda_id_tc = monedaOficial?.value.id;
+    // form.moneda_id_tc = props.monedaOficial.id;
     form.saldo = form.total - form.cancelado;
     // USAR UNA FUNCION PARA TIPO DE CAMBIO
     // DETECTANDO SI HAY O NO UN TIPO DE CAMBIO

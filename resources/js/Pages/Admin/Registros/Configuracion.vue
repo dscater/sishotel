@@ -6,9 +6,6 @@ import { watch, ref, computed, onMounted, nextTick } from "vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
-import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
-const { monedaOficial } = useMonedaOficial();
-
 const props = defineProps({
     oHabitacion: {
         type: Object,

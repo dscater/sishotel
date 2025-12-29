@@ -2,10 +2,8 @@
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
-import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
 import Pagos from "@/Components/Pagos.vue";
 import axios from "axios";
-const { monedaOficial } = useMonedaOficial();
 
 const props = defineProps({
     oHabitacion: {
@@ -23,6 +21,13 @@ const props = defineProps({
     accion_formulario: {
         type: Number,
         default: 0,
+    },
+    monedaOficial: {
+        type: Object,
+        default: {
+            simbolo: "Bs",
+        },
+        required: true,
     },
 });
 

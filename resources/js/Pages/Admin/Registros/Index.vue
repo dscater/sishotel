@@ -10,6 +10,9 @@ import Servicios from "@/Pages/Admin/Registros/Servicios.vue";
 import Pagos from "./Pagos.vue";
 import Configuracion from "./Configuracion.vue";
 import Informacion from "./Informacion.vue";
+import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
+const { monedaOficial } = useMonedaOficial();
+
 const { props: props_page } = usePage();
 const appStore = useAppStore();
 
@@ -454,6 +457,8 @@ const cargarListas = () => {
             </div>
         </div>
         <FormRegistro
+            v-if="monedaOficial"
+            :monedaOficial="monedaOficial"
             :o-habitacion="oHabitacion"
             :registro="oRegistro"
             :muestra_formulario="muestra_formulario_registro"
@@ -472,6 +477,8 @@ const cargarListas = () => {
         ></FormRegistro>
 
         <Transferencia
+            v-if="monedaOficial"
+            :monedaOficial="monedaOficial"
             :o-habitacion="oHabitacion"
             :muestra_formulario="muestra_formulario_transferencia"
             :accion_formulario="accion_formulario_transferencia"
@@ -486,6 +493,8 @@ const cargarListas = () => {
         ></Transferencia>
 
         <Servicios
+            v-if="monedaOficial"
+            :monedaOficial="monedaOficial"
             :o-habitacion="oHabitacion"
             :muestra_formulario="muestra_formulario_servicios"
             :accion_formulario="accion_formulario_servicios"
@@ -500,6 +509,8 @@ const cargarListas = () => {
         ></Servicios>
 
         <Pagos
+            v-if="monedaOficial"
+            :monedaOficial="monedaOficial"
             :o-habitacion="oHabitacion"
             :muestra_formulario="muestra_formulario_pagos"
             :accion_formulario="accion_formulario_pagos"

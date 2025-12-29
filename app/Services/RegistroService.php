@@ -451,7 +451,7 @@ class RegistroService
         $registros = Registro::where("habitacion_id", $habitacion_id)
             ->where("fecha_salida", ">", $fecha_ini)
             ->where("fecha_entrada", "<", $fecha_fin)
-            ->where("esado", 2)
+            ->where("estado", 2)
             ->where("status", 1)
             ->get();
         return $registros;

@@ -2,10 +2,8 @@
 import MiModal from "@/Components/MiModal.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed, onMounted, nextTick } from "vue";
-import { useMonedaOficial } from "@/composables/monedaOficial/useMonedaOficial";
 import Formulario from "../Clientes/Formulario.vue";
 import { useTipoCambio } from "@/composables/useTipoCambio";
-const { monedaOficial } = useMonedaOficial();
 const { convertirMonto } = useTipoCambio();
 const props = defineProps({
     oHabitacion: {
@@ -23,6 +21,13 @@ const props = defineProps({
     accion_formulario: {
         type: Number,
         default: 0,
+    },
+    monedaOficial: {
+        type: Object,
+        default: {
+            simbolo: "Bs",
+        },
+        required: true,
     },
 });
 
@@ -87,7 +92,7 @@ watch(
             cargarListas();
             caclularFechaSalida();
             form.habitacion_id = habitacion.value.id;
-            form.moneda_id_tc = monedaOficial?.value.id;
+            form.moneda_id_tc = props.monedaOficial.id;
             form.cd = habitacion.value.precio;
             if (form.id == 0) {
                 form.fecha_entrada = getFechaAtual();
@@ -124,6 +129,8 @@ watch(
 );
 
 const asignarDatosForm = async () => {
+    if (!oRegistro.value) return;
+
     await agregarClienteASelect(oRegistro.value.cliente);
     form.id = oRegistro.value.id;
     form.habitacion_id = oRegistro.value.habitacion_id;
@@ -363,7 +370,7 @@ const actualizaPrecioTipo = () => {
 };
 
 const actualizaMontos = () => {
-    // form.moneda_id_tc = monedaOficial?.value.id;
+    // form.moneda_id_tc = props.monedaOficial.id;
     form.total = form.dias_estadia * form.cd;
     form.saldo = form.total - form.adelanto;
     // USAR UNA FUNCION PARA TIPO DE CAMBIO
@@ -1087,7 +1094,7 @@ onMounted(() => {});
                                             >
                                             <el-input
                                                 type="textarea"
-                                                rows="1"
+                                                :rows="1"
                                                 v-model="form.desc_garantia"
                                                 autosize
                                             ></el-input>
